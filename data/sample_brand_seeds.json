@@ -1,0 +1,1509 @@
+[
+  {
+    "_note": "===== 食品饮料 =====",
+    "brand_name": "谷本宣言",
+    "brand_category": "食品饮料",
+    "sub_category": "坚果零食",
+    "target_audience": "20-35岁注重健康的都市白领，办公室零食消费者",
+    "tone_style": [
+      "自然",
+      "轻食",
+      "治愈"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "每日坚果混合包",
+    "product_description": "7种坚果果干科学配比，低温烘焙非油炸，独立小包装锁鲜，每日一袋补充营养",
+    "key_message": "自然本味，一口回归",
+    "visual_setting": "阳光洒落的厨房中岛，原木托盘上的坚果特写，办公室下午茶场景",
+    "visual_mood": "温暖、自然、满足感",
+    "brand_personality": [
+      "真诚",
+      "自然主义",
+      "轻生活"
+    ],
+    "use_case": "办公室零食、户外能量补充、下午茶",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "杏仁色",
+      "暖黄",
+      "牛皮纸色"
+    ]
+  },
+  {
+    "brand_name": "初沏",
+    "brand_category": "食品饮料",
+    "sub_category": "即饮茶",
+    "target_audience": "18-30岁年轻消费者，关注健康生活方式",
+    "tone_style": [
+      "清新",
+      "东方美学",
+      "年轻"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "冷萃原叶茶",
+    "product_description": "优选高山原叶，低温冷萃8小时，0糖0卡0香精，四种茶底可选",
+    "key_message": "慢下来，喝口好茶",
+    "visual_setting": "云雾缭绕的茶园，玻璃杯中茶叶舒展，城市天台年轻人的午后时光",
+    "visual_mood": "清冽、通透、宁静",
+    "brand_personality": [
+      "淡雅",
+      "东方",
+      "新生代"
+    ],
+    "use_case": "日常补水、餐后解腻、户外出行",
+    "seasons": [
+      "春",
+      "夏"
+    ],
+    "color_palette": [
+      "翠绿",
+      "透明",
+      "月白"
+    ]
+  },
+  {
+    "brand_name": "咚吃咚吃",
+    "brand_category": "食品饮料",
+    "sub_category": "速食面点",
+    "target_audience": "22-35岁独居青年，懒人经济消费者",
+    "tone_style": [
+      "可爱",
+      "温暖",
+      "便捷"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "微波速食拉面",
+    "product_description": "非油炸面饼，真材实料汤底，微波炉3分钟即食，六种地域风味",
+    "key_message": "一个人也要好好吃饭",
+    "visual_setting": "深夜出租屋的暖灯下，微波炉转动的倒计时，热气腾腾的拉面特写",
+    "visual_mood": "温暖、治愈、烟火气",
+    "brand_personality": [
+      "温暖",
+      "元气",
+      "陪伴"
+    ],
+    "use_case": "深夜加班餐、独居简餐、懒人美食",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "暖橙",
+      "奶油白",
+      "番茄红"
+    ]
+  },
+  {
+    "_note": "===== 生鲜食材 =====",
+    "brand_name": "鲜直达",
+    "brand_category": "生鲜食材",
+    "sub_category": "果蔬配送",
+    "target_audience": "25-40岁注重食材品质的家庭用户",
+    "tone_style": [
+      "新鲜",
+      "专业",
+      "透明"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "产地直采果蔬箱",
+    "product_description": "全国200+产地直采，从采摘到送达不超过48小时，每批次农残检测公示",
+    "key_message": "从田间到餐桌，不超过48小时",
+    "visual_setting": "清晨果园的露水微光，冷链运输车的航拍，家庭厨房里洗净的蔬果",
+    "visual_mood": "新鲜、真实、安心",
+    "brand_personality": [
+      "专业",
+      "透明",
+      "接地气"
+    ],
+    "use_case": "家庭日常食材采购、周末烹饪",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "果绿",
+      "泥土棕",
+      "橙红"
+    ]
+  },
+  {
+    "brand_name": "牧野先生",
+    "brand_category": "生鲜食材",
+    "sub_category": "高端肉品",
+    "target_audience": "30-50岁中高收入家庭，追求餐桌品质的消费者",
+    "tone_style": [
+      "高级",
+      "匠心",
+      "自然"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "黑毛和牛牛排",
+    "product_description": "自营牧场谷物饲养600天，雪花纹理A5级别，-40℃急冻锁鲜，搭配黑松露黄油酱",
+    "key_message": "一块牛排的时间，就是生活",
+    "visual_setting": "落日草原牧场的航拍，铁板上滋滋作响的牛排，红酒与烛光晚餐",
+    "visual_mood": "醇厚、尊贵、仪式感",
+    "brand_personality": [
+      "匠心",
+      "优雅",
+      "自然"
+    ],
+    "use_case": "家庭聚餐、节日料理、牛排爱好者",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "深酒红",
+      "炭黑",
+      "奶油金"
+    ]
+  },
+  {
+    "_note": "===== 酒类饮品 =====",
+    "brand_name": "醺然",
+    "brand_category": "酒类饮品",
+    "sub_category": "低度果酒",
+    "target_audience": "22-35岁女性消费者，闺蜜聚会、独酌场景",
+    "tone_style": [
+      "微醺",
+      "浪漫",
+      "女性向"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "青梅荔枝果酒",
+    "product_description": "8度微醺，江南青梅与岭南荔枝双重果味，纯发酵零添加糖精，小瓶装一人饮",
+    "key_message": "一个人的微醺，刚刚好",
+    "visual_setting": "夜晚阳台的一角，玻璃杯中冰镇果酒，满月与城市灯火背景",
+    "visual_mood": "松弛、浪漫、独享",
+    "brand_personality": [
+      "浪漫",
+      "松弛",
+      "自洽"
+    ],
+    "use_case": "闺蜜夜话、独处放松、周末微醺",
+    "seasons": [
+      "夏"
+    ],
+    "color_palette": [
+      "梅子粉",
+      "月光白",
+      "荔枝透"
+    ]
+  },
+  {
+    "brand_name": "岩藏",
+    "brand_category": "酒类饮品",
+    "sub_category": "高端白酒",
+    "target_audience": "35-55岁男性商务人士，白酒收藏与送礼需求",
+    "tone_style": [
+      "大气",
+      "东方",
+      "传承"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 45.0,
+    "product_type": "酱香型年份白酒",
+    "product_description": "赤水河核心产区，12987古法酿造，陶坛洞藏十年以上，酱香突出回味悠长",
+    "key_message": "岩藏十年，方得一盏",
+    "visual_setting": "丹霞地貌的酒窖洞穴，赤水河晨雾，中式书房里的温酒对酌",
+    "visual_mood": "沉稳、厚重、东方韵味",
+    "brand_personality": [
+      "沉稳",
+      "匠心",
+      "东方"
+    ],
+    "use_case": "商务宴请、佳节礼品、收藏品鉴",
+    "seasons": [
+      "秋",
+      "冬"
+    ],
+    "color_palette": [
+      "酱红",
+      "鎏金",
+      "墨黑"
+    ]
+  },
+  {
+    "_note": "===== 美妆护肤 =====",
+    "brand_name": "玉见",
+    "brand_category": "美妆护肤",
+    "sub_category": "精华护肤",
+    "target_audience": "25-40岁注重护肤的女性消费者，有抗初老需求",
+    "tone_style": [
+      "纯净",
+      "东方本草",
+      "极简"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "多肽紧致精华液",
+    "product_description": "五重胜肽复配，辅以雪莲、灵芝提取物，清透水润质地，28天提升肌肤弹性",
+    "key_message": "让肌肤回到最好的时光",
+    "visual_setting": "东方本草植物园晨雾，实验室中精华滴入培养皿的慢动作，女性自信微笑",
+    "visual_mood": "纯净、优雅、自信",
+    "brand_personality": [
+      "东方",
+      "专业",
+      "温润"
+    ],
+    "use_case": "日常护肤精华步骤、妆前打底",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "白玉色",
+      "草本绿",
+      "淡金"
+    ]
+  },
+  {
+    "brand_name": "幕己",
+    "brand_category": "美妆护肤",
+    "sub_category": "彩妆",
+    "target_audience": "18-30岁Z世代女性，化妆新手到进阶",
+    "tone_style": [
+      "个性",
+      "艺术",
+      "高街"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "滤镜感气垫粉底",
+    "product_description": "微米级粉体技术，一拍柔焦磨皮，12小时持妆不暗沉，六色可选适配亚洲肤色",
+    "key_message": "你的美，你自己定义",
+    "visual_setting": "城市天台化妆镜前的女孩，霓虹灯光斑驳，街头摄影风格",
+    "visual_mood": "年轻、自信、不设限",
+    "brand_personality": [
+      "大胆",
+      "艺术",
+      "新锐"
+    ],
+    "use_case": "日常通勤、约会妆容、拍照上镜",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "哑光黑",
+      "高街粉",
+      "金属银"
+    ]
+  },
+  {
+    "brand_name": "息白",
+    "brand_category": "美妆护肤",
+    "sub_category": "沙龙香氛",
+    "target_audience": "25-40岁追求生活品质的女性，香水爱好者",
+    "tone_style": [
+      "极简",
+      "禅意",
+      "高级感"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 30.0,
+    "product_type": "小众沙龙香水",
+    "product_description": "独立调香师定制，全球限量天然原料，纸质香水可书写纸条，六款东方意境香型",
+    "key_message": "停下来，闻一闻自己",
+    "visual_setting": "纯白空间中的香水瓶剪影，雨后的竹林石径，信笺上晕开的墨迹",
+    "visual_mood": "空灵、安静、克制",
+    "brand_personality": [
+      "克制",
+      "诗意",
+      "存在感"
+    ],
+    "use_case": "日常通勤香气、约会氛围、独处冥想",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "纯白",
+      "深灰",
+      "墨色"
+    ]
+  },
+  {
+    "_note": "===== 个护清洁 =====",
+    "brand_name": "清漾",
+    "brand_category": "个护清洁",
+    "sub_category": "洗护发",
+    "target_audience": "22-35岁有头皮出油、脱发困扰的年轻消费者",
+    "tone_style": [
+      "清爽",
+      "科技",
+      "专业"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "控油蓬松洗发水",
+    "product_description": "氨基酸表活+酵母发酵产物，温和清洁头皮多余油脂，72小时保持发根蓬松",
+    "key_message": "三天不洗头，依然很蓬松",
+    "visual_setting": "明亮简约的浴室，水流冲过秀发的慢镜，城市烈日下依然清爽的年轻人",
+    "visual_mood": "清爽、透气、自信",
+    "brand_personality": [
+      "清爽",
+      "专业",
+      "直接"
+    ],
+    "use_case": "油性头皮日常清洁、约会前的急救洗护",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "薄荷蓝",
+      "白色",
+      "银色"
+    ]
+  },
+  {
+    "brand_name": "柔皙",
+    "brand_category": "个护清洁",
+    "sub_category": "衣物洗护",
+    "target_audience": "25-40岁注重生活品质的家庭用户，母婴家庭",
+    "tone_style": [
+      "温柔",
+      "安全",
+      "治愈"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "植物酵素洗衣凝珠",
+    "product_description": "天然酵素配方，8倍洁净力，无荧光剂无磷，宝宝衣物可用，留香长达72小时",
+    "key_message": "温柔以待，每一寸肌肤",
+    "visual_setting": "阳光明媚的洗衣房，随风飘动的白色床单，妈妈给宝宝穿衣服的温柔时刻",
+    "visual_mood": "柔软、洁净、安心",
+    "brand_personality": [
+      "温柔",
+      "可靠",
+      "治愈"
+    ],
+    "use_case": "全家衣物清洁、宝宝衣物洗涤、床品护理",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "婴儿蓝",
+      "柔白",
+      "樱花粉"
+    ]
+  },
+  {
+    "_note": "===== 时尚服饰 =====",
+    "brand_name": "未名衣",
+    "brand_category": "时尚服饰",
+    "sub_category": "设计师女装",
+    "target_audience": "25-35岁独立都市女性，追求质感与剪裁",
+    "tone_style": [
+      "极简",
+      "建筑感",
+      "高级"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "廓形羊毛大衣",
+    "product_description": "澳洲美利奴羊毛，立体剪裁廓形设计，可拆卸内胆一衣三穿，六个高级配色",
+    "key_message": "衣服是内心的建筑",
+    "visual_setting": "现代主义建筑空间内，光影透过百叶窗线条落在衣服上，女性独立漫步城市",
+    "visual_mood": "冷静、力量、留白",
+    "brand_personality": [
+      "独立",
+      "建筑感",
+      "冷感"
+    ],
+    "use_case": "通勤穿搭、艺术场合、旅行穿搭",
+    "seasons": [
+      "秋",
+      "冬"
+    ],
+    "color_palette": [
+      "燕麦色",
+      "炭灰",
+      "雾蓝"
+    ]
+  },
+  {
+    "brand_name": "经纬线",
+    "brand_category": "时尚服饰",
+    "sub_category": "基础款男女装",
+    "target_audience": "22-35岁推崇胶囊衣橱的年轻人，极简主义消费者",
+    "tone_style": [
+      "基础",
+      "舒适",
+      "质感"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "重磅纯棉T恤",
+    "product_description": "新疆长绒棉230g重磅面料，不变形不透视，领口加固螺纹，16种基础色可选",
+    "key_message": "好的基础款，不喧哗自有声",
+    "visual_setting": "阳光充足的极简空间，素人模特的自然状态，一衣多穿的搭配展示",
+    "visual_mood": "舒适、自然、不过时",
+    "brand_personality": [
+      "舒适",
+      "不张扬",
+      "永恒"
+    ],
+    "use_case": "日常穿搭基础层、居家休闲、胶囊衣橱",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "本白",
+      "碳黑",
+      "沙色",
+      "雾霾蓝"
+    ]
+  },
+  {
+    "brand_name": "锋迹",
+    "brand_category": "时尚服饰",
+    "sub_category": "潮流街头",
+    "target_audience": "18-28岁潮流青年，街头文化与滑板爱好者",
+    "tone_style": [
+      "街头",
+      "叛逆",
+      "国潮"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "城市机能风外套",
+    "product_description": "防泼水面料，多口袋机能设计，反光印花细节，与独立插画师联名系列",
+    "key_message": "每条街都是你的T台",
+    "visual_setting": "城市天台滑板场，霓虹灯下的涂鸦墙，地铁站内的动感跟拍",
+    "visual_mood": "叛逆、能量、自由",
+    "brand_personality": [
+      "挑衅",
+      "年轻",
+      "先锋"
+    ],
+    "use_case": "滑板运动、街头聚会、音乐节穿搭",
+    "seasons": [
+      "春",
+      "秋"
+    ],
+    "color_palette": [
+      "黑色",
+      "荧光绿",
+      "金属银"
+    ]
+  },
+  {
+    "_note": "===== 运动户外 =====",
+    "brand_name": "都市夜行者",
+    "brand_category": "运动户外",
+    "sub_category": "智能跑鞋",
+    "target_audience": "22-35岁都市夜跑爱好者，运动科技发烧友",
+    "tone_style": [
+      "科技感",
+      "赛博朋克",
+      "活力"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "智能缓震跑鞋",
+    "product_description": "足底传感器实时分析跑姿，中底超临界发泡回弹85%，夜光纱线鞋面，APP数据同步",
+    "key_message": "在夜色里，跑出自己的节奏",
+    "visual_setting": "夜晚城市的霓虹街道，跑鞋踩过积水溅起光影，运动手表数据流",
+    "visual_mood": "前沿、动感、未来感",
+    "brand_personality": [
+      "科技玩家",
+      "独立",
+      "夜间行者"
+    ],
+    "use_case": "夜跑训练、城市通勤跑、马拉松备赛",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "深蓝",
+      "荧光绿",
+      "黑色"
+    ]
+  },
+  {
+    "brand_name": "攀峰者",
+    "brand_category": "运动户外",
+    "sub_category": "户外装备",
+    "target_audience": "25-45岁徒步露营爱好者，户外探险玩家",
+    "tone_style": [
+      "硬朗",
+      "专业",
+      "探索"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 45.0,
+    "product_type": "专业三季徒步帐篷",
+    "product_description": "双人双层结构，抗风8级外帐，超轻1.2kg，DAC铝合金帐杆，三种搭建模式",
+    "key_message": "山就在那里",
+    "visual_setting": "雪山顶峰的第一缕阳光穿透帐篷，高山草甸上孤独的帐篷剪影，星河下的营地",
+    "visual_mood": "壮阔、孤独、征服",
+    "brand_personality": [
+      "硬核",
+      "专业",
+      "山系"
+    ],
+    "use_case": "高海拔徒步、野外露营、户外探险",
+    "seasons": [
+      "春",
+      "夏",
+      "秋"
+    ],
+    "color_palette": [
+      "军绿",
+      "橙色",
+      "灰色"
+    ]
+  },
+  {
+    "brand_name": "浮力实验室",
+    "brand_category": "运动户外",
+    "sub_category": "瑜伽健身",
+    "target_audience": "22-35岁瑜伽爱好者，健身女性",
+    "tone_style": [
+      "柔软",
+      "力量",
+      "女性向"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "高支撑瑜伽运动内衣",
+    "product_description": "无缝一体织造，四向弹力面料，工字背防滑设计，吸湿速干，12色莫兰迪配色",
+    "key_message": "柔韧之中，有力量",
+    "visual_setting": "洒满晨光的瑜伽房，女性流畅的体式剪影，汗水与肌肉线条的特写",
+    "visual_mood": "柔韧、专注、自信",
+    "brand_personality": [
+      "柔软",
+      "坚韧",
+      "自由"
+    ],
+    "use_case": "瑜伽、普拉提、健身房力量训练",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "莫兰迪粉",
+      "燕麦色",
+      "鼠尾草绿"
+    ]
+  },
+  {
+    "_note": "===== 鞋履箱包 =====",
+    "brand_name": "步履间",
+    "brand_category": "鞋履箱包",
+    "sub_category": "舒适女鞋",
+    "target_audience": "25-40岁通勤女性，久站或大量步行的职场人",
+    "tone_style": [
+      "优雅",
+      "舒适",
+      "实用"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "通勤粗跟单鞋",
+    "product_description": "5cm舒适粗跟，羊皮内里+乳胶鞋垫，鞋底弧形设计贴合足弓，日行万步不累脚",
+    "key_message": "你走的路，每一步都算数",
+    "visual_setting": "城市早高峰的地铁站，踩着高跟鞋自信穿行的女性，办公室到约会场景切换",
+    "visual_mood": "优雅、从容、自洽",
+    "brand_personality": [
+      "优雅",
+      "独立",
+      "务实"
+    ],
+    "use_case": "职场通勤、商务会议、日常出行",
+    "seasons": [
+      "春",
+      "秋"
+    ],
+    "color_palette": [
+      "裸色",
+      "黑色",
+      "奶茶色"
+    ]
+  },
+  {
+    "brand_name": "行囊故事",
+    "brand_category": "鞋履箱包",
+    "sub_category": "旅行箱包",
+    "target_audience": "22-38岁自由行爱好者，数字化游民",
+    "tone_style": [
+      "冒险",
+      "文艺",
+      "实用"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "前开盖登机箱",
+    "product_description": "PC+ABS轻量材质仅2.3kg，前开盖电脑仓可放16寸笔记本，USB外接充电口，静音万向轮",
+    "key_message": "装满故事，再出发",
+    "visual_setting": "机场跑道的朝阳，行李箱轮划过不同国家的地面，青年旅舍墙上贴满的登机牌",
+    "visual_mood": "自由、旅途感、青春",
+    "brand_personality": [
+      "流浪者",
+      "文艺",
+      "可靠"
+    ],
+    "use_case": "短途旅行、商务出差、留学出行",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "芥末黄",
+      "墨绿",
+      "岩石灰"
+    ]
+  },
+  {
+    "_note": "===== 珠宝饰品 =====",
+    "brand_name": "挚爱一刻",
+    "brand_category": "珠宝饰品",
+    "sub_category": "求婚钻戒",
+    "target_audience": "25-35岁即将求婚或结婚的情侣",
+    "tone_style": [
+      "浪漫",
+      "精致",
+      "永恒"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 30.0,
+    "product_type": "六爪镶嵌钻石戒指",
+    "product_description": "GIA认证培育钻石，经典六爪铂金戒托，D色VVS1净度，璀璨光芒见证永恒时刻",
+    "key_message": "所有的心动，都在这一刻",
+    "visual_setting": "黄昏海滩的单膝跪地剪影，打开戒指盒的慢镜头，烟火下的拥抱",
+    "visual_mood": "浪漫、甜蜜、永恒",
+    "brand_personality": [
+      "浪漫",
+      "真诚",
+      "精致"
+    ],
+    "use_case": "求婚、订婚、结婚纪念日",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "铂金",
+      "冰白",
+      "香槟金"
+    ],
+    "gem_color": "D色培育钻石",
+    "band_material": "铂金PT950",
+    "band_engraving": "六爪经典镶嵌·戒臂微镶碎钻"
+  },
+  {
+    "brand_name": "星纪",
+    "brand_category": "珠宝饰品",
+    "sub_category": "设计师首饰",
+    "target_audience": "20-35岁追求个性的年轻女性",
+    "tone_style": [
+      "极简",
+      "几何",
+      "日常感"
+    ],
+    "aspect_ratio": "1:1",
+    "total_duration": 15.0,
+    "product_type": "叠戴系列项链",
+    "product_description": "18K金材质，几何极简设计，可自由组合叠戴，每条项链刻有独立编号与星座符号",
+    "key_message": "你的星座，你的风格",
+    "visual_setting": "阳光下的梳妆台，三层叠戴项链在锁骨间的微光，女孩翻阅星座书的侧影",
+    "visual_mood": "精致、自我、轻盈",
+    "brand_personality": [
+      "独立",
+      "精致",
+      "自我"
+    ],
+    "use_case": "日常穿搭点睛、闺蜜礼物、自用犒赏",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "18K金",
+      "玫瑰金",
+      "月光银"
+    ],
+    "gem_color": "月光石+蓝宝石",
+    "band_material": "18K金双色(金+白金)",
+    "band_engraving": "几何极简线条·可叠戴设计·星座符号刻印"
+  },
+  {
+    "_note": "===== 消费电子 =====",
+    "brand_name": "疾影",
+    "brand_category": "消费电子",
+    "sub_category": "运动相机",
+    "target_audience": "18-35岁内容创作者，户外运动爱好者",
+    "tone_style": [
+      "极限",
+      "科技感",
+      "潮流"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 30.0,
+    "product_type": "全景运动相机",
+    "product_description": "5.7K全景视频，FlowState防抖3.0，防水10米，语音控制，AI自动剪辑精彩片段",
+    "key_message": "极限瞬间，全景收录",
+    "visual_setting": "冲浪板下的水下视角，雪山单板第一视角，跳伞时360度翻转的天空",
+    "visual_mood": "刺激、速度、自由",
+    "brand_personality": [
+      "冒险",
+      "极致",
+      "玩家"
+    ],
+    "use_case": "极限运动拍摄、Vlog创作、户外直播",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "黑色",
+      "橙色",
+      "蓝色"
+    ]
+  },
+  {
+    "brand_name": "声海拾贝",
+    "brand_category": "消费电子",
+    "sub_category": "耳机音响",
+    "target_audience": "20-35岁音乐爱好者，通勤族",
+    "tone_style": [
+      "发烧",
+      "美学",
+      "沉浸"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "圈铁混合降噪耳机",
+    "product_description": "楼氏动铁+10mm动圈，自适应降噪，LDAC高清传输，半透明工业设计展示内部结构",
+    "key_message": "听见声音的形状",
+    "visual_setting": "深夜录音棚的调音台，窗外下雨城市雨滴的声波可视化，戴上耳机与世界隔绝的瞬间",
+    "visual_mood": "沉浸、精密、审美",
+    "brand_personality": [
+      "发烧友",
+      "审美控",
+      "技术流"
+    ],
+    "use_case": "通勤听歌、音乐制作监听、游戏影音",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "哑光黑",
+      "透明",
+      "深蓝"
+    ]
+  },
+  {
+    "brand_name": "掌心视界",
+    "brand_category": "消费电子",
+    "sub_category": "折叠屏手机",
+    "target_audience": "25-45岁商务人士，科技尝鲜者",
+    "tone_style": [
+      "科技",
+      "商务",
+      "未来感"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 45.0,
+    "product_type": "竖折折叠屏手机",
+    "product_description": "折叠后掌心大小，打开6.8寸内屏，铰链30万次折叠寿命，外屏快捷回复，AI摄影",
+    "key_message": "小到掌心里，大到世界观",
+    "visual_setting": "现代极简办公桌面，手机折叠展开的机械美学特写，商务人士从容切换工作与生活",
+    "visual_mood": "前沿、从容、精致",
+    "brand_personality": [
+      "先锋",
+      "从容",
+      "精英"
+    ],
+    "use_case": "商务办公、日常通讯、移动影像创作",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "曜石黑",
+      "冰晶白",
+      "香槟金"
+    ]
+  },
+  {
+    "_note": "===== 家用电器 =====",
+    "brand_name": "净界",
+    "brand_category": "家用电器",
+    "sub_category": "空气净化",
+    "target_audience": "28-45岁有儿童或宠物的家庭，鼻炎过敏人群",
+    "tone_style": [
+      "极简",
+      "科技",
+      "安心"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 30.0,
+    "product_type": "智能空气净化器",
+    "product_description": "HEPA13+活性炭双滤芯，CADR值800m³/h，激光PM2.5传感器，APP远程控制，睡眠模式18dB",
+    "key_message": "推开门，换一种呼吸",
+    "visual_setting": "现代客厅中白色净化器安静运行，空气传感数值可视化漂浮在空间，婴儿在洁净空气中安睡",
+    "visual_mood": "纯净、科技感、安心",
+    "brand_personality": [
+      "洁净",
+      "克制",
+      "守护"
+    ],
+    "use_case": "雾霾天室内净化、新房除甲醛、宠物家庭除毛屑",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "纯白",
+      "浅灰",
+      "静谧蓝"
+    ]
+  },
+  {
+    "brand_name": "厨小白",
+    "brand_category": "家用电器",
+    "sub_category": "智能厨电",
+    "target_audience": "22-35岁爱做饭但怕麻烦的年轻人",
+    "tone_style": [
+      "可爱",
+      "智能",
+      "治愈"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "智能料理机",
+    "product_description": "内置200+菜谱，自动称重+翻炒+控温，语音引导烹饪步骤，做完自动清洗，小白也能做大餐",
+    "key_message": "妈妈的味道，一键复刻",
+    "visual_setting": "明亮温馨的小厨房，料理机自动翻炒的食材慢镜，年轻人惊讶又满足的表情",
+    "visual_mood": "温暖、可爱、成就感",
+    "brand_personality": [
+      "可爱",
+      "治愈",
+      "鬼马"
+    ],
+    "use_case": "独居做饭、情侣下厨、周末大餐",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "奶油白",
+      "珊瑚橘",
+      "薄荷绿"
+    ]
+  },
+  {
+    "_note": "===== 家居家装 =====",
+    "brand_name": "眠屿",
+    "brand_category": "家居家装",
+    "sub_category": "智能床垫",
+    "target_audience": "25-45岁注重睡眠质量的人群，颈椎腰椎亚健康人群",
+    "tone_style": [
+      "科技",
+      "温暖",
+      "极简"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "AI自适应智能床垫",
+    "product_description": "分区气囊调节软硬度，AI算法识别睡姿自动适配，睡眠报告分析，双人分区互不干扰",
+    "key_message": "在眠屿，遇见深睡",
+    "visual_setting": "深夜卧室洒满月光，床垫根据睡姿自动调节的科技细节，清晨醒来精神焕发的面孔",
+    "visual_mood": "宁静、科技温度、治愈",
+    "brand_personality": [
+      "温柔",
+      "科技",
+      "专业"
+    ],
+    "use_case": "深度睡眠改善、颈椎腰椎护理、双人床睡眠分区",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "深蓝",
+      "月白",
+      "暖灰"
+    ]
+  },
+  {
+    "brand_name": "初见家居",
+    "brand_category": "家居家装",
+    "sub_category": "设计师家具",
+    "target_audience": "28-40岁改善型住房家庭，追求设计感的消费者",
+    "tone_style": [
+      "北欧",
+      "温暖",
+      "实木"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 45.0,
+    "product_type": "实木伸缩餐桌",
+    "product_description": "北美黑胡桃木整板，丹麦设计风格，伸缩结构从1.4m到2.2m，搭配四把温莎椅",
+    "key_message": "一张好桌子，装得下一家人的时光",
+    "visual_setting": "阳光透过百叶窗洒在原木餐桌上，一家三口围坐吃早餐，节日聚餐桌子伸展的仪式感",
+    "visual_mood": "温暖、自然、陪伴",
+    "brand_personality": [
+      "温暖",
+      "匠人",
+      "家庭"
+    ],
+    "use_case": "家庭用餐、朋友聚餐、居家办公",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "黑胡桃色",
+      "橡木白",
+      "蜂蜜色"
+    ]
+  },
+  {
+    "brand_name": "浮光",
+    "brand_category": "家居家装",
+    "sub_category": "智能照明",
+    "target_audience": "25-40岁追求家居氛围感的消费者",
+    "tone_style": [
+      "氛围",
+      "科技",
+      "艺术"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "全屋智能灯光系统",
+    "product_description": "1600万色可调，日出日落自动色温，影音/阅读/睡眠多场景模式，语音+APP双控",
+    "key_message": "灯光会说话",
+    "visual_setting": "同一空间不同灯光模式下的氛围对比，深夜暖光阅读角，派对时的流光溢彩",
+    "visual_mood": "氛围感、情感化、未来感",
+    "brand_personality": [
+      "艺术",
+      "氛围感",
+      "懂生活"
+    ],
+    "use_case": "居家观影模式、阅读灯效、派对氛围、助眠夜灯",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "暖光橙",
+      "冷光蓝",
+      "灯带彩"
+    ]
+  },
+  {
+    "_note": "===== 厨具餐厨 =====",
+    "brand_name": "烟火集",
+    "brand_category": "厨具餐厨",
+    "sub_category": "锅具套装",
+    "target_audience": "25-40岁热爱烹饪的家庭用户",
+    "tone_style": [
+      "温暖",
+      "匠人",
+      "质感"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "珐琅铸铁锅",
+    "product_description": "法国工艺珐琅铸铁，微孔锁水自循环锅盖，一锅搞定煎炒炖煮烤，传家品质",
+    "key_message": "好好做顿饭，就是家",
+    "visual_setting": "黄昏时分厨房里的暖光，珐琅锅咕嘟咕嘟炖着汤，蒸汽模糊了窗户",
+    "visual_mood": "温暖、烟火气、治愈",
+    "brand_personality": [
+      "温暖",
+      "匠人",
+      "烟火气"
+    ],
+    "use_case": "炖汤煲粥、红烧慢煮、烤箱烘焙",
+    "seasons": [
+      "秋",
+      "冬"
+    ],
+    "color_palette": [
+      "樱桃红",
+      "马赛蓝",
+      "奶油黄"
+    ]
+  },
+  {
+    "brand_name": "器兮",
+    "brand_category": "厨具餐厨",
+    "sub_category": "陶瓷餐具",
+    "target_audience": "22-35岁追求用餐仪式感的年轻人",
+    "tone_style": [
+      "东方",
+      "手作",
+      "侘寂"
+    ],
+    "aspect_ratio": "1:1",
+    "total_duration": 15.0,
+    "product_type": "手工陶瓷餐具套装",
+    "product_description": "景德镇手工拉坯，天然矿物釉料，每件独一无二的窑变纹理，包含饭碗/汤碗/盘/杯四件套",
+    "key_message": "器物有灵，食之有器",
+    "visual_setting": "陶艺工作室的拉坯机转动，阳光透过窗格落在排列整齐的餐具上，一人食的精致摆盘",
+    "visual_mood": "手作温度、东方禅意、朴素美",
+    "brand_personality": [
+      "东方",
+      "手作",
+      "侘寂"
+    ],
+    "use_case": "一人食摆盘、朋友小聚、餐桌美学",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "天青",
+      "素白",
+      "窑变灰"
+    ]
+  },
+  {
+    "_note": "===== 母婴用品 =====",
+    "brand_name": "蓓护",
+    "brand_category": "母婴用品",
+    "sub_category": "婴儿洗护",
+    "target_audience": "0-3岁新生儿父母，注重成分安全的家庭",
+    "tone_style": [
+      "温柔",
+      "安全",
+      "专业"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "婴儿洗发沐浴二合一",
+    "product_description": "氨基酸配方无泪不刺激，天然金盏花提取物，无香精无激素，新生儿可用",
+    "key_message": "宝宝的第一次，我们很认真",
+    "visual_setting": "温暖浴室中父母给婴儿洗澡的温柔画面，浴盆中泡泡的微距特写，宝宝满足的笑脸",
+    "visual_mood": "柔软、守护、初生",
+    "brand_personality": [
+      "温柔",
+      "专业",
+      "守护"
+    ],
+    "use_case": "新生儿日常洗护、敏感肌肤宝宝护理",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "奶白",
+      "淡蓝",
+      "浅粉"
+    ]
+  },
+  {
+    "brand_name": "萌步",
+    "brand_category": "母婴用品",
+    "sub_category": "婴儿推车",
+    "target_audience": "0-4岁幼儿父母，注重出行便利的家庭",
+    "tone_style": [
+      "轻便",
+      "安全",
+      "时尚"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "轻便折叠婴儿推车",
+    "product_description": "碳纤维车架仅4.9kg，单手一秒折叠可登机，四轮独立避震，UPF50+全罩遮阳篷",
+    "key_message": "带着宝宝，去看更大的世界",
+    "visual_setting": "都市公园里单手推车的妈妈，折叠推车登机的一气呵成，宝宝在推车里好奇看世界的眼睛",
+    "visual_mood": "轻盈、自由、亲子时光",
+    "brand_personality": [
+      "轻巧",
+      "时尚",
+      "陪伴"
+    ],
+    "use_case": "日常遛娃、旅行出行、公共交通",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "雾蓝",
+      "灰粉",
+      "炭黑"
+    ]
+  },
+  {
+    "_note": "===== 宠物用品 =====",
+    "brand_name": "宠爱有家",
+    "brand_category": "宠物用品",
+    "sub_category": "智能宠物设备",
+    "target_audience": "20-35岁养宠年轻人，上班族猫狗主人",
+    "tone_style": [
+      "温馨",
+      "可爱",
+      "科技"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "智能宠物喂食器",
+    "product_description": "APP远程控制，定时定量出粮，1080P摄像头实时查看，双向语音通话，缺粮提醒",
+    "key_message": "即使不在家，关爱不掉线",
+    "visual_setting": "温馨的现代家居，猫咪好奇靠近自动出粮的喂食器，主人办公室用手机远程逗猫",
+    "visual_mood": "温暖、欢乐、治愈",
+    "brand_personality": [
+      "温暖",
+      "幽默",
+      "贴心"
+    ],
+    "use_case": "上班族远程照看宠物，出差期间宠物喂食",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "米色",
+      "薄荷绿",
+      "浅粉"
+    ]
+  },
+  {
+    "brand_name": "尾巴生活",
+    "brand_category": "宠物用品",
+    "sub_category": "宠物食品",
+    "target_audience": "25-40岁注重宠物健康的中高端养宠人群",
+    "tone_style": [
+      "天然",
+      "科学",
+      "活力"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "冻干生骨肉猫粮",
+    "product_description": "90%动物性原料，鲜肉+冻干双重口感，益生菌添加呵护肠胃，无谷无诱食剂",
+    "key_message": "更接近天性，才是更好的爱",
+    "visual_setting": "阳光午后猫咪扑食的慢镜头，冻干颗粒的高清特写，猫咪满足舔爪的惬意画面",
+    "visual_mood": "自然、活力、科学养护",
+    "brand_personality": [
+      "科学",
+      "自然派",
+      "认真"
+    ],
+    "use_case": "猫咪日常主粮、挑食猫诱食、幼猫成长期",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "森林绿",
+      "奶白",
+      "果实红"
+    ]
+  },
+  {
+    "_note": "===== 汽车出行 =====",
+    "brand_name": "驭川",
+    "brand_category": "汽车出行",
+    "sub_category": "新能源SUV",
+    "target_audience": "30-50岁家庭用户，中产阶层，二胎家庭",
+    "tone_style": [
+      "大气",
+      "科技",
+      "家庭"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 60.0,
+    "product_type": "六座新能源SUV",
+    "product_description": "纯电续航800km+，六座独立座椅布局，智能驾驶辅助NOA，全景天幕，对外放电3.3kW",
+    "key_message": "驭行山川，家就是方向",
+    "visual_setting": "沿海公路的壮阔落日，周末一家人带着帐篷出发的温馨画面，城市高架的智驾辅助特写",
+    "visual_mood": "自由、从容、家庭",
+    "brand_personality": [
+      "沉稳",
+      "可靠",
+      "探索者"
+    ],
+    "use_case": "家庭出游、跨城通勤、露营自驾",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "深灰",
+      "极光银",
+      "森林绿"
+    ]
+  },
+  {
+    "brand_name": "途稳",
+    "brand_category": "汽车出行",
+    "sub_category": "车载配件",
+    "target_audience": "25-45岁有车一族，注重行车安全的驾驶者",
+    "tone_style": [
+      "可靠",
+      "科技",
+      "硬朗"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 15.0,
+    "product_type": "4K行车记录仪",
+    "product_description": "索尼IMX678传感器，4K超清夜视，前后双录，停车监控缩时摄影，GPS轨迹记录",
+    "key_message": "看得清，才安心",
+    "visual_setting": "雨夜城市道路的记录仪视角，停车场被刮蹭时自动启动的监控画面，家庭自驾沿途美景",
+    "visual_mood": "安全、清晰、守护",
+    "brand_personality": [
+      "可靠",
+      "专业",
+      "硬核"
+    ],
+    "use_case": "行车安全记录、停车监控、自驾沿途记录",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "黑色",
+      "红色",
+      "银色"
+    ]
+  },
+  {
+    "_note": "===== 健康医疗 =====",
+    "brand_name": "乐龄科技",
+    "brand_category": "健康医疗",
+    "sub_category": "健康监测",
+    "target_audience": "50岁以上中老年，以及关注父母健康的子女",
+    "tone_style": [
+      "温暖",
+      "科技",
+      "关爱"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 30.0,
+    "product_type": "智能健康手表",
+    "product_description": "24小时心率/血压/血氧监测，跌倒检测自动SOS，GPS精准定位，电子围栏，子女APP远程查看",
+    "key_message": "让关爱一直都在",
+    "visual_setting": "公园里打太极的老人手腕上的手表特写，子女手机上查看父母健康数据，摔倒报警自动呼叫的紧急画面",
+    "visual_mood": "温暖、安心、科技温度",
+    "brand_personality": [
+      "关爱",
+      "可靠",
+      "温暖"
+    ],
+    "use_case": "老人健康监护、慢性病管理、紧急救助",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "暖灰",
+      "深蓝",
+      "红色"
+    ]
+  },
+  {
+    "brand_name": "原研本草",
+    "brand_category": "健康医疗",
+    "sub_category": "保健品",
+    "target_audience": "25-45岁亚健康人群，熬夜加班族",
+    "tone_style": [
+      "东方",
+      "科学",
+      "温和"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "灵芝孢子粉胶囊",
+    "product_description": "长白山有机种植，超低温破壁技术吸收率99%，无添加纯粉灌装，蓝帽认证",
+    "key_message": "千年本草，科学为证",
+    "visual_setting": "长白山原始森林的灵芝采摘特写，实验室无菌罐装线，深夜加班桌前的一杯灵芝温水",
+    "visual_mood": "温润、科学、东方智慧",
+    "brand_personality": [
+      "东方",
+      "科学",
+      "温润"
+    ],
+    "use_case": "熬夜后补元气、免疫力提升、术后恢复",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "朱砂红",
+      "古铜金",
+      "素白"
+    ]
+  },
+  {
+    "_note": "===== 教育学习 =====",
+    "brand_name": "启蒙时光",
+    "brand_category": "教育学习",
+    "sub_category": "儿童早教",
+    "target_audience": "2-8岁儿童的父母，关注早期教育的家庭",
+    "tone_style": [
+      "温暖",
+      "童趣",
+      "科学"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 30.0,
+    "product_type": "AI启蒙学习平板",
+    "product_description": "护眼类纸屏，AI语音互动对话，分级阅读1000+绘本，数学思维游戏，家长时长管控",
+    "key_message": "兴趣，是最好的启蒙老师",
+    "visual_setting": "洒满阳光的儿童房，孩子好奇地对着平板提问AI的可爱画面，亲子共读的温暖时光",
+    "visual_mood": "温暖、好奇、成长",
+    "brand_personality": [
+      "耐心",
+      "专业",
+      "有爱"
+    ],
+    "use_case": "幼儿语言启蒙、数学思维入门、亲子共读",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "暖黄",
+      "天蓝",
+      "草绿"
+    ]
+  },
+  {
+    "brand_name": "知北游",
+    "brand_category": "教育学习",
+    "sub_category": "成人终身学习",
+    "target_audience": "25-45岁职场进阶人群，转行学习者",
+    "tone_style": [
+      "理性",
+      "质感",
+      "陪伴"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 30.0,
+    "product_type": "知识付费学习平台",
+    "product_description": "500+行业导师真实项目驱动教学，AI学习路径规划，社区共学打卡，学完即能上手实战",
+    "key_message": "每一段学习，都是出发",
+    "visual_setting": "深夜书桌前专注学习的中年人，通勤地铁上用APP刷课的年轻人，学员成功转行后的新工位",
+    "visual_mood": "沉静、坚定、成长感",
+    "brand_personality": [
+      "理性",
+      "陪伴",
+      "务实"
+    ],
+    "use_case": "职场技能提升、行业转行学习、终身学习",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "深海蓝",
+      "暖橙",
+      "素白"
+    ]
+  },
+  {
+    "_note": "===== 旅游出行 =====",
+    "brand_name": "绿动旅行",
+    "brand_category": "旅游出行",
+    "sub_category": "户外旅行平台",
+    "target_audience": "22-38岁自由行爱好者，户外探险玩家",
+    "tone_style": [
+      "自然",
+      "探险",
+      "治愈"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 45.0,
+    "product_type": "户外旅行规划APP",
+    "product_description": "冷门目的地攻略，专业装备在线租赁，本地向导对接，卫星离线地图，一键SOS",
+    "key_message": "世界那么大，用你的方式去探索",
+    "visual_setting": "高山草甸的帐篷日出，沙漠中徒步队伍的航拍剪影，手机APP上点亮的一百个目的地",
+    "visual_mood": "壮阔、自由、探索",
+    "brand_personality": [
+      "自由",
+      "探索者",
+      "专业"
+    ],
+    "use_case": "户外徒步规划、结伴出行、装备租赁",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "大地色",
+      "森林绿",
+      "天空蓝"
+    ]
+  },
+  {
+    "brand_name": "栖云",
+    "brand_category": "旅游出行",
+    "sub_category": "精品民宿",
+    "target_audience": "25-40岁追求旅行体验的中高收入人群",
+    "tone_style": [
+      "隐奢",
+      "自然",
+      "在地文化"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 45.0,
+    "product_type": "野奢度假民宿",
+    "product_description": "选址海拔1200米云海之上，独立树屋/悬崖房型，在地食材私厨定制，星空泡池",
+    "key_message": "把时间，交付给山野",
+    "visual_setting": "云海之上树屋的第一视角，悬崖边泡池中的红酒与落日，在地村民采摘食材的质朴画面",
+    "visual_mood": "隐逸、放松、自然治愈",
+    "brand_personality": [
+      "隐逸",
+      "质感",
+      "在地"
+    ],
+    "use_case": "周末度假、蜜月旅行、自然疗愈之旅",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "云雾白",
+      "原木色",
+      "苔藓绿"
+    ]
+  },
+  {
+    "_note": "===== 游戏电竞 =====",
+    "brand_name": "极速反应",
+    "brand_category": "游戏电竞",
+    "sub_category": "游戏外设",
+    "target_audience": "16-30岁PC游戏玩家，FPS/MOBA竞技玩家",
+    "tone_style": [
+      "速度",
+      "竞技",
+      "赛博"
+    ],
+    "aspect_ratio": "9:16",
+    "total_duration": 15.0,
+    "product_type": "轻量化电竞鼠标",
+    "product_description": "仅49g超轻蜂窝外壳，PAW3395旗舰传感器，无线8K回报率，80小时续航",
+    "key_message": "快0.01秒，就是另一个世界",
+    "visual_setting": "暗光电竞房的RGB灯效，鼠标高速滑动时传感器的发光特写，游戏中的爆头瞬间",
+    "visual_mood": "速度、专注、赛博",
+    "brand_personality": [
+      "极客",
+      "竞技",
+      "速度"
+    ],
+    "use_case": "FPS游戏竞技、MOBA微操、电竞比赛",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "哑光黑",
+      "荧光青",
+      "RGB幻彩"
+    ]
+  },
+  {
+    "brand_name": "幻境科技",
+    "brand_category": "游戏电竞",
+    "sub_category": "虚拟现实",
+    "target_audience": "20-35岁科技尝鲜者，VR游戏玩家",
+    "tone_style": [
+      "未来感",
+      "沉浸",
+      "科幻"
+    ],
+    "aspect_ratio": "16:9",
+    "total_duration": 45.0,
+    "product_type": "一体式VR头显",
+    "product_description": "4K Micro-OLED，Pancake光学，手势+眼球追踪，骁龙XR3芯片，无线串流PC，200+大作",
+    "key_message": "准备好，进入另一个世界",
+    "visual_setting": "戴上VR头显后现实与虚拟世界的无缝切换，虚拟空间中伸手触碰星辰，玩家在客厅手舞足蹈的欢乐",
+    "visual_mood": "科幻、惊奇、沉浸",
+    "brand_personality": [
+      "先锋",
+      "科幻",
+      "玩家"
+    ],
+    "use_case": "VR游戏、虚拟社交、沉浸式观影",
+    "seasons": [
+      "全年"
+    ],
+    "color_palette": [
+      "星云紫",
+      "太空灰",
+      "极光蓝"
+    ]
+  }
+]
