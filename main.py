@@ -6,6 +6,9 @@
   1. 多模态 LLM 提取产品特征 (category / sub_category / dense_caption)
   2. 按 category 匹配分镜模版
   3. 组装分镜提示词 → 打印 + 写文件 (供人工上传小云雀)
+
+默认输出到 data/ 目录，文件名与输入图片同名 (换扩展名)：
+  product.jpg → data/product.txt + data/product.features.json
 """
 
 from __future__ import annotations
@@ -15,6 +18,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 from core.extract_features import extract_features
 from core.llm_client import LLMError
@@ -34,12 +38,26 @@ def _load_env() -> None:
         os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 
 
+def _derive_output_path(image: str, override: str | None) -> Path:
+    """根据输入图片名推导输出路径；override 非空时直接用。"""
+    if override:
+        return Path(override)
+    if image.startswith("http://") or image.startswith("https://"):
+        name = Path(urlparse(image).path).name
+    else:
+        name = Path(image).name
+    stem = Path(name).stem or "output"
+    return Path("data") / f"{stem}.txt"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="产品图 → 分镜提示词 (供小云雀人工测试)"
     )
     parser.add_argument("image", nargs="?", help="产品样例图本地路径或 URL")
-    parser.add_argument("-o", "--output", default=None, help="分镜提示词输出文件路径")
+    parser.add_argument(
+        "-o", "--output", default=None, help="输出文件路径覆盖 (默认 data/<图片名>.txt)"
+    )
     parser.add_argument(
         "--list-categories", action="store_true", help="列出可用类目体系后退出"
     )
@@ -85,14 +103,16 @@ def main(argv: list[str] | None = None) -> int:
     print(prompt)
     print("=" * 60)
 
-    if args.output:
-        Path(args.output).write_text(prompt, encoding="utf-8")
-        print(f"\n已写入: {args.output}")
-        feat_path = Path(args.output).with_suffix(".features.json")
-        feat_path.write_text(
-            json.dumps(features, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-        print(f"特征已写入: {feat_path}")
+    output_path = _derive_output_path(args.image, args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(prompt, encoding="utf-8")
+    print(f"\n分镜提示词已写入: {output_path}")
+
+    feat_path = output_path.with_suffix(".features.json")
+    feat_path.write_text(
+        json.dumps(features, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    print(f"产品特征已写入: {feat_path}")
 
     return 0
 

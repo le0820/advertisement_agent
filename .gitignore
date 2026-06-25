@@ -6,6 +6,7 @@ __pycache__/
 *.sqlite-shm
 *.sqlite-wal
 logs/
+data/
 *.egg-info/
 dist/
 build/

@@ -19,22 +19,25 @@
 ## 使用
 
 ```bash
-# 本地图片
-python main.py product.jpg -o prompt.txt
+# 本地图片 (输出 data/product.txt + data/product.features.json)
+python main.py product.jpg
 
-# 图片 URL
-python main.py https://example.com/product.jpg -o prompt.txt
+# 图片 URL (输出 data/<url文件名>.txt)
+python main.py https://example.com/product.jpg
+
+# 指定输出路径覆盖
+python main.py product.jpg -o custom.txt
 
 # 查看可用类目
 python main.py --list-categories
 
 # 指定模型
-python main.py product.jpg --model doubao-seed-2-0-lite-260428 -o prompt.txt
+python main.py product.jpg --model doubao-seed-2-0-lite-260428
 ```
 
-输出：
-- `prompt.txt`：分镜提示词（上传小云雀）
-- `prompt.features.json`：提取的产品特征（category / sub_category / dense_caption）
+默认输出到 `data/`，文件名与输入图片同名（换扩展名），方便对照：
+- `data/<图片名>.txt`：分镜提示词（上传小云雀）
+- `data/<图片名>.features.json`：提取的产品特征（category / sub_category / dense_caption）
 
 ## 结构
 
