@@ -72,6 +72,11 @@ def extract_features(
     prompt = _build_prompt()
     text = chat_with_image(image, prompt, model=model, api_key=api_key)
     features = _parse_json(text)
-    for key in ("category", "sub_category", "dense_caption"):
+    for key in ("category", "sub_category", "product_name", "target_audience", "dense_caption"):
         features.setdefault(key, "")
+    features.setdefault("selling_points", [])
+    if not isinstance(features.get("selling_points"), list):
+        features["selling_points"] = [str(features["selling_points"])]
+    # 传播场景写死（小云雀营销 skill 要求字段，后续按平台扩展）
+    features["distribution_scenarios"] = ["douyin", "tiktok", "youtube"]
     return features

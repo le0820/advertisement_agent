@@ -3,9 +3,10 @@
 流程:
   python main.py <产品图路径|URL> [-o 输出文件]
 
-  1. 多模态 LLM 提取产品特征 (category / sub_category / dense_caption)
+  1. 多模态 LLM 提取产品特征 (Doubao: category/商品名称/卖点/目标人群/dense_caption)
   2. 按 category 匹配分镜模版
-  3. 组装分镜提示词 → 打印 + 写文件 (供人工上传小云雀)
+  3. DeepSeek 结合 caption + 模版生成可直接粘贴的完整分镜提示词
+  4. 写出 .txt (成品提示词) + .features.json (含传播场景等 4 字段)
 
 默认输出到 data/ 目录，文件名与输入图片同名 (换扩展名)：
   product.jpg → data/product.txt + data/product.features.json
@@ -20,9 +21,11 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
+from core.deepseek_client import DeepSeekError
 from core.extract_features import extract_features
+from core.generate_prompt import generate_final_prompt
 from core.llm_client import LLMError
-from core.storyboard import build_prompt, list_categories, match_template
+from core.storyboard import list_categories, match_template
 
 
 def _load_env() -> None:
@@ -61,7 +64,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--list-categories", action="store_true", help="列出可用类目体系后退出"
     )
-    parser.add_argument("--model", default=None, help="ARK 模型名覆盖")
+    parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖")
+    parser.add_argument("--deepseek-model", default=None, help="DeepSeek 模型名覆盖")
     args = parser.parse_args(argv)
 
     _load_env()
@@ -74,13 +78,16 @@ def main(argv: list[str] | None = None) -> int:
     if not args.image:
         parser.error("image is required (unless --list-categories)")
 
-    print(f"[1/3] 提取产品特征: {args.image}")
+    print(f"[1/3] 提取产品特征 (Doubao 多模态): {args.image}")
     try:
-        features = extract_features(args.image, model=args.model)
+        features = extract_features(args.image, model=args.ark_model)
     except LLMError as e:
         print(f"特征提取失败: {e}", file=sys.stderr)
         return 1
+    print(f"  → 商品名称={features.get('product_name')}")
     print(f"  → category={features.get('category')} sub_category={features.get('sub_category')}")
+    print(f"  → 目标人群={features.get('target_audience')}")
+    print(f"  → 卖点={features.get('selling_points')}")
     caption = features.get("dense_caption", "")
     print(f"  → dense_caption={caption[:80]}{'...' if len(caption) > 80 else ''}")
 
@@ -96,8 +103,14 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     print(f"  → {template.get('template_name')} ({template.get('template_id')})")
 
-    print("[3/3] 生成分镜提示词")
-    prompt = build_prompt(features.get("dense_caption", ""), template)
+    print("[3/3] 生成完整分镜提示词 (DeepSeek)")
+    try:
+        prompt = generate_final_prompt(
+            features, template, model=args.deepseek_model
+        )
+    except DeepSeekError as e:
+        print(f"提示词生成失败: {e}", file=sys.stderr)
+        return 1
 
     print("\n" + "=" * 60)
     print(prompt)
