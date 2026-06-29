@@ -1159,7 +1159,7 @@ class TestSelectShortlist(unittest.TestCase):
     def test_sorted_by_overall_desc(self):
         cands = [_cand("C001"), _cand("C002"), _cand("C003")]
         scores = [_score("C001", 70), _score("C002", 90), _score("C003", 80)]
-        sl = select_shortlist(cands, scores, top_k=3)
+        sl = select_shortlist(cands, scores, top_k=3, min_overall=0)
         self.assertEqual([s["candidate_id"] for s in sl], ["C002", "C003", "C001"])
 
     def test_min_overall_filter(self):
