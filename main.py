@@ -93,7 +93,7 @@ def _run_fast(args, features, stem: Path, ark_model, deepseek_model) -> int:
     return 0
 
 
-def _run_explore(args, features, stem: Path, ark_model, deepseek_model):
+def _run_explore(args, features, stem: Path, ark_model, deepseek_model, score_model):
     """explore: brief → candidates → scores → shortlist (+ 可选 storyboard)。
 
     Returns: (candidates, scores, shortlisted, sims_or_None)
@@ -111,8 +111,10 @@ def _run_explore(args, features, stem: Path, ark_model, deepseek_model):
     _write_json(stem.with_suffix(".candidates.json"), candidates)
     print(f"  → 生成 {len(candidates)} 个候选")
 
-    print("[4/6] 评分")
-    scores = score_creative_candidates(brief, candidates, model=deepseek_model)
+    print("[4/6] 评分" + (f" (ARK: {score_model})" if score_model else " (DeepSeek)"))
+    scores = score_creative_candidates(
+        brief, candidates, model=deepseek_model, score_model=score_model
+    )
     _write_json(stem.with_suffix(".scores.json"), scores)
 
     print("[5/6] shortlist")
@@ -136,10 +138,10 @@ def _run_explore(args, features, stem: Path, ark_model, deepseek_model):
     return candidates, scores, shortlisted, (sims if sims else None)
 
 
-def _run_decision(args, features, stem: Path, ark_model, deepseek_model) -> int:
+def _run_decision(args, features, stem: Path, ark_model, deepseek_model, score_model) -> int:
     """decision: explore → render_decision → output_package。"""
     candidates, scores, shortlisted, sims = _run_explore(
-        args, features, stem, ark_model, deepseek_model
+        args, features, stem, ark_model, deepseek_model, score_model
     )
     opts = _user_options(args)
     brief = build_creative_brief(features, opts)
@@ -213,8 +215,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--brand-name", default=None, help="品牌名 (留空不捏造)")
     parser.add_argument("--storyboard", action="store_true",
                         help="启用关键帧预演 (默认关闭省成本, P2 将增强)")
-    parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖")
+    parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖 (特征提取)")
     parser.add_argument("--deepseek-model", default=None, help="DeepSeek 模型名覆盖")
+    parser.add_argument("--score-model", default=None, help="ARK 裁判模型名 (打分, 如 doubao-seed-evolving); 不设置则用 DeepSeek")
     args = parser.parse_args(argv)
 
     _load_env()
@@ -241,9 +244,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.mode == "fast":
         return _run_fast(args, features, stem, args.ark_model, args.deepseek_model)
     if args.mode == "explore":
-        _run_explore(args, features, stem, args.ark_model, args.deepseek_model)
+        _run_explore(args, features, stem, args.ark_model, args.deepseek_model, args.score_model)
         return 0
-    return _run_decision(args, features, stem, args.ark_model, args.deepseek_model)
+    return _run_decision(args, features, stem, args.ark_model, args.deepseek_model, args.score_model)
 
 
 if __name__ == "__main__":

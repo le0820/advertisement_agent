@@ -70,5 +70,28 @@ class TestScoreCandidate(unittest.TestCase):
         self.assertEqual(result["scores"]["overall"], round(50 * 0.15))
 
 
+class TestScoreCandidateArk(unittest.TestCase):
+    """score_model 参数启用 ARK 裁判模型时的路径。"""
+
+    @patch("core.creative_scoring.chat_text",
+           return_value='{"scores": {"first_3_seconds_hook":88, "product_clarity":85, '
+                         '"brand_fit":75, "audience_relevance":80, "visual_memorability":90, '
+                         '"platform_fit":85, "seedance_feasibility":82, '
+                         '"generation_risk_control":78, "commercial_intent":80}, '
+                         '"strengths": ["微距钩子强"], "weaknesses": ["品牌弱"], '
+                         '"render_recommendation": "render"}')
+    def test_ark_model_scores_candidate(self, _mock):
+        result = score_creative_candidate(
+            {"product_name": "x", "platform": "douyin"},
+            {"candidate_id": "C007"},
+            score_model="doubao-seed-evolving",
+        )
+        self.assertEqual(result["candidate_id"], "C007")
+        self.assertEqual(result["scores"]["first_3_seconds_hook"], 88)
+        self.assertEqual(result["scores"]["overall"], compute_overall(result["scores"]))
+        self.assertEqual(result["render_recommendation"], "render")
+        self.assertEqual(result["strengths"], ["微距钩子强"])
+
+
 if __name__ == "__main__":
     unittest.main()

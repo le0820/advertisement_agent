@@ -10,7 +10,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .json_utils import chat_json_object
+from .json_utils import chat_json_object, parse_json_object
+from .llm_client import chat_text, LLMError
 
 _PROMPT_PATH = (
     Path(__file__).resolve().parent.parent / "prompts" / "score_creative_candidate.txt"
@@ -84,14 +85,20 @@ def score_creative_candidate(
     candidate: dict[str, Any],
     model: str | None = None,
     api_key: str | None = None,
+    *,
+    score_model: str | None = None,
+    score_api_key: str | None = None,
 ) -> dict[str, Any]:
     """对单个候选打分。
 
     Args:
         brief: creative_brief。
         candidate: creative_candidate。
-        model: DeepSeek 模型名覆盖。
+        model: DeepSeek 模型名覆盖 (score_model 未设置时生效)。
         api_key: DeepSeek API key 覆盖。
+        score_model: ARK 裁判模型名 (如 doubao-seed-evolving);
+            设置后使用 ARK 打分，否则使用 DeepSeek。
+        score_api_key: ARK API key 覆盖 (默认读 ARK_API_KEY)。
 
     Returns:
         creative_score dict (见 schemas/creative_score.schema.json)。
@@ -102,11 +109,15 @@ def score_creative_candidate(
         candidate_json=json.dumps(candidate, ensure_ascii=False, indent=2),
         platform=brief.get("platform", "douyin"),
     )
-    raw = chat_json_object(
-        [{"role": "user", "content": prompt}],
-        model=model,
-        api_key=api_key,
-    )
+    if score_model:
+        text = chat_text(prompt, model=score_model, api_key=score_api_key)
+        raw = parse_json_object(text)
+    else:
+        raw = chat_json_object(
+            [{"role": "user", "content": prompt}],
+            model=model,
+            api_key=api_key,
+        )
     return _normalize_score(raw, candidate_id)
 
 
@@ -115,9 +126,15 @@ def score_creative_candidates(
     candidates: list[dict[str, Any]],
     model: str | None = None,
     api_key: str | None = None,
+    *,
+    score_model: str | None = None,
+    score_api_key: str | None = None,
 ) -> list[dict[str, Any]]:
     """对多个候选依次打分。"""
     return [
-        score_creative_candidate(brief, c, model=model, api_key=api_key)
+        score_creative_candidate(
+            brief, c, model=model, api_key=api_key,
+            score_model=score_model, score_api_key=score_api_key,
+        )
         for c in candidates
     ]
