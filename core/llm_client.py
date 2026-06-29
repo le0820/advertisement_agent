@@ -19,7 +19,7 @@ from pathlib import Path
 ARK_API_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/responses"
 ARK_CHAT_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
 DEFAULT_MODEL = "doubao-seed-2-0-lite-260428"
-ARK_CHAT_DEFAULT_MODEL = "doubao-seed-evolving"
+ARK_CHAT_DEFAULT_MODEL = "doubao-seed-2-1-turbo-260628"
 
 
 class LLMError(RuntimeError):

@@ -10,6 +10,14 @@ from core.creative_scoring import (
     score_creative_candidates,
 )
 
+_FAKE_SCORE_JSON = (
+    '{"candidate_id": "C001", '
+    '"scores": {"first_3_seconds_hook":90, "product_clarity":80, "brand_fit":70, '
+    '"audience_relevance":75, "visual_memorability":85, "platform_fit":80, '
+    '"seedance_feasibility":60, "generation_risk_control":70, "commercial_intent":75}, '
+    '"strengths": ["强hook"], "weaknesses": ["手部风险"], '
+    '"revision_suggestions": ["简化手部"], "render_recommendation": "shortlist"}'
+)
 
 _FAKE_SCORE = {
     "candidate_id": "C001",
@@ -38,9 +46,9 @@ class TestComputeOverall(unittest.TestCase):
 
 
 class TestScoreCandidate(unittest.TestCase):
-    @patch("core.creative_scoring.chat_json_object", return_value=dict(_FAKE_SCORE))
+    @patch("core.creative_scoring.chat_text", return_value=_FAKE_SCORE_JSON)
     def test_score_fills_overall(self, _mock):
-        brief = {"product_name": "x"}
+        brief = {"product_name": "x", "platform": "douyin"}
         cand = {"candidate_id": "C001", "creative_route": "品牌大片"}
         result = score_creative_candidate(brief, cand)
         self.assertEqual(result["candidate_id"], "C001")
@@ -48,30 +56,26 @@ class TestScoreCandidate(unittest.TestCase):
         self.assertEqual(result["scores"]["overall"], compute_overall(_FAKE_SCORE["scores"]))
         self.assertEqual(result["render_recommendation"], "shortlist")
 
-    @patch("core.creative_scoring.chat_json_object", return_value=dict(_FAKE_SCORE))
+    @patch("core.creative_scoring.chat_text", return_value=_FAKE_SCORE_JSON)
     def test_score_candidates_returns_list(self, _mock):
-        brief = {"product_name": "x"}
+        brief = {"product_name": "x", "platform": "douyin"}
         cands = [{"candidate_id": "C001"}, {"candidate_id": "C002"}]
         results = score_creative_candidates(brief, cands)
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["candidate_id"], "C001")
 
-    @patch(
-        "core.creative_scoring.chat_json_object",
-        return_value={"candidate_id": "C001", "scores": {"first_3_seconds_hook": 50},
-                      "render_recommendation": "reject"},
-    )
+    @patch("core.creative_scoring.chat_text",
+           return_value='{"candidate_id": "C001", "scores": {"first_3_seconds_hook": 50}, '
+                         '"render_recommendation": "reject"}')
     def test_missing_score_dims_default_zero(self, _mock):
-        result = score_creative_candidate({"x": 1}, {"candidate_id": "C001"})
+        result = score_creative_candidate(
+            {"platform": "douyin"}, {"candidate_id": "C001"}
+        )
         for dim in SCORE_WEIGHTS:
             self.assertIn(dim, result["scores"])
         self.assertEqual(result["scores"]["first_3_seconds_hook"], 50)
         self.assertEqual(result["scores"]["product_clarity"], 0)
         self.assertEqual(result["scores"]["overall"], round(50 * 0.15))
-
-
-class TestScoreCandidateArk(unittest.TestCase):
-    """score_model 参数启用 ARK 裁判模型时的路径。"""
 
     @patch("core.creative_scoring.chat_text",
            return_value='{"scores": {"first_3_seconds_hook":88, "product_clarity":85, '
@@ -80,7 +84,8 @@ class TestScoreCandidateArk(unittest.TestCase):
                          '"generation_risk_control":78, "commercial_intent":80}, '
                          '"strengths": ["微距钩子强"], "weaknesses": ["品牌弱"], '
                          '"render_recommendation": "render"}')
-    def test_ark_model_scores_candidate(self, _mock):
+    def test_score_model_override(self, _mock):
+        """--score-model 覆盖时使用指定模型。"""
         result = score_creative_candidate(
             {"product_name": "x", "platform": "douyin"},
             {"candidate_id": "C007"},

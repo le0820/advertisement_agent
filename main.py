@@ -111,7 +111,7 @@ def _run_explore(args, features, stem: Path, ark_model, deepseek_model, score_mo
     _write_json(stem.with_suffix(".candidates.json"), candidates)
     print(f"  → 生成 {len(candidates)} 个候选")
 
-    print("[4/6] 评分" + (f" (ARK: {score_model})" if score_model else " (DeepSeek)"))
+    print("[4/6] 评分" + (f" (ARK: {score_model})" if score_model else " (ARK)"))
     scores = score_creative_candidates(
         brief, candidates, model=deepseek_model, score_model=score_model
     )

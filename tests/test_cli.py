@@ -22,15 +22,14 @@ def _cand(cid):
             "seedance_prompt_risk": {"risk_level": "low", "risk_reasons": []}}
 
 
-def _score(cid, overall=88):
-    return {"candidate_id": cid,
-            "scores": {"first_3_seconds_hook": 90, "product_clarity": 85,
-                       "brand_fit": 80, "audience_relevance": 80,
-                       "visual_memorability": 85, "platform_fit": 80,
-                       "seedance_feasibility": 82, "generation_risk_control": 80,
-                       "commercial_intent": 80, "overall": overall},
-            "strengths": [], "weaknesses": [], "revision_suggestions": [],
-            "render_recommendation": "render"}
+_FAKE_SCORE_JSON = (
+    '{"candidate_id": "C001", '
+    '"scores": {"first_3_seconds_hook":90, "product_clarity":85, "brand_fit":80, '
+    '"audience_relevance":80, "visual_memorability":85, "platform_fit":80, '
+    '"seedance_feasibility":82, "generation_risk_control":80, "commercial_intent":80}, '
+    '"strengths": [], "weaknesses": [], "revision_suggestions": [], '
+    '"render_recommendation": "render"}'
+)
 
 
 class TestCliFastMode(unittest.TestCase):
@@ -53,7 +52,7 @@ class TestCliFastMode(unittest.TestCase):
 class TestCliDecisionMode(unittest.TestCase):
     @patch("core.output_package.chat", return_value="FINAL XIAOYUNQUE PROMPT")
     @patch("core.render_decision.chat_json_object")
-    @patch("core.creative_scoring.chat_json_object")
+    @patch("core.creative_scoring.chat_text", return_value=_FAKE_SCORE_JSON)
     @patch("core.creative_search.chat_json_array")
     @patch("main.match_template",
            return_value={"template_id": "t", "template_name": "n"})
@@ -61,7 +60,6 @@ class TestCliDecisionMode(unittest.TestCase):
     def test_decision_mode_writes_all_artifacts(self, _f, _t, mock_search, mock_score,
                                                 mock_decision, _chat):
         mock_search.return_value = [_cand("C001")]
-        mock_score.return_value = _score("C001")
         mock_decision.return_value = {
             "recommended_candidate_id": "C001", "should_render": True,
             "confidence": 85, "reason": "值得", "expected_failure_modes": ["手部"],
@@ -88,14 +86,13 @@ class TestCliDecisionMode(unittest.TestCase):
 
 
 class TestCliExploreMode(unittest.TestCase):
-    @patch("core.creative_scoring.chat_json_object")
+    @patch("core.creative_scoring.chat_text", return_value=_FAKE_SCORE_JSON)
     @patch("core.creative_search.chat_json_array")
     @patch("main.match_template",
            return_value={"template_id": "t", "template_name": "n"})
     @patch("main.extract_features", return_value=_features())
     def test_explore_mode_skips_final_prompt(self, _f, _t, mock_search, mock_score):
         mock_search.return_value = [_cand("C001")]
-        mock_score.return_value = _score("C001")
         with tempfile.TemporaryDirectory() as d:
             img = os.path.join(d, "ring.jpg")
             open(img, "w").close()
