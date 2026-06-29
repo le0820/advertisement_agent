@@ -11,7 +11,7 @@
  ─► Doubao 提取特征
  ─► 创意 brief (规则)
  ─► 创意搜索 (8 个差异化候选, DeepSeek)
- ─► 结构化评分 (9 维 + 加权 overall)
+ ─► 结构化评分 (9 维 + 加权 overall, ARK)
  ─► shortlist (规则筛选, 可拒绝低质量创意)
  ─► (可选) 关键帧预演 storyboard
  ─► render_decision (是否值得花一次视频积分)
@@ -40,8 +40,8 @@ python main.py product.jpg --mode decision \
 
 复制 `.env.example` 为 `.env`，填入两个 key：
 ```
-ARK_API_KEY=your-ark-key        # 火山方舟 Doubao 多模态 (特征提取)
-DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意/评分/决策/prompt)
+ARK_API_KEY=your-ark-key        # 火山方舟 Doubao (特征提取 + 评分裁判)
+DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意搜索/渲染决策/最终 prompt)
 ```
 
 ## 输出 (data/<图片名>.*)
@@ -59,6 +59,23 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意/评分/决策/prompt)
 | `.txt` | 可直接粘贴到小云雀的最终 prompt |
 | `.report.md` | 决策报告 (候选排序/淘汰原因/推荐理由/上传检查) |
 
+## 模型使用
+
+| 步骤 | 默认模型 | 类型 | 控制参数 |
+|------|---------|------|---------|
+| 特征提取 | `doubao-seed-2-0-lite-260428` | ARK 多模态 (image+text) | `--ark-model` |
+| 创意搜索 | `deepseek-v4-pro` | DeepSeek chat | `--deepseek-model` |
+| 评分 | `doubao-seed-2-1-turbo-260628` | ARK chat/completions | `--score-model` |
+| 渲染决策 | `deepseek-v4-pro` | DeepSeek chat | `--deepseek-model` |
+| 最终 prompt | `deepseek-v4-pro` | DeepSeek chat | `--deepseek-model` |
+
+评分默认走 ARK `doubao-seed-2-1-turbo-260628`（更快更稳）。可切换裁判模型：
+
+```bash
+# 用 doubao-seed-evolving 打分
+python main.py product.jpg --mode decision --score-model doubao-seed-evolving
+```
+
 ## 常用参数
 
 ```
@@ -72,6 +89,9 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意/评分/决策/prompt)
 --commercial-goal creative_ad    brand_film|creative_ad|direct_response|social_post
 --slogan "" --brand-name ""      品牌资产 (留空不捏造)
 --storyboard                     启用关键帧预演 (默认关闭省成本)
+--score-model MODEL              评分裁判模型 (覆盖默认 doubao-seed-2-1-turbo-260628)
+--deepseek-model MODEL           DeepSeek 模型覆盖 (创意搜索/决策/prompt)
+--ark-model MODEL                ARK 多模态模型覆盖 (特征提取)
 ```
 
 ## 评分维度与权重
@@ -99,15 +119,15 @@ shortlist 规则: overall 降序 → 低于 `--min-score` 淘汰 → `seedance_f
 ```
 main.py                      CLI 入口 (fast/explore/decision)
 core/
-  llm_client.py              ARK Doubao 多模态 client
+  llm_client.py              ARK Doubao client (多模态 + 文本 chat/completions)
   extract_features.py        图 → 特征 JSON
   storyboard.py              模版匹配 + scaffold
   deepseek_client.py         DeepSeek chat client
   generate_prompt.py         fast 模式最终 prompt
   json_utils.py              DeepSeek JSON 调用 + 容错解析
   brief.py                   特征 → 创意 brief (规则)
-  creative_search.py         brief → N 个候选 (LLM)
-  creative_scoring.py        候选 → 9 维评分 + overall
+  creative_search.py         brief → N 个候选 (DeepSeek)
+  creative_scoring.py        候选 → 9 维评分 + overall (ARK 默认, --score-model 覆盖)
   shortlist.py               评分 → shortlist (规则, P1 核心)
   storyboard_simulator.py    候选 → 关键帧 prompt (最小实现, opt-in)
   render_decision.py         shortlist → 是否花积分 (规则+LLM)
