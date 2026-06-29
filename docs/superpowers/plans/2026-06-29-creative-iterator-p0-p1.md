@@ -687,7 +687,7 @@ class TestGenerateCreativeCandidates(unittest.TestCase):
     def test_missing_fields_filled(self):
         from core.creative_search import _normalize_candidate
         c = _normalize_candidate({"creative_route": "X"}, 1)
-        self.assertEqual(c["candidate_id"], "C002")
+        self.assertEqual(c["candidate_id"], "C001")
         self.assertEqual(c["hook"], "")
         self.assertEqual(c["shot_plan"], [])
         self.assertEqual(c["seedance_prompt_risk"]["risk_level"], "medium")
@@ -737,7 +737,7 @@ Create `prompts/generate_creative_candidates.txt`:
   visual/camera/lighting/sound/copy_or_voiceover/product_visibility
   (purpose ∈ hook|product_reveal|proof|emotional_peak|brand_lock;
    product_visibility ∈ none|partial|clear|hero)
-- seedance_prompt_risk: {risk_level: low|medium|high, risk_reasons:[]}
+- seedance_prompt_risk: {{risk_level: low|medium|high, risk_reasons:[]}}
   重点排查: 复杂手部动作/多人交互/细小文字logo/真实人脸一致性/
   产品外观漂移/镜头过多/动作过复杂
 
