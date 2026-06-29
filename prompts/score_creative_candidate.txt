@@ -30,3 +30,23 @@
   真实人脸一致性/产品外观漂移/镜头过多/动作过复杂
 - 产品外观必须与 dense_caption 一致, 否则 product_clarity 扣分
 - 输出纯 JSON 对象, 不要 markdown, 不要解释
+
+【输出格式 —— 严格按此结构】
+{{
+  "scores": {{
+    "first_3_seconds_hook": 85,
+    "product_clarity": 80,
+    "brand_fit": 70,
+    "audience_relevance": 75,
+    "visual_memorability": 85,
+    "platform_fit": 80,
+    "seedance_feasibility": 75,
+    "generation_risk_control": 70,
+    "commercial_intent": 75
+  }},
+  "strengths": ["强视觉钩子", "产品露出早"],
+  "weaknesses": ["品牌信息弱", "结尾驱动力不足"],
+  "revision_suggestions": ["添加品牌落版", "加速中段节奏"],
+  "render_recommendation": "render"
+}}
+注意: 9 个评分维度必须放在 "scores": {{}} 对象内部, 不要放在最外层。

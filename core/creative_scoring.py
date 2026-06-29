@@ -46,6 +46,12 @@ def _normalize_score(raw: dict[str, Any], candidate_id: str) -> dict[str, Any]:
     raw_scores = raw.get("scores") or {}
     if not isinstance(raw_scores, dict):
         raw_scores = {}
+    # Fallback: if scores dict is empty, try top-level fields (LLM may flatten)
+    if not raw_scores:
+        for dim in _SCORE_DIMS:
+            val = raw.get(dim)
+            if val is not None and not isinstance(val, (list, dict)):
+                raw_scores[dim] = val
     scores: dict[str, Any] = {}
     for dim in _SCORE_DIMS:
         try:
