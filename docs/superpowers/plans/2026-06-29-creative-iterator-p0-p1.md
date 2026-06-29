@@ -2109,9 +2109,9 @@ def _score(cid, overall=88):
 
 
 class TestCliFastMode(unittest.TestCase):
-    @patch("core.generate_prompt.generate_final_prompt", return_value="FAST PROMPT")
-    @patch("core.storyboard.match_template", return_value={"template_id": "t", "template_name": "n"})
-    @patch("core.extract_features.extract_features", return_value=_features())
+    @patch("main.generate_final_prompt", return_value="FAST PROMPT")
+    @patch("main.match_template", return_value={"template_id": "t", "template_name": "n"})
+    @patch("main.extract_features", return_value=_features())
     def test_fast_mode_writes_txt_and_features(self, _f, _t, _p):
         with tempfile.TemporaryDirectory() as d:
             img = os.path.join(d, "ring.jpg")
@@ -2129,7 +2129,7 @@ class TestCliDecisionMode(unittest.TestCase):
     @patch("core.creative_scoring.chat_json_object")
     @patch("core.creative_search.chat_json_array")
     @patch("core.storyboard.match_template", return_value={"template_id": "t", "template_name": "n"})
-    @patch("core.extract_features.extract_features", return_value=_features())
+    @patch("main.extract_features", return_value=_features())
     def test_decision_mode_writes_all_artifacts(self, _f, _t, mock_search, mock_score,
                                                 mock_decision, _chat):
         mock_search.return_value = [_cand("C001")]
@@ -2161,7 +2161,7 @@ class TestCliExploreMode(unittest.TestCase):
     @patch("core.creative_scoring.chat_json_object")
     @patch("core.creative_search.chat_json_array")
     @patch("core.storyboard.match_template", return_value={"template_id": "t", "template_name": "n"})
-    @patch("core.extract_features.extract_features", return_value=_features())
+    @patch("main.extract_features", return_value=_features())
     def test_explore_mode_skips_final_prompt(self, _f, _t, mock_search, mock_score):
         mock_search.return_value = [_cand("C001")]
         mock_score.return_value = _score("C001")
@@ -2283,7 +2283,6 @@ def _run_fast(args, features, stem: Path, ark_model, deepseek_model) -> int:
     txt_path = stem.with_suffix(".txt")
     txt_path.parent.mkdir(parents=True, exist_ok=True)
     txt_path.write_text(prompt, encoding="utf-8")
-    _write_json(stem.with_suffix(".features.json"), features)
     print(f"\n分镜提示词已写入: {txt_path}")
     print(f"产品特征已写入: {stem.with_suffix('.features.json')}")
     return 0
@@ -2429,6 +2428,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  → 商品名称={features.get('product_name')} category={features.get('category')}")
 
     stem = _stem_path(args.image, args.output)
+    _write_json(stem.with_suffix(".features.json"), features)
 
     if args.mode == "fast":
         return _run_fast(args, features, stem, args.ark_model, args.deepseek_model)
