@@ -17,9 +17,9 @@ import urllib.request
 from pathlib import Path
 
 ARK_API_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/responses"
+ARK_CHAT_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
 DEFAULT_MODEL = "doubao-seed-2-0-lite-260428"
-# 文本裁判模型 (供 scoring 使用, 通过 --score-model 传入)
-# DEFAULT_MODEL = "doubao-seed-evolving"
+ARK_CHAT_DEFAULT_MODEL = "doubao-seed-evolving"
 
 
 class LLMError(RuntimeError):
@@ -62,9 +62,9 @@ def chat_text(
     *,
     model: str | None = None,
     api_key: str | None = None,
-        timeout: float = 180.0,
-    ) -> str:
-    """发送纯文本到 ARK 模型，返回模型文本输出。
+    timeout: float = 600.0,
+) -> str:
+    """发送纯文本到 ARK chat completions 端点，返回模型文本输出。
 
     Args:
         prompt: 文本指令。
@@ -77,19 +77,19 @@ def chat_text(
         raise LLMError("ARK_API_KEY not set; put it in .env or env var")
 
     payload = {
-        "model": model or DEFAULT_MODEL,
-        "input": [
+        "model": model or ARK_CHAT_DEFAULT_MODEL,
+        "messages": [
             {
                 "role": "user",
                 "content": [
-                    {"type": "input_text", "text": prompt},
+                    {"type": "text", "text": prompt},
                 ],
-            }
+            },
         ],
     }
 
     req = urllib.request.Request(
-        ARK_API_ENDPOINT,
+        ARK_CHAT_ENDPOINT,
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {key}",
@@ -103,7 +103,14 @@ def chat_text(
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", errors="replace")
         raise LLMError(f"ARK API HTTP {e.code}: {detail[:500]}") from e
-    return _extract_text(body)
+
+    try:
+        return body["choices"][0]["message"]["content"]
+    except (KeyError, IndexError, TypeError) as e:
+        raise LLMError(
+            "cannot parse ARK chat response: "
+            + json.dumps(body, ensure_ascii=False)[:500]
+        ) from e
 
 
 def chat_with_image(
