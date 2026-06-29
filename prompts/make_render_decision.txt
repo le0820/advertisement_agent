@@ -1,0 +1,27 @@
+你是视频积分预算决策者。从下面的 shortlist 中选 1 个最值得消耗一次小云雀/Seedance
+视频生成额度的候选。如果没有一个值得, 必须明确 should_render=false。
+
+【brief】
+{brief_json}
+
+【shortlist (含评分摘要)】
+{shortlist_json}
+
+【关键帧预演 (可选)】
+{storyboard_block}
+
+【输出字段】
+- recommended_candidate_id: 选中的 candidate_id (无则 null)
+- should_render: bool
+- confidence: 0-100
+- reason: 为什么这一版最值得花积分 (或为什么不值得)
+- expected_failure_modes: 这版可能失败的方式 (2-4 条)
+- pre_render_checklist: 上传小云雀前需人工确认的检查项 (3-6 条)
+- if_first_render_fails: {{likely_causes:[], recommended_fix:str, do_not_retry_if:[]}}
+  (do_not_retry_if = 出现这些情况就别重试, 直接换候选)
+
+【判断依据】
+- 优先 overall 高且 eligible_for_render=true 的候选
+- 必须考虑视频模型生成可行性, 不要推荐高风险候选浪费积分
+- 产品外观必须可依据 dense_caption 稳定复现
+- 输出纯 JSON 对象, 不要 markdown, 不要解释
