@@ -1,0 +1,24 @@
+{
+  "$comment": "创意 brief 文档契约 (P0 仅作文档，不做强校验)。",
+  "type": "object",
+  "required": ["product_name", "category", "dense_caption", "selling_points",
+               "target_audience", "commercial_goal", "platform", "aspect_ratio",
+               "duration_seconds", "constraints"],
+  "properties": {
+    "product_name": {"type": "string"},
+    "category": {"type": "string"},
+    "sub_category": {"type": "string"},
+    "dense_caption": {"type": "string"},
+    "selling_points": {"type": "array", "items": {"type": "string"}},
+    "target_audience": {"type": "string"},
+    "distribution_scenarios": {"type": "array", "items": {"type": "string"}},
+    "brand_name": {"type": "string"},
+    "brand_stage": {"enum": ["unknown", "awareness", "conversion", "retargeting"]},
+    "brand_assets": {"type": "object"},
+    "commercial_goal": {"enum": ["brand_film", "creative_ad", "direct_response", "social_post"]},
+    "platform": {"enum": ["douyin", "xiaohongshu", "video_account", "tiktok", "youtube"]},
+    "aspect_ratio": {"enum": ["9:16", "16:9", "1:1"]},
+    "duration_seconds": {"type": "integer"},
+    "constraints": {"type": "object"}
+  }
+}
