@@ -2316,7 +2316,7 @@ def _run_explore(args, features, stem: Path, ark_model, deepseek_model) -> tuple
     print(f"  → shortlist {len(shortlisted)} 个")
 
     sims = []
-    if not args.no_storyboard and shortlisted:
+    if args.storyboard and shortlisted:
         print("[5.5/6] 关键帧预演 (storyboard)")
         for row in shortlisted:
             try:
@@ -2404,8 +2404,8 @@ def main(argv: list[str] | None = None) -> int:
                         choices=["brand_film", "creative_ad", "direct_response", "social_post"])
     parser.add_argument("--slogan", default=None, help="品牌 slogan (留空不捏造)")
     parser.add_argument("--brand-name", default=None, help="品牌名 (留空不捏造)")
-    parser.add_argument("--no-storyboard", action="store_true",
-                        help="跳过关键帧预演 (省成本, 默认启用 storyboard)")
+    parser.add_argument("--storyboard", action="store_true",
+                        help="启用关键帧预演 (默认关闭省成本, P2 将增强)")
     parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖")
     parser.add_argument("--deepseek-model", default=None, help="DeepSeek 模型名覆盖")
     args = parser.parse_args(argv)
@@ -2525,7 +2525,7 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意/评分/决策/prompt)
 | `.candidates.json` | N 个创意候选 |
 | `.scores.json` | 每候选 9 维评分 + overall |
 | `.shortlist.json` | 入围候选 + render 资格 |
-| `.storyboard.json` | 关键帧预演 (`--no-storyboard` 跳过) |
+| `.storyboard.json` | 关键帧预演 (`--storyboard` 启用, 默认关闭) |
 | `.decision.json` | 是否值得花积分 + 失败修正建议 |
 | `.package.json` | 完整机器可读包 |
 | `.txt` | 可直接粘贴到小云雀的最终 prompt |
@@ -2543,7 +2543,7 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意/评分/决策/prompt)
 --duration 15                    视频时长秒
 --commercial-goal creative_ad    brand_film|creative_ad|direct_response|social_post
 --slogan "" --brand-name ""      品牌资产 (留空不捏造)
---no-storyboard                  跳过关键帧预演省成本
+--storyboard                     启用关键帧预演 (默认关闭省成本)
 ```
 
 ## 结构
@@ -2611,7 +2611,7 @@ git commit -m "Update README for creative iterator workflow"
 
 **Type consistency check:** `candidate_id` string `C001` format consistent across creative_search→scoring→shortlist→render_decision→output_package ✓. `scores` dict key names identical in scoring/shortlist/output_package (`overall`, `seedance_feasibility`, `product_clarity`) ✓. `render_recommendation` enum `reject|revise|shortlist|render` consistent in scoring + shortlist ✓. `eligible_for_render`/`ineligible_reasons` consistent shortlist→render_decision ✓. `recommended_candidate_id` consistent render_decision→output_package→report ✓.
 
-**Deferred (P2–P4, intentionally out of scope):** storyboard quality polish, report polish, hotspot search, brand memory, feedback loop, web UI, auto-upload. Default decision mode runs storyboard (can be skipped via `--no-storyboard`); P2 will deepen storyboard prompts.
+**Deferred (P2–P4, intentionally out of scope):** storyboard quality polish, report polish, hotspot search, brand memory, feedback loop, web UI, auto-upload. Decision mode skips storyboard by default (opt-in via `--storyboard`); P2 will deepen storyboard prompts and may flip default on.
 
 ---
 
