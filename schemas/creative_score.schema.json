@@ -1,0 +1,19 @@
+{
+  "$comment": "创意评分文档契约。overall 由代码加权计算，非 LLM 给出。",
+  "type": "object",
+  "required": ["candidate_id", "scores", "render_recommendation"],
+  "properties": {
+    "candidate_id": {"type": "string"},
+    "scores": {
+      "type": "object",
+      "required": ["first_3_seconds_hook", "product_clarity", "brand_fit",
+                   "audience_relevance", "visual_memorability", "platform_fit",
+                   "seedance_feasibility", "generation_risk_control",
+                   "commercial_intent", "overall"]
+    },
+    "strengths": {"type": "array", "items": {"type": "string"}},
+    "weaknesses": {"type": "array", "items": {"type": "string"}},
+    "revision_suggestions": {"type": "array", "items": {"type": "string"}},
+    "render_recommendation": {"enum": ["reject", "revise", "shortlist", "render"]}
+  }
+}

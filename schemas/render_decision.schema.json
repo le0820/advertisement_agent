@@ -1,0 +1,15 @@
+{
+  "$comment": "是否值得消耗一次视频积分的决策文档契约。",
+  "type": "object",
+  "required": ["recommended_candidate_id", "should_render", "reason",
+               "pre_render_checklist", "if_first_render_fails"],
+  "properties": {
+    "recommended_candidate_id": {"type": ["string", "null"]},
+    "should_render": {"type": "boolean"},
+    "confidence": {"type": "integer"},
+    "reason": {"type": "string"},
+    "expected_failure_modes": {"type": "array", "items": {"type": "string"}},
+    "pre_render_checklist": {"type": "array", "items": {"type": "string"}},
+    "if_first_render_fails": {"type": "object"}
+  }
+}

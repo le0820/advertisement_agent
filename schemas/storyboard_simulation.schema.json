@@ -1,0 +1,10 @@
+{
+  "$comment": "关键帧预演文档契约 (P2 增强目标，P0 仅最小实现)。",
+  "type": "object",
+  "required": ["candidate_id", "keyframes", "storyboard_review"],
+  "properties": {
+    "candidate_id": {"type": "string"},
+    "keyframes": {"type": "array", "items": {"type": "object"}},
+    "storyboard_review": {"type": "object"}
+  }
+}

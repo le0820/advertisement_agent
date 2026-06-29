@@ -1,0 +1,26 @@
+{
+  "$comment": "创意候选文档契约。",
+  "type": "object",
+  "required": ["candidate_id", "creative_route", "one_sentence_idea", "hook",
+               "shot_plan", "seedance_prompt_risk"],
+  "properties": {
+    "candidate_id": {"type": "string"},
+    "creative_route": {"type": "string"},
+    "one_sentence_idea": {"type": "string"},
+    "hook": {"type": "string"},
+    "target_emotion": {"type": "string"},
+    "audience_insight": {"type": "string"},
+    "product_truth": {"type": "string"},
+    "visual_metaphor": {"type": "string"},
+    "narrative_spine": {"type": "string"},
+    "shot_plan": {"type": "array", "items": {"type": "object"}},
+    "seedance_prompt_risk": {
+      "type": "object",
+      "required": ["risk_level", "risk_reasons"],
+      "properties": {
+        "risk_level": {"enum": ["low", "medium", "high"]},
+        "risk_reasons": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}
