@@ -1,7 +1,8 @@
-"""火山方舟 ARK Doubao 多模态 client (Responses API)。
+"""火山方舟 ARK Doubao client。
 
-通过 https://ark.cn-beijing.volces.com/api/v3/responses 调用 doubao-seed
-多模态模型，支持图片 URL 和本地图片 (base64 data URL)。
+特征提取 (chat_with_image): chat/completions 端点 + 多模态 (image+text)。
+评分裁判 (chat_text):       responses 端点 + 纯文本。
+DeepSeek 调用: 见 deepseek_client.py。
 
 API key 从环境变量 ARK_API_KEY 读取，绝不硬编码。
 """
@@ -16,10 +17,13 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-ARK_API_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/responses"
+ARK_RESPONSES_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/responses"
 ARK_CHAT_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
+
+# 特征提取 (chat/completions 多模态)
 DEFAULT_MODEL = "doubao-seed-2-0-lite-260428"
-ARK_CHAT_DEFAULT_MODEL = "doubao-seed-2-1-turbo-260628"
+# 评分裁判 (responses 纯文本)
+ARK_SCORE_DEFAULT_MODEL = "doubao-seed-2-1-turbo-260628"
 
 
 class LLMError(RuntimeError):
@@ -57,18 +61,20 @@ def _extract_text(resp: dict) -> str:
     )
 
 
-def chat_text(
+def chat_with_image(
+    image: str | Path,
     prompt: str,
     *,
     model: str | None = None,
     api_key: str | None = None,
-    timeout: float = 600.0,
+    timeout: float = 180.0,
 ) -> str:
-    """发送纯文本到 ARK chat completions 端点，返回模型文本输出。
+    """发送图片+文本到 ARK chat/completions 端点，返回模型文本输出。
 
     Args:
+        image: 本地图片路径或 http(s) URL。
         prompt: 文本指令。
-        model: ARK 模型名，默认 doubao-seed-evolving。
+        model: ARK 模型名，默认 doubao-seed-2-0-lite-260428。
         api_key: ARK API key，默认读环境变量 ARK_API_KEY。
         timeout: HTTP 超时秒数。
     """
@@ -76,15 +82,17 @@ def chat_text(
     if not key:
         raise LLMError("ARK_API_KEY not set; put it in .env or env var")
 
+    image_url = _load_image_as_data_url(image)
     payload = {
-        "model": model or ARK_CHAT_DEFAULT_MODEL,
+        "model": model or DEFAULT_MODEL,
         "messages": [
             {
                 "role": "user",
                 "content": [
+                    {"type": "image_url", "image_url": {"url": image_url}},
                     {"type": "text", "text": prompt},
                 ],
-            },
+            }
         ],
     }
 
@@ -113,20 +121,18 @@ def chat_text(
         ) from e
 
 
-def chat_with_image(
-    image: str | Path,
+def chat_text(
     prompt: str,
     *,
     model: str | None = None,
     api_key: str | None = None,
-    timeout: float = 60.0,
+    timeout: float = 600.0,
 ) -> str:
-    """发送图片+文本到 ARK 多模态模型，返回模型文本输出。
+    """发送纯文本到 ARK responses 端点 (裁判模型)，返回模型文本输出。
 
     Args:
-        image: 本地图片路径或 http(s) URL。
         prompt: 文本指令。
-        model: ARK 模型名，默认 doubao-seed-2-0-lite-260428。
+        model: ARK 模型名，默认 doubao-seed-2-1-turbo-260628。
         api_key: ARK API key，默认读环境变量 ARK_API_KEY。
         timeout: HTTP 超时秒数。
     """
@@ -134,14 +140,12 @@ def chat_with_image(
     if not key:
         raise LLMError("ARK_API_KEY not set; put it in .env or env var")
 
-    image_url = _load_image_as_data_url(image)
     payload = {
-        "model": model or DEFAULT_MODEL,
+        "model": model or ARK_SCORE_DEFAULT_MODEL,
         "input": [
             {
                 "role": "user",
                 "content": [
-                    {"type": "input_image", "image_url": image_url},
                     {"type": "input_text", "text": prompt},
                 ],
             }
@@ -149,7 +153,7 @@ def chat_with_image(
     }
 
     req = urllib.request.Request(
-        ARK_API_ENDPOINT,
+        ARK_RESPONSES_ENDPOINT,
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {key}",

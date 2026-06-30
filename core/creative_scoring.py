@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from .json_utils import parse_json_object
-from .llm_client import chat_text, ARK_CHAT_DEFAULT_MODEL
+from .llm_client import chat_text, ARK_SCORE_DEFAULT_MODEL
 
 _PROMPT_PATH = (
     Path(__file__).resolve().parent.parent / "prompts" / "score_creative_candidate.txt"
@@ -110,7 +110,7 @@ def score_creative_candidate(
     )
     text = chat_text(
         prompt,
-        model=score_model or ARK_CHAT_DEFAULT_MODEL,
+        model=score_model or ARK_SCORE_DEFAULT_MODEL,
         api_key=score_api_key,
     )
     raw = parse_json_object(text)
