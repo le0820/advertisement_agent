@@ -21,9 +21,9 @@ ARK_RESPONSES_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/responses"
 ARK_CHAT_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
 
 # 特征提取 (chat/completions 多模态)
-DEFAULT_MODEL = "doubao-seed-2-0-lite-260428"
+DEFAULT_MODEL = "doubao-seed-2-1-turbo-260628"
 # 评分裁判 (responses 纯文本)
-ARK_SCORE_DEFAULT_MODEL = "doubao-seed-2-1-turbo-260628"
+ARK_SCORE_DEFAULT_MODEL = "doubao-seed-2-0-lite-260428"
 
 
 class LLMError(RuntimeError):
