@@ -68,6 +68,13 @@ def _user_options(args) -> dict:
         "platform": args.platform, "aspect_ratio": args.aspect_ratio,
         "duration": args.duration, "commercial_goal": args.commercial_goal,
         "slogan": args.slogan or "", "brand_name": args.brand_name or "",
+        # 人工商业输入 (GPT P4): 让创意围绕"为什么用户会买"
+        "target_audience": getattr(args, "target_audience", None),
+        "selling_point": getattr(args, "selling_point", None),
+        "pain_point": getattr(args, "pain_point", None),
+        "usage_scene": getattr(args, "usage_scene", None),
+        "cta": getattr(args, "cta", None),
+        "forbidden_claim": getattr(args, "forbidden_claim", None),
     }
 
 
@@ -213,11 +220,22 @@ def main(argv: list[str] | None = None) -> int:
                         choices=["brand_film", "creative_ad", "direct_response", "social_post"])
     parser.add_argument("--slogan", default=None, help="品牌 slogan (留空不捏造)")
     parser.add_argument("--brand-name", default=None, help="品牌名 (留空不捏造)")
+    # 人工商业输入 (GPT P4)
+    parser.add_argument("--target-audience", default=None, help="目标人群 (覆盖图像提取的)")
+    parser.add_argument("--selling-point", default=None, action="append",
+                        help="补充卖点 (可多次传)")
+    parser.add_argument("--pain-point", default=None, action="append",
+                        help="用户痛点 (可多次传)")
+    parser.add_argument("--usage-scene", default=None, action="append",
+                        help="使用场景 (可多次传)")
+    parser.add_argument("--cta", default=None, help="行动号召文案")
+    parser.add_argument("--forbidden-claim", default=None, action="append",
+                        help="禁用 claim (可多次传, 如 最便宜/第一)")
     parser.add_argument("--storyboard", action="store_true",
                         help="启用关键帧预演 (默认关闭省成本, P2 将增强)")
     parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖 (特征提取)")
     parser.add_argument("--deepseek-model", default=None, help="DeepSeek 模型名覆盖")
-    parser.add_argument("--score-model", default=None, help="ARK 裁判模型名 (打分, 如 doubao-seed-evolving); 不设置则用 DeepSeek")
+    parser.add_argument("--score-model", default=None, help="ARK 裁判模型名; 不设置则用默认 doubao-seed-2-0-lite-260428 (responses 接口)")
     args = parser.parse_args(argv)
 
     _load_env()

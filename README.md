@@ -61,18 +61,22 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意搜索/渲染决策/最终 pro
 
 ## 模型使用
 
-| 步骤 | 默认模型 | 类型 | 控制参数 |
-|------|---------|------|---------|
-| 特征提取 | `doubao-seed-2-0-lite-260428` | ARK 多模态 (image+text) | `--ark-model` |
-| 创意搜索 | `deepseek-v4-pro` | DeepSeek chat | `--deepseek-model` |
-| 评分 | `doubao-seed-2-1-turbo-260628` | ARK chat/completions | `--score-model` |
-| 渲染决策 | `deepseek-v4-pro` | DeepSeek chat | `--deepseek-model` |
-| 最终 prompt | `deepseek-v4-pro` | DeepSeek chat | `--deepseek-model` |
+| 步骤 | 接口 | 默认模型 | 控制参数 |
+|------|------|---------|---------|
+| 特征提取 | ARK chat/completions (多模态) | `doubao-seed-2-1-turbo-260628` | `--ark-model` (可切 `doubao-seed-evolving`) |
+| 创意搜索 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
+| 评分 | ARK responses (多模态) | `doubao-seed-2-0-lite-260428` | `--score-model` |
+| 渲染决策 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
+| 最终 prompt | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
 
-评分默认走 ARK `doubao-seed-2-1-turbo-260628`（更快更稳）。可切换裁判模型：
+特征提取与评分均走 ARK，但接口不同：特征提取用 chat/completions（多模态），评分用 responses。
+可切换模型：
 
 ```bash
-# 用 doubao-seed-evolving 打分
+# 特征提取换 doubao-seed-evolving
+python main.py product.jpg --mode decision --ark-model doubao-seed-evolving
+
+# 评分换裁判模型
 python main.py product.jpg --mode decision --score-model doubao-seed-evolving
 ```
 
@@ -88,10 +92,16 @@ python main.py product.jpg --mode decision --score-model doubao-seed-evolving
 --duration 15                    视频时长秒
 --commercial-goal creative_ad    brand_film|creative_ad|direct_response|social_post
 --slogan "" --brand-name ""      品牌资产 (留空不捏造)
+--target-audience ""             目标人群 (覆盖图像提取的, GPT P4)
+--selling-point ""               补充卖点 (可多次传)
+--pain-point ""                  用户痛点 (可多次传)
+--usage-scene ""                 使用场景 (可多次传)
+--cta ""                         行动号召文案
+--forbidden-claim ""             禁用 claim (可多次传, 如 最便宜/第一)
 --storyboard                     启用关键帧预演 (默认关闭省成本)
---score-model MODEL              评分裁判模型 (覆盖默认 doubao-seed-2-1-turbo-260628)
+--score-model MODEL              评分裁判模型 (覆盖默认 doubao-seed-2-0-lite-260428)
 --deepseek-model MODEL           DeepSeek 模型覆盖 (创意搜索/决策/prompt)
---ark-model MODEL                ARK 多模态模型覆盖 (特征提取)
+--ark-model MODEL                ARK 模型覆盖 (特征提取, 默认 doubao-seed-2-1-turbo-260628)
 ```
 
 ## 评分维度与权重

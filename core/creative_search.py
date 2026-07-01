@@ -55,6 +55,67 @@ def _template_block(template: dict[str, Any] | None) -> str:
     )
 
 
+def validate_candidate_diversity(
+    candidates: list[dict[str, Any]],
+    expected_count: int | None = None,
+) -> dict[str, Any]:
+    """校验候选多样性, 防止 LLM 输出"换皮"的同质化创意 (GPT P3)。
+
+    检查:
+      - creative_route / hook / visual_metaphor 重复
+      - shot_plan 为空
+      - 实际数量与 expected_count 不符
+
+    非致命: 返回 report, 由调用方决定如何处理。
+    """
+    warnings: list[str] = []
+    duplicate_routes: list[str] = []
+    empty_shot_plans: list[str] = []
+
+    seen_routes: dict[str, str] = {}
+    seen_hooks: dict[str, str] = {}
+    seen_metaphors: dict[str, str] = {}
+
+    for c in candidates:
+        cid = c.get("candidate_id", "?")
+        route = str(c.get("creative_route", "")).strip()
+        hook = str(c.get("hook", "")).strip()
+        metaphor = str(c.get("visual_metaphor", "")).strip()
+
+        if route and route in seen_routes:
+            warnings.append(
+                f"{cid}: creative_route='{route}' 与 {seen_routes[route]} 重复"
+            )
+            duplicate_routes.append(cid)
+        elif route:
+            seen_routes[route] = cid
+
+        if hook and hook in seen_hooks:
+            warnings.append(f"{cid}: hook 与 {seen_hooks[hook]} 重复")
+        elif hook:
+            seen_hooks[hook] = cid
+
+        if metaphor and metaphor in seen_metaphors:
+            warnings.append(f"{cid}: visual_metaphor 与 {seen_metaphors[metaphor]} 重复")
+        elif metaphor:
+            seen_metaphors[metaphor] = cid
+
+        if not c.get("shot_plan"):
+            empty_shot_plans.append(cid)
+            warnings.append(f"{cid}: shot_plan 为空")
+
+    if expected_count is not None and len(candidates) != expected_count:
+        warnings.append(
+            f"候选数量 {len(candidates)} 与期望 {expected_count} 不符"
+        )
+
+    return {
+        "warnings": warnings,
+        "duplicate_routes": duplicate_routes,
+        "empty_shot_plans": empty_shot_plans,
+    }
+
+
 def generate_creative_candidates(
     brief: dict[str, Any],
     template: dict[str, Any] | None = None,
@@ -74,6 +135,7 @@ def generate_creative_candidates(
 
     Returns:
         creative_candidate dict 列表 (见 schemas/creative_candidate.schema.json)。
+        每个候选附加 diversity_report 字段。
     """
     prompt = _PROMPT_PATH.read_text(encoding="utf-8").format(
         num_candidates=num_candidates,
@@ -90,4 +152,9 @@ def generate_creative_candidates(
         if not isinstance(raw, dict):
             continue
         candidates.append(_normalize_candidate(raw, i))
+
+    # 多样性校验 (非致命, 附加到每个候选)
+    report = validate_candidate_diversity(candidates, expected_count=num_candidates)
+    for c in candidates:
+        c["diversity_report"] = report
     return candidates

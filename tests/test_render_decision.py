@@ -53,31 +53,24 @@ class TestMakeRenderDecision(unittest.TestCase):
         self.assertIn("确认产品颜色", dec["pre_render_checklist"])
 
     @patch("core.render_decision.chat_json_object")
-    def test_no_eligible_forces_should_render_false(self, mock_chat):
-        mock_chat.return_value = {
-            "recommended_candidate_id": "C001", "should_render": True,
-            "confidence": 50, "reason": "", "expected_failure_modes": [],
-            "pre_render_checklist": [],
-            "if_first_render_fails": {"likely_causes": [], "recommended_fix": "",
-                                       "do_not_retry_if": []}
-        }
-        sl = [_sl("C001", 90, eligible=False)]
+    def test_no_eligible_fast_fails_without_llm(self, mock_chat):
+        """GPT P2: 无 eligible 候选时不调用 LLM, 直接 fast-fail。"""
+        sl = [_sl("C001", 90, eligible=False), _sl("C002", 85, eligible=False)]
         dec = make_render_decision({"x": 1}, sl, [])
         self.assertFalse(dec["should_render"])
         self.assertIsNone(dec["recommended_candidate_id"])
+        self.assertEqual(dec["confidence"], 0)
+        self.assertIn("render eligibility", dec["reason"])
+        mock_chat.assert_not_called()  # 关键: 没有调用 LLM
 
     @patch("core.render_decision.chat_json_object")
-    def test_empty_shortlist_skips_render(self, mock_chat):
-        mock_chat.return_value = {
-            "recommended_candidate_id": None, "should_render": False,
-            "confidence": 0, "reason": "无候选", "expected_failure_modes": [],
-            "pre_render_checklist": [],
-            "if_first_render_fails": {"likely_causes": [], "recommended_fix": "",
-                                       "do_not_retry_if": []}
-        }
+    def test_empty_shortlist_fast_fails_without_llm(self, mock_chat):
+        """空 shortlist 也应 fast-fail, 不调用 LLM。"""
         dec = make_render_decision({"x": 1}, [], [])
         self.assertFalse(dec["should_render"])
         self.assertIsNone(dec["recommended_candidate_id"])
+        self.assertIn("render eligibility", dec["reason"])
+        mock_chat.assert_not_called()
 
 
 if __name__ == "__main__":

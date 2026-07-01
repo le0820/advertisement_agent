@@ -83,6 +83,32 @@ class TestSelectShortlist(unittest.TestCase):
         sl = select_shortlist(cands, scores, top_k=3)
         self.assertFalse(sl[0]["eligible_for_render"])
 
+    def test_eligible_beats_higher_overall_ineligible(self):
+        """GPT P0 bug: 低 overall 但可生成的候选不应被高 overall 不可生成候选挤掉。"""
+        cands = [_cand("C001"), _cand("C002"), _cand("C003"), _cand("C004")]
+        scores = [
+            _score("C001", 95, clarity=60),   # ineligible (product_clarity<70)
+            _score("C002", 93, feasibility=50),  # ineligible (feasibility<75)
+            _score("C003", 91, rec="reject"),  # ineligible (reject)
+            _score("C004", 88, feasibility=85, clarity=85, rec="render"),  # eligible
+        ]
+        sl = select_shortlist(cands, scores, top_k=3)
+        # C004 (eligible) 应排在 ineligible 之前, 即使 overall 最低
+        self.assertEqual(sl[0]["candidate_id"], "C004")
+        self.assertTrue(sl[0]["eligible_for_render"])
+
+    def test_top_k_picks_eligible_first(self):
+        """top_k=1 时, eligible 候选优先于更高 overall 的 ineligible 候选。"""
+        cands = [_cand("C001"), _cand("C002")]
+        scores = [
+            _score("C001", 95, clarity=60),  # ineligible
+            _score("C002", 85, clarity=85, feasibility=85, rec="render"),  # eligible
+        ]
+        sl = select_shortlist(cands, scores, top_k=1)
+        self.assertEqual(len(sl), 1)
+        self.assertEqual(sl[0]["candidate_id"], "C002")
+        self.assertTrue(sl[0]["eligible_for_render"])
+
 
 if __name__ == "__main__":
     unittest.main()

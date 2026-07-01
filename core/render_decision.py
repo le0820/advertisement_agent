@@ -93,7 +93,26 @@ def make_render_decision(
     """
     sims = storyboard_simulations or []
     fallback_id = pick_top_eligible(shortlisted)
-    force_skip = fallback_id is None
+
+    # 没有可生成候选时直接 fast-fail, 不调用 LLM (省一次 API 调用)
+    if fallback_id is None:
+        eligible_total = len([r for r in shortlisted if r.get("eligible_for_render")])
+        return {
+            "recommended_candidate_id": None,
+            "should_render": False,
+            "confidence": 0,
+            "reason": (
+                f"没有候选通过 render eligibility 门槛 (eligible {eligible_total}/"
+                f"{len(shortlisted)}), 不值得消耗视频积分。"
+            ),
+            "expected_failure_modes": [],
+            "pre_render_checklist": [],
+            "if_first_render_fails": {
+                "likely_causes": [],
+                "recommended_fix": "",
+                "do_not_retry_if": [],
+            },
+        }
 
     prompt = _PROMPT_PATH.read_text(encoding="utf-8").format(
         brief_json=json.dumps(brief, ensure_ascii=False, indent=2),
@@ -105,4 +124,4 @@ def make_render_decision(
         model=model,
         api_key=api_key,
     )
-    return _normalize(raw, fallback_id, force_skip)
+    return _normalize(raw, fallback_id, force_skip=False)

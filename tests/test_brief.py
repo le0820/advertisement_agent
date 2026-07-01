@@ -62,6 +62,33 @@ class TestBuildCreativeBrief(unittest.TestCase):
         b = build_creative_brief(f)
         self.assertEqual(b["distribution_scenarios"], ["douyin", "tiktok", "youtube"])
 
+    def test_manual_business_inputs(self):
+        """GPT P4: 人工商业输入应进入 brief。"""
+        b = build_creative_brief(_features(), {
+            "target_audience": "30-40岁送礼男性",
+            "selling_point": "可刻字定制",
+            "pain_point": "怕撞款",
+            "usage_scene": "纪念日赠礼",
+            "cta": "点击定制专属对戒",
+            "forbidden_claim": "最便宜",
+        })
+        self.assertEqual(b["target_audience"], "30-40岁送礼男性")
+        self.assertIn("可刻字定制", b["selling_points"])
+        self.assertEqual(b["pain_points"], ["怕撞款"])
+        self.assertEqual(b["usage_scenes"], ["纪念日赠礼"])
+        self.assertEqual(b["cta"], "点击定制专属对戒")
+        self.assertEqual(b["brand_assets"]["forbidden_claims"], ["最便宜"])
+        self.assertTrue(b["constraints"]["must_have_cta"])  # cta 隐含开启
+
+    def test_selling_point_list_appends(self):
+        b = build_creative_brief(_features(), {
+            "selling_point": ["卖点A", "卖点B"],
+        })
+        self.assertIn("卖点A", b["selling_points"])
+        self.assertIn("卖点B", b["selling_points"])
+        # 原始卖点保留
+        self.assertIn("独特浪纹设计", b["selling_points"])
+
 
 if __name__ == "__main__":
     unittest.main()
