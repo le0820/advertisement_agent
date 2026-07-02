@@ -63,13 +63,13 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意搜索/渲染决策/最终 pro
 
 | 步骤 | 接口 | 默认模型 | 控制参数 |
 |------|------|---------|---------|
-| 特征提取 | ARK chat/completions (多模态) | `doubao-seed-2-1-turbo-260628` | `--ark-model` (可切 `doubao-seed-evolving`) |
+| 特征提取 | ARK responses (多模态) | `doubao-seed-evolving` | `--ark-model` |
 | 创意搜索 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
 | 评分 | ARK responses (多模态) | `doubao-seed-2-0-lite-260428` | `--score-model` |
 | 渲染决策 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
 | 最终 prompt | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
 
-特征提取与评分均走 ARK，但接口不同：特征提取用 chat/completions（多模态），评分用 responses。
+特征提取与评分均走 ARK responses 端点。
 可切换模型：
 
 ```bash
@@ -141,7 +141,7 @@ shortlist 规则: overall 降序 → 低于 `--min-score` 淘汰 → `seedance_f
 ```
 main.py                      CLI 入口 (fast/explore/decision)
 core/
-  llm_client.py              ARK Doubao client (多模态 + 文本 chat/completions)
+  llm_client.py              ARK Doubao client (多模态 + 文本, /responses 端点)
   extract_features.py        图 → 特征 JSON
   storyboard.py              模版匹配 + scaffold
   deepseek_client.py         DeepSeek chat client

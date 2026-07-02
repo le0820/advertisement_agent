@@ -1,8 +1,4 @@
-"""火山方舟 ARK Doubao client。
-
-特征提取 (chat_with_image): chat/completions 端点 + 多模态 (image+text)。
-评分裁判 (chat_text):       responses 端点 + 纯文本。
-DeepSeek 调用: 见 deepseek_client.py。
+"""火山方舟 ARK Doubao client — 统一使用 /responses 端点。
 
 API key 从环境变量 ARK_API_KEY 读取，绝不硬编码。
 """
@@ -18,11 +14,8 @@ import urllib.request
 from pathlib import Path
 
 ARK_RESPONSES_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/responses"
-ARK_CHAT_ENDPOINT = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
 
-# 特征提取 (chat/completions 多模态)
-DEFAULT_MODEL = "doubao-seed-2-1-turbo-260628"
-# 评分裁判 (responses 纯文本)
+DEFAULT_MODEL = "doubao-seed-evolving"
 ARK_SCORE_DEFAULT_MODEL = "doubao-seed-2-0-lite-260428"
 
 
@@ -69,12 +62,12 @@ def chat_with_image(
     api_key: str | None = None,
     timeout: float = 180.0,
 ) -> str:
-    """发送图片+文本到 ARK chat/completions 端点，返回模型文本输出。
+    """发送图片+文本到 ARK responses 端点，返回模型文本输出。
 
     Args:
         image: 本地图片路径或 http(s) URL。
         prompt: 文本指令。
-        model: ARK 模型名，默认 doubao-seed-2-0-lite-260428。
+        model: ARK 模型名，默认 doubao-seed-evolving。
         api_key: ARK API key，默认读环境变量 ARK_API_KEY。
         timeout: HTTP 超时秒数。
     """
@@ -85,19 +78,19 @@ def chat_with_image(
     image_url = _load_image_as_data_url(image)
     payload = {
         "model": model or DEFAULT_MODEL,
-        "messages": [
+        "input": [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image_url", "image_url": {"url": image_url}},
-                    {"type": "text", "text": prompt},
+                    {"type": "input_image", "image_url": image_url},
+                    {"type": "input_text", "text": prompt},
                 ],
             }
         ],
     }
 
     req = urllib.request.Request(
-        ARK_CHAT_ENDPOINT,
+        ARK_RESPONSES_ENDPOINT,
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {key}",
@@ -111,14 +104,7 @@ def chat_with_image(
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", errors="replace")
         raise LLMError(f"ARK API HTTP {e.code}: {detail[:500]}") from e
-
-    try:
-        return body["choices"][0]["message"]["content"]
-    except (KeyError, IndexError, TypeError) as e:
-        raise LLMError(
-            "cannot parse ARK chat response: "
-            + json.dumps(body, ensure_ascii=False)[:500]
-        ) from e
+    return _extract_text(body)
 
 
 def chat_text(
@@ -142,14 +128,7 @@ def chat_text(
 
     payload = {
         "model": model or ARK_SCORE_DEFAULT_MODEL,
-        "input": [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "input_text", "text": prompt},
-                ],
-            }
-        ],
+        "input": prompt,
     }
 
     req = urllib.request.Request(
