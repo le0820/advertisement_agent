@@ -21,5 +21,7 @@
    {dense_caption}
 5. 前 3 秒必须有强 hook, 产品在 {must_show_second} 秒前出现
 6. {sensitive_constraints}
-7. 负面约束: 不要生成多余文字、水印、错误 logo、变形手部、产品外观漂移
-8. 输出纯文本分镜脚本, 不要 markdown 代码块, 不要额外解释
+7. 若 brief.constraints.person_policy 存在, 必须按 face_allowed / human_body_allowed /
+   hands_allowed / model_required / allowed_body_framing 执行; face_allowed=true 时允许完整人物、全身穿着效果和自然人脸，face_allowed=false 时才规避清晰真实人脸
+8. 负面约束: 不要生成多余文字、水印、错误 logo、变形手部、产品外观漂移
+9. 输出纯文本分镜脚本, 不要 markdown 代码块, 不要额外解释

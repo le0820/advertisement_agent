@@ -26,4 +26,6 @@
 【硬性要求】
 - 产品颜色/材质/结构严格依据 dense_caption, 不得臆造
 - 对不适合图片预演的镜头 (如复杂运动) 在 continuity_notes 给 warning
+- 若 brief.category="服装鞋包", 关键帧必须覆盖至少一个穿着/携带展示、一个版型或完整轮廓展示、一个使用场合展示
+- 服装类默认允许完整人物、全身展示和自然人脸；若 brief.constraints.person_policy.face_allowed=false, 才用脖子以下、背影、侧影或局部身体构图
 - 输出纯 JSON 对象, 不要 markdown, 不要解释

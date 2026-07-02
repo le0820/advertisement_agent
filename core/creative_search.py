@@ -49,10 +49,20 @@ def _normalize_candidate(raw: dict[str, Any], index: int) -> dict[str, Any]:
 def _template_block(template: dict[str, Any] | None) -> str:
     if not template:
         return "（无）"
-    return (
-        f"模版: {template.get('template_name', '')} ({template.get('template_id', '')})\n"
-        f"调性: {template.get('system', '')}"
-    )
+    lines = [
+        f"模版: {template.get('template_name', '')} ({template.get('template_id', '')})",
+        f"调性: {template.get('system', '')}",
+    ]
+    for key, label in (
+        ("best_for", "适用场景"),
+        ("required_visual_proofs", "必备视觉证明"),
+        ("allowed_person_policy", "允许人物策略"),
+        ("disallowed", "禁止路线"),
+    ):
+        val = template.get(key)
+        if isinstance(val, list) and val:
+            lines.append(f"{label}: {'、'.join(str(x) for x in val)}")
+    return "\n".join(lines)
 
 
 def validate_candidate_diversity(

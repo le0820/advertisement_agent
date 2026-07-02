@@ -75,6 +75,7 @@ def _user_options(args) -> dict:
         "usage_scene": getattr(args, "usage_scene", None),
         "cta": getattr(args, "cta", None),
         "forbidden_claim": getattr(args, "forbidden_claim", None),
+        "avoid_face": True if getattr(args, "avoid_face", False) else None,
     }
 
 
@@ -231,6 +232,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--cta", default=None, help="行动号召文案")
     parser.add_argument("--forbidden-claim", default=None, action="append",
                         help="禁用 claim (可多次传, 如 最便宜/第一)")
+    parser.add_argument("--avoid-face", action="store_true",
+                        help="显式规避清晰真实人脸；服装类默认允许自然人脸和全身人物")
     parser.add_argument("--storyboard", action="store_true",
                         help="启用关键帧预演 (默认关闭省成本, P2 将增强)")
     parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖 (特征提取)")

@@ -18,8 +18,33 @@ _BRAND_STAGE_BY_GOAL = {
 
 _DEFAULT_DISTRIBUTION = ["douyin", "tiktok", "youtube"]
 
-# 容易"过度美化"的类目，需要产品真实性约束 + 规避人脸生成
-_SENSITIVE_CATEGORIES = {"珠宝饰品", "高定礼服", "美妆", "医美"}
+# 容易"过度美化"的类目，需要产品真实性约束；是否规避人脸由人物策略单独控制
+_SENSITIVE_CATEGORIES = {"珠宝饰品", "服装鞋包", "高定礼服", "美妆", "医美"}
+_FASHION_CATEGORY = "服装鞋包"
+_FASHION_SUB_CATEGORIES = {
+    "高定礼服", "男士西装", "婚礼礼服", "晚宴礼服", "旗袍 / 中式礼服",
+    "女装连衣裙", "鞋履", "箱包",
+}
+_FASHION_REQUIRED_VISUAL_PROOFS = [
+    "材质细节",
+    "上身或上脚/手拎效果",
+    "版型/廓形/比例",
+    "动态姿态",
+    "使用场合",
+    "最终完整轮廓",
+]
+_FASHION_ALLOWED_BODY_FRAMING = [
+    "full body",
+    "front view",
+    "natural face",
+    "back view",
+    "side profile without face",
+    "neck-down",
+    "torso",
+    "hands",
+    "on-foot detail",
+    "runway silhouette",
+]
 
 
 def build_creative_brief(
@@ -56,11 +81,13 @@ def build_creative_brief(
         commercial_goal, "awareness"
     )
     category = features.get("category", "")
+    sub_category = features.get("sub_category", "") or ""
+    is_fashion = category == _FASHION_CATEGORY or sub_category in _FASHION_SUB_CATEGORIES
     sensitive = category in _SENSITIVE_CATEGORIES
 
     avoid_face = opts.get("avoid_face")
     if avoid_face is None:
-        avoid_face = sensitive or commercial_goal == "brand_film"
+        avoid_face = False if is_fashion else sensitive or commercial_goal == "brand_film"
     avoid_hand = opts.get("avoid_hand")
     if avoid_hand is None:
         avoid_hand = False
@@ -72,10 +99,24 @@ def build_creative_brief(
     cta = opts.get("cta") or ""
     forbidden = _as_list(opts.get("forbidden_claim"))
 
-    return {
+    constraints = {
+        "must_show_product_by_second": 3,
+        "must_have_cta": bool(opts.get("must_have_cta", False)) or bool(cta),
+        "avoid_face_generation": bool(avoid_face),
+        "avoid_complex_hand_motion": bool(avoid_hand),
+        "person_policy": _build_person_policy(is_fashion, bool(avoid_face), bool(avoid_hand)),
+    }
+    if is_fashion:
+        constraints["category_requirements"] = {
+            "required_visual_proofs": list(_FASHION_REQUIRED_VISUAL_PROOFS),
+            "micro_detail_only_allowed": False,
+            "mannequin_only_allowed": False,
+        }
+
+    brief = {
         "product_name": features.get("product_name", ""),
         "category": category,
-        "sub_category": features.get("sub_category", "") or "",
+        "sub_category": sub_category,
         "dense_caption": features.get("dense_caption", ""),
         "selling_points": sp,
         "target_audience": target_audience,
@@ -96,12 +137,41 @@ def build_creative_brief(
         "pain_points": pain_points,
         "usage_scenes": usage_scenes,
         "cta": cta,
-        "constraints": {
-            "must_show_product_by_second": 3,
-            "must_have_cta": bool(opts.get("must_have_cta", False)) or bool(cta),
-            "avoid_face_generation": bool(avoid_face),
-            "avoid_complex_hand_motion": bool(avoid_hand),
-        },
+        "constraints": constraints,
+    }
+    if features.get("category_conflict"):
+        brief["category_conflict"] = features["category_conflict"]
+    return brief
+
+
+def _build_person_policy(
+    is_fashion: bool,
+    avoid_face: bool,
+    avoid_hand: bool,
+) -> dict[str, Any]:
+    """把"避免人脸"拆成可执行的人物/手部/取景策略。"""
+    if is_fashion:
+        framing = (
+            ["back view", "side profile without face", "neck-down", "torso", "hands", "runway silhouette"]
+            if avoid_face else list(_FASHION_ALLOWED_BODY_FRAMING)
+        )
+        return {
+            "face_allowed": not avoid_face,
+            "human_body_allowed": True,
+            "hands_allowed": not avoid_hand,
+            "model_required": True,
+            "allowed_body_framing": framing,
+        }
+    if avoid_face:
+        framing = ["hands", "neck-down", "back view", "product-only"]
+    else:
+        framing = ["hands", "face", "full body", "product-only"]
+    return {
+        "face_allowed": not avoid_face,
+        "human_body_allowed": True,
+        "hands_allowed": not avoid_hand,
+        "model_required": False,
+        "allowed_body_framing": framing,
     }
 
 

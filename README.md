@@ -98,11 +98,19 @@ python main.py product.jpg --mode decision --score-model doubao-seed-evolving
 --usage-scene ""                 使用场景 (可多次传)
 --cta ""                         行动号召文案
 --forbidden-claim ""             禁用 claim (可多次传, 如 最便宜/第一)
+--avoid-face                     显式规避清晰真实人脸；服装类默认允许自然人脸和全身人物
 --storyboard                     启用关键帧预演 (默认关闭省成本)
 --score-model MODEL              评分裁判模型 (覆盖默认 doubao-seed-2-0-lite-260428)
 --deepseek-model MODEL           DeepSeek 模型覆盖 (创意搜索/决策/prompt)
 --ark-model MODEL                ARK 模型覆盖 (特征提取, 默认 doubao-seed-2-1-turbo-260628)
 ```
+
+## 内置类目
+
+当前模板库覆盖：`珠宝饰品`、`消费电子`、`汽车出行`、`服装鞋包`。其中服装鞋包包含
+`高定礼服`、`男士西装`、`婚礼礼服`、`晚宴礼服`、`旗袍 / 中式礼服`、`女装连衣裙`、
+`鞋履`、`箱包` 等子类。服装类默认允许完整人物、全身穿着效果和自然人脸；
+只有显式要求避脸时，才退回背影、侧影、脖子以下、手部、上脚/手拎等展示方式。
 
 ## 评分维度与权重
 
@@ -123,6 +131,10 @@ python main.py product.jpg --mode decision --score-model doubao-seed-evolving
 shortlist 规则: overall 降序 → 低于 `--min-score` 淘汰 → `seedance_feasibility` 低或
 `product_clarity < 70` 标记不可生成 → 取 `--top-k`。这是让系统能**拒绝低质量创意**
 而非永远输出一个 prompt 的核心。
+
+服装鞋包有额外硬门槛：缺少穿着/上脚/携带展示时 `product_clarity` 会被压到 65 以下；
+缺少婚礼、晚宴、商务、秀场、通勤等使用场合时 `commercial_intent` 会被压到 70 以下；
+缺少版型、廓形、肩线、腰线或完整轮廓时不能直接推荐 `render`。
 
 ## 结构
 

@@ -16,17 +16,29 @@ _PROMPT_PATH = (
     Path(__file__).resolve().parent.parent / "prompts" / "build_final_prompt.txt"
 )
 
-_SENSITIVE_CATEGORIES = {"珠宝饰品", "高定礼服", "美妆", "医美"}
+_SENSITIVE_CATEGORIES = {"珠宝饰品", "服装鞋包", "高定礼服", "美妆", "医美"}
 
 
 def _sensitive_constraints(brief: dict[str, Any]) -> str:
     cat = brief.get("category", "")
+    constraints = brief.get("constraints", {})
+    person_policy = constraints.get("person_policy") or {}
     parts: list[str] = []
     if cat in _SENSITIVE_CATEGORIES:
         parts.append("本品类易过度美化, 必须保持产品真实材质/颜色/工艺, 不得美化失真")
-    if brief.get("constraints", {}).get("avoid_face_generation"):
+    if person_policy.get("model_required") and not person_policy.get("face_allowed", True):
+        framing = "、".join(person_policy.get("allowed_body_framing", []))
+        parts.append(
+            "避免生成真实人脸, 但必须允许不露脸模特/身体局部展示; "
+            f"可用取景: {framing}; 不要把避免人脸理解为禁止人物"
+        )
+    elif person_policy.get("model_required") and person_policy.get("face_allowed", True):
+        parts.append("允许完整人物、全身穿着效果和自然人脸; 视觉重点必须放在服装版型、动态和场合")
+    elif constraints.get("avoid_face_generation"):
         parts.append("避免生成真实人脸, 优先用产品/手部/人台/背影")
-    if brief.get("constraints", {}).get("avoid_complex_hand_motion"):
+    if not person_policy.get("hands_allowed", True):
+        parts.append("避免出现手部")
+    elif constraints.get("avoid_complex_hand_motion"):
         parts.append("避免复杂手部动作")
     return "；".join(parts) if parts else "无额外约束"
 
@@ -55,11 +67,16 @@ def _build_xiaoyunque_prompt(
 
 
 def _manual_upload_notes(brief: dict[str, Any], decision: dict[str, Any]) -> list[str]:
+    person_policy = brief.get("constraints", {}).get("person_policy") or {}
     notes = [
         f"画幅选 {brief.get('aspect_ratio', '9:16')}, 时长 {brief.get('duration_seconds', 15)} 秒",
         "上传前对照 pre_render_checklist 逐条确认产品外观与 dense_caption 一致",
     ]
-    if brief.get("constraints", {}).get("avoid_face_generation"):
+    if person_policy.get("model_required") and not person_policy.get("face_allowed", True):
+        notes.append("如生成真人脸失败, 改用脖子以下/背影/侧影模特, 保留穿着效果")
+    elif person_policy.get("model_required") and person_policy.get("face_allowed", True):
+        notes.append("服装类可使用完整人物和自然人脸, 但上传前确认服装版型、垂坠和场合仍是画面重点")
+    elif brief.get("constraints", {}).get("avoid_face_generation"):
         notes.append("如小云雀生成真人脸失败, 改用产品特写/人台/背影")
     notes.extend(decision.get("pre_render_checklist", []))
     return notes

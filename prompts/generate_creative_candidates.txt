@@ -37,6 +37,12 @@
 - 产品外观必须严格依据 dense_caption, 不得改颜色/材质/结构
 - 每个候选 shot_plan 的镜头总时长落在 brief.duration_seconds 附近
 - 前 3 秒必须有强 hook, 产品在 must_show_product_by_second 秒前出现
+- 若 brief.category="服装鞋包" 或 brief.constraints.category_requirements 存在:
+  1) 至少一个镜头必须展示真人模特上身/全身/上脚/手拎效果；默认允许完整人物和自然人脸
+  2) 至少一个镜头必须展示版型、廓形、肩线/腰线/垂坠/比例或穿搭关系
+  3) 至少一个镜头必须进入婚礼、晚宴、商务、红毯、秀场、通勤等真实使用场合
+  4) 工艺微距可以做 hook, 但不能整条片只有微距、人台或静物
+  5) 只有当 brief.constraints.person_policy.face_allowed=false 时才规避清晰真实人脸；此时优先使用背影、侧影、脖子以下、torso、hands、runway silhouette
 - 若 brief 提供了 pain_points/usage_scenes/cta/target_audience, 必须在创意中体现
   (围绕"为什么用户会买"做创意, 而非仅图像外观)
 - 严格遵守 brand_assets.forbidden_claims, 不得出现禁用 claim

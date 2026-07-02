@@ -31,6 +31,37 @@ SCORE_WEIGHTS: dict[str, float] = {
 
 _SCORE_DIMS = tuple(SCORE_WEIGHTS.keys())
 
+_FASHION_CATEGORY = "服装鞋包"
+_FASHION_SUB_CATEGORIES = {
+    "高定礼服", "男士西装", "婚礼礼服", "晚宴礼服", "旗袍 / 中式礼服",
+    "女装连衣裙", "鞋履", "箱包",
+}
+_MANNEQUIN_TERMS = ("人台", "半身人台", "人体模特", "mannequin", "dress form")
+_HUMAN_WORN_TERMS = (
+    "不露脸模特", "模特", "背影", "侧影", "脖子以下", "半身", "全身",
+    "走秀", "秀场", "手拎", "肩背", "斜挎", "上身", "上脚", "脚上",
+    "穿着效果", "穿搭", "行走", "动态姿态", "torso", "neck-down", "model",
+    "runway", "on-foot", "on foot", "on-body", "worn", "wearing", "carry",
+)
+_LIVING_MODEL_TERMS = (
+    "不露脸模特", "真人", "人物", "背影", "侧影", "脖子以下", "走秀", "秀场",
+    "手拎", "肩背", "斜挎", "上脚", "脚上", "行走", "动态姿态", "model",
+    "neck-down", "runway", "on-foot", "on foot", "on-body", "worn by",
+    "person", "wearer",
+)
+_OCCASION_TERMS = (
+    "婚礼", "晚宴", "商务", "红毯", "秀场", "通勤", "舞会", "宴会",
+    "品牌活动", "发布会", "典礼", "派对", "办公室", "会议", "礼堂",
+    "酒店", "会场", "仪式", "occasion", "wedding", "gala", "business",
+    "runway", "commute", "event", "red carpet",
+)
+_SILHOUETTE_TERMS = (
+    "版型", "廓形", "轮廓", "肩线", "腰线", "垂坠", "剪裁", "比例",
+    "收腰", "下摆", "袖口", "完整服装", "完整轮廓", "全身", "完整造型",
+    "silhouette", "fit", "tailoring", "drape", "shoulder", "waist",
+    "full look", "full-body",
+)
+
 
 def compute_overall(scores: dict[str, Any]) -> int:
     """按 SCORE_WEIGHTS 加权平均, 结果四舍五入为整数 (0-100)。"""
@@ -80,6 +111,81 @@ def _normalize_score(raw: dict[str, Any], candidate_id: str) -> dict[str, Any]:
     }
 
 
+def _contains_any(text: str, terms: tuple[str, ...]) -> bool:
+    text_l = text.lower()
+    return any(term.lower() in text_l for term in terms)
+
+
+def _candidate_text(candidate: dict[str, Any]) -> str:
+    return json.dumps(candidate, ensure_ascii=False, sort_keys=True)
+
+
+def _is_fashion_brief(brief: dict[str, Any]) -> bool:
+    constraints = brief.get("constraints") or {}
+    return (
+        brief.get("category") == _FASHION_CATEGORY
+        or brief.get("sub_category") in _FASHION_SUB_CATEGORIES
+        or bool(constraints.get("category_requirements"))
+    )
+
+
+def _has_worn_display(text: str) -> bool:
+    if not _contains_any(text, _HUMAN_WORN_TERMS):
+        return False
+    if _contains_any(text, _MANNEQUIN_TERMS) and not _contains_any(text, _LIVING_MODEL_TERMS):
+        return False
+    return True
+
+
+def _append_once(items: list[str], value: str) -> None:
+    if value not in items:
+        items.append(value)
+
+
+def _downgrade_render_recommendation(current: str, target: str) -> str:
+    order = {"reject": 0, "revise": 1, "shortlist": 2, "render": 3}
+    if order.get(current, 1) > order[target]:
+        return target
+    return current
+
+
+def _apply_fashion_hard_gates(
+    brief: dict[str, Any],
+    candidate: dict[str, Any],
+    score: dict[str, Any],
+) -> dict[str, Any]:
+    if not _is_fashion_brief(brief):
+        return score
+
+    text = _candidate_text(candidate)
+    has_worn = _has_worn_display(text)
+    has_occasion = _contains_any(text, _OCCASION_TERMS)
+    has_silhouette = _contains_any(text, _SILHOUETTE_TERMS)
+
+    scores = score["scores"]
+    if not has_worn:
+        scores["product_clarity"] = min(scores.get("product_clarity", 0), 65)
+        score["render_recommendation"] = _downgrade_render_recommendation(
+            score.get("render_recommendation", "revise"), "revise"
+        )
+        _append_once(score["weaknesses"], "服装缺少真人模特上身/全身/上脚/手拎展示")
+        _append_once(score["revision_suggestions"], "加入脖子以下或背影模特镜头，展示真实穿着效果")
+    if not has_occasion:
+        scores["commercial_intent"] = min(scores.get("commercial_intent", 0), 70)
+        _append_once(score["weaknesses"], "缺少婚礼、晚宴、商务、秀场或通勤等使用场合")
+        _append_once(score["revision_suggestions"], "补充一个目标人群会购买和使用的明确场合镜头")
+    if not has_silhouette:
+        scores["product_clarity"] = min(scores.get("product_clarity", 0), 70)
+        score["render_recommendation"] = _downgrade_render_recommendation(
+            score.get("render_recommendation", "revise"), "shortlist"
+        )
+        _append_once(score["weaknesses"], "缺少版型、廓形、肩线、腰线或完整轮廓展示")
+        _append_once(score["revision_suggestions"], "补充完整轮廓或行走镜头，证明剪裁和垂坠")
+
+    scores["overall"] = compute_overall(scores)
+    return score
+
+
 def score_creative_candidate(
     brief: dict[str, Any],
     candidate: dict[str, Any],
@@ -114,7 +220,8 @@ def score_creative_candidate(
         api_key=score_api_key,
     )
     raw = parse_json_object(text)
-    return _normalize_score(raw, candidate_id)
+    score = _normalize_score(raw, candidate_id)
+    return _apply_fashion_hard_gates(brief, candidate, score)
 
 
 def score_creative_candidates(

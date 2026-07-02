@@ -29,6 +29,12 @@
 - 判断 seedance_feasibility 时必须考虑: 复杂手部动作/多人交互/细小文字logo/
   真实人脸一致性/产品外观漂移/镜头过多/动作过复杂
 - 产品外观必须与 dense_caption 一致, 否则 product_clarity 扣分
+- 若 brief.category="服装鞋包" 或 brief.constraints.category_requirements 存在:
+  1) 没有上身/上脚/手拎等穿着展示时, product_clarity 不能高于 65
+  2) 没有婚礼/晚宴/商务/红毯/秀场/通勤等使用场合时, commercial_intent 不能高于 70
+  3) 没有版型/廓形/肩线/腰线/垂坠/完整轮廓时, render_recommendation 不能是 render
+  4) 纯人台、纯静物、纯工艺微距不能直接 render, 除非 brief 明确要求"不展示真人/只拍工艺"
+  5) 默认允许完整人物、全身穿着效果和自然人脸；只有 person_policy.face_allowed=false 时才把不露脸模特、背影、侧影、脖子以下、手部作为低风险解法
 - 输出纯 JSON 对象, 不要 markdown, 不要解释
 
 【输出格式 —— 严格按此结构】

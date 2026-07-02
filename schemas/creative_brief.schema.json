@@ -19,6 +19,26 @@
     "platform": {"enum": ["douyin", "xiaohongshu", "video_account", "tiktok", "youtube"]},
     "aspect_ratio": {"enum": ["9:16", "16:9", "1:1"]},
     "duration_seconds": {"type": "integer"},
-    "constraints": {"type": "object"}
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "must_show_product_by_second": {"type": "integer"},
+        "must_have_cta": {"type": "boolean"},
+        "avoid_face_generation": {"type": "boolean"},
+        "avoid_complex_hand_motion": {"type": "boolean"},
+        "person_policy": {
+          "type": "object",
+          "properties": {
+            "face_allowed": {"type": "boolean"},
+            "human_body_allowed": {"type": "boolean"},
+            "hands_allowed": {"type": "boolean"},
+            "model_required": {"type": "boolean"},
+            "allowed_body_framing": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "category_requirements": {"type": "object"}
+      }
+    },
+    "category_conflict": {"type": "object"}
   }
 }

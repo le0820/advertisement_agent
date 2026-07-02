@@ -24,4 +24,6 @@
 - 优先 overall 高且 eligible_for_render=true 的候选
 - 必须考虑视频模型生成可行性, 不要推荐高风险候选浪费积分
 - 产品外观必须可依据 dense_caption 稳定复现
+- 若 brief.category="服装鞋包", 不能推荐缺少穿着/携带展示、版型轮廓或使用场合的候选直接 render
+- 服装类默认允许完整人物、全身穿着效果和自然人脸；只有 person_policy.face_allowed=false 时才规避清晰真实人脸
 - 输出纯 JSON 对象, 不要 markdown, 不要解释

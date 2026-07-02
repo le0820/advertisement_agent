@@ -708,5 +708,668 @@
         "装备外观和配色依据caption描述"
       ]
     }
+  ],
+  "服装鞋包": [
+    {
+      "template_id": "fashion_haute_couture_001",
+      "template_name": "高定礼服·工艺到上身",
+      "category": "服装鞋包",
+      "sub_category": "高定礼服",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "28-45岁重视仪式感、身份表达和手工工艺的高净值消费者",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "品牌大片",
+        "高定礼服",
+        "晚宴礼服",
+        "婚礼礼服"
+      ],
+      "required_visual_proofs": [
+        "刺绣/钉珠/面料细节",
+        "真人模特上身或全身",
+        "肩线/腰线/垂坠/廓形",
+        "婚礼/晚宴/品牌活动场合",
+        "最终完整轮廓"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "no-face model",
+        "back view",
+        "side profile without face",
+        "neck-down",
+        "torso",
+        "hands",
+        "runway silhouette"
+      ],
+      "disallowed": [
+        "全片纯人台",
+        "全片纯工艺微距",
+        "无穿着效果",
+        "把刺绣和钉珠误表达为珠宝广告"
+      ],
+      "system": "你是高定时装广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)高定礼服/礼服西装广告分镜脚本。广告调性：克制奢华、手工工艺、仪式感。允许自然完整人物和全身展示，人物表情自然，但视觉重点必须放在服装版型、动态和场合。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "工艺钩子",
+          "duration": 3,
+          "guide": "微距展示刺绣、钉珠、面料纹理或金线细节，光线扫过材质起伏。产品外观严格依据dense_caption，不把服装工艺拍成独立珠宝。"
+        },
+        {
+          "scene": 2,
+          "name": "定制证据",
+          "duration": 3,
+          "guide": "工坊台面或试衣间细节：量尺、手套、熨烫蒸汽、针线掠过面料。可出现手部，但动作简单稳定。"
+        },
+        {
+          "scene": 3,
+          "name": "上身版型",
+          "duration": 4,
+          "guide": "真人模特正面、侧面或背影上身/全身，展示肩线、腰线、垂坠、开衩、袖口或腰封比例。镜头随行走轻推，证明服装动态姿态。"
+        },
+        {
+          "scene": 4,
+          "name": "场合确认",
+          "duration": 3,
+          "guide": "切入婚礼、晚宴、红毯、舞会或品牌活动入口，模特以全身或侧影穿过暖光空间，服装成为身份感焦点。"
+        },
+        {
+          "scene": 5,
+          "name": "完整轮廓",
+          "duration": 2,
+          "guide": "全身或半身完整轮廓定格，展示服装正面/侧面比例和材质反光，末尾浮现品牌名、slogan或CTA。"
+        }
+      ],
+      "rules": [
+        "至少一个镜头必须是真人模特上身或全身展示，不能全片只用人台或静物",
+        "至少一个镜头必须展示版型、廓形、肩线、腰线或垂坠",
+        "至少一个镜头必须进入婚礼、晚宴、红毯、秀场或品牌活动等使用场合",
+        "默认允许自然人脸和全身人物；如 brief 显式要求 avoid_face_generation，才改用背影、侧影或脖子以下构图",
+        "产品外观、材质、颜色和工艺严格依据dense_caption"
+      ]
+    },
+    {
+      "template_id": "fashion_mens_suit_001",
+      "template_name": "男士西装·剪裁与场合",
+      "category": "服装鞋包",
+      "sub_category": "男士西装",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "28-45岁需要商务、婚礼或正式社交形象的男性消费者",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "商务正装",
+        "婚礼西装",
+        "定制西装",
+        "男装品牌大片"
+      ],
+      "required_visual_proofs": [
+        "面料和领口细节",
+        "肩线/胸腰剪裁",
+        "袖长与裤线",
+        "商务或婚礼场景",
+        "行走动态"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "neck-down",
+        "side profile without face",
+        "back view",
+        "hands adjusting cuff",
+        "runway silhouette"
+      ],
+      "disallowed": [
+        "只拍衣架或人台",
+        "不展示肩线和腰线",
+        "没有正式使用场合"
+      ],
+      "system": "你是男装广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)男士西装广告分镜脚本。广告调性：利落、可信、克制高级。允许自然完整人物和全身展示，重点展示剪裁和正式场合。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "质感开场",
+          "duration": 3,
+          "guide": "微距扫过面料纹理、翻领、扣子、袖口或刺绣细节，光线强调材质层次。"
+        },
+        {
+          "scene": 2,
+          "name": "穿着动作",
+          "duration": 3,
+          "guide": "脖子以下模特整理袖扣、拉平衣襟或扣上西装扣，手部动作简单，展示贴合度。"
+        },
+        {
+          "scene": 3,
+          "name": "剪裁证明",
+          "duration": 4,
+          "guide": "半身到全身推拉镜头，展示肩线、胸腰比例、袖长、裤线和行走时的垂坠。"
+        },
+        {
+          "scene": 4,
+          "name": "场合落点",
+          "duration": 3,
+          "guide": "进入会议室、婚礼迎宾区、酒店大堂或商务车旁，西装与场合身份感绑定。"
+        },
+        {
+          "scene": 5,
+          "name": "品牌落版",
+          "duration": 2,
+          "guide": "正面或背影完整轮廓定格，叠加品牌名、slogan或CTA。"
+        }
+      ],
+      "rules": [
+        "必须展示真人穿着后的肩线、腰线和动态姿态",
+        "正式场合必须明确，不能只停留在面料特写",
+        "可出现手部整理袖口，但避免复杂手部交互",
+        "产品外观严格依据dense_caption"
+      ]
+    },
+    {
+      "template_id": "fashion_wedding_001",
+      "template_name": "婚礼礼服·仪式入场",
+      "category": "服装鞋包",
+      "sub_category": "婚礼礼服",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "25-38岁筹备婚礼、重视仪式影像和礼服记忆点的新人",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "婚纱",
+        "敬酒服",
+        "新娘礼服",
+        "婚礼定制"
+      ],
+      "required_visual_proofs": [
+        "蕾丝/刺绣/面料细节",
+        "拖尾或裙摆轮廓",
+        "真人模特上身或背影",
+        "婚礼现场",
+        "行走动态"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "back view",
+        "neck-down",
+        "hands holding bouquet",
+        "side profile without face"
+      ],
+      "disallowed": [
+        "只拍婚戒或花束",
+        "只拍静物礼服",
+        "没有婚礼场景"
+      ],
+      "system": "你是婚礼时装广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)婚礼礼服广告分镜脚本。广告调性：仪式感、温柔、珍贵。允许自然完整人物和全身展示，人物表情自然，重点展示礼服版型、动态和婚礼场合。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "细节心动",
+          "duration": 3,
+          "guide": "微距展示蕾丝、刺绣、钉珠、缎面、纱层或裙摆纹理，光线柔和。"
+        },
+        {
+          "scene": 2,
+          "name": "穿着准备",
+          "duration": 3,
+          "guide": "新娘背影或脖子以下整理腰线、袖口、头纱或裙摆，展示礼服贴合身体的比例。"
+        },
+        {
+          "scene": 3,
+          "name": "入场动态",
+          "duration": 4,
+          "guide": "从背后跟拍走向婚礼通道，裙摆/拖尾/西装下摆随步伐展开，证明动态垂坠。"
+        },
+        {
+          "scene": 4,
+          "name": "仪式场合",
+          "duration": 3,
+          "guide": "婚礼现场光线、花艺、宾客虚化背景中，礼服成为视觉中心；人脸可自然出现，但不要喧宾夺主。"
+        },
+        {
+          "scene": 5,
+          "name": "完整留影",
+          "duration": 2,
+          "guide": "完整轮廓定格，展示正面或背影比例，末尾浮现品牌和预约试纱CTA。"
+        }
+      ],
+      "rules": [
+        "至少一个镜头必须展示婚礼现场或试纱场景",
+        "必须展示礼服上身比例、裙摆/拖尾或完整轮廓",
+        "默认允许自然人脸和全身人物；如 brief 显式要求避脸，才改用背影、脖子以下和手部整理动作",
+        "产品外观严格依据dense_caption"
+      ]
+    },
+    {
+      "template_id": "fashion_qipao_001",
+      "template_name": "旗袍中式礼服·东方线条",
+      "category": "服装鞋包",
+      "sub_category": "旗袍 / 中式礼服",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "25-45岁重视东方审美、婚礼敬酒或正式宴会穿着的女性消费者",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "旗袍",
+        "中式礼服",
+        "敬酒服",
+        "东方美学品牌片"
+      ],
+      "required_visual_proofs": [
+        "盘扣/滚边/刺绣细节",
+        "腰身线条",
+        "开衩与步态",
+        "中式婚礼或宴会场合",
+        "完整侧影"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "side profile without face",
+        "back view",
+        "neck-down",
+        "hands",
+        "walking silhouette"
+      ],
+      "disallowed": [
+        "只拍纹样不展示线条",
+        "过度暴露",
+        "无中式场合"
+      ],
+      "system": "你是东方美学时装广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)旗袍/中式礼服广告分镜脚本。广告调性：含蓄、精致、线条感。允许自然完整人物和全身展示，重点展示腰身、步态和中式场合。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "工艺细节",
+          "duration": 3,
+          "guide": "微距展示盘扣、滚边、刺绣、织锦、真丝或缎面纹理，光线沿纹样滑过。"
+        },
+        {
+          "scene": 2,
+          "name": "线条上身",
+          "duration": 4,
+          "guide": "真人模特正面、侧面或背影上身/全身，展示领口、肩线、腰身、开衩和下摆比例。"
+        },
+        {
+          "scene": 3,
+          "name": "步态证明",
+          "duration": 3,
+          "guide": "缓慢行走或转身，展示面料垂坠和开衩动态，动作克制优雅。"
+        },
+        {
+          "scene": 4,
+          "name": "中式场合",
+          "duration": 3,
+          "guide": "中式婚礼敬茶、宴会门厅、园林长廊或品牌雅集背景，服装与场合呼应。"
+        },
+        {
+          "scene": 5,
+          "name": "轮廓落版",
+          "duration": 2,
+          "guide": "完整侧影或背影定格，末尾浮现品牌和预约/购买CTA。"
+        }
+      ],
+      "rules": [
+        "必须展示旗袍/中式礼服的腰身线条和步态",
+        "必须有中式婚礼、宴会、园林或雅集等场合",
+        "默认允许自然人脸和全身人物；如 brief 显式要求避脸，才改用身体局部和手部",
+        "产品外观严格依据dense_caption"
+      ]
+    },
+    {
+      "template_id": "fashion_evening_gown_001",
+      "template_name": "晚宴礼服·入场与光影",
+      "category": "服装鞋包",
+      "sub_category": "晚宴礼服",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "25-45岁需要晚宴、红毯、酒会或正式派对造型的女性消费者",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "晚宴礼服",
+        "红毯造型",
+        "派对礼服",
+        "轻奢女装品牌片"
+      ],
+      "required_visual_proofs": [
+        "面料/亮片/刺绣细节",
+        "真人模特上身或全身",
+        "腰线/裙摆/垂坠/廓形",
+        "晚宴/红毯/酒会场合",
+        "行走或转身动态"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "neck-down",
+        "back view",
+        "side profile without face",
+        "hands",
+        "walking silhouette"
+      ],
+      "disallowed": [
+        "只拍面料微距",
+        "只拍人台",
+        "没有正式晚宴场合",
+        "没有完整轮廓"
+      ],
+      "system": "你是晚宴礼服广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)晚宴礼服广告分镜脚本。广告调性：优雅、社交、光影感。允许自然完整人物和全身展示，重点展示上身、廓形、裙摆动态和正式场合。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "光影细节",
+          "duration": 3,
+          "guide": "微距展示面料、亮片、刺绣、缎面或褶裥细节，灯光扫过材质起伏。"
+        },
+        {
+          "scene": 2,
+          "name": "上身比例",
+          "duration": 4,
+          "guide": "真人模特正面、侧面或背影上身/全身，展示肩颈线、腰线、裙摆比例和垂坠；人脸可自然出现。"
+        },
+        {
+          "scene": 3,
+          "name": "动态姿态",
+          "duration": 3,
+          "guide": "低速转身或进入宴会厅，裙摆随动作展开，证明剪裁和面料运动状态。"
+        },
+        {
+          "scene": 4,
+          "name": "晚宴场合",
+          "duration": 3,
+          "guide": "红毯、酒店宴会厅、酒会入口或夜景露台背景，礼服在社交场合中成为视觉焦点。"
+        },
+        {
+          "scene": 5,
+          "name": "完整定格",
+          "duration": 2,
+          "guide": "完整轮廓定格，展示正面或背影比例，末尾浮现品牌、slogan或CTA。"
+        }
+      ],
+      "rules": [
+        "必须展示真人模特上身或全身效果，不能只拍人台或静物",
+        "必须展示腰线、裙摆、垂坠或完整廓形",
+        "必须进入晚宴、红毯、酒会或正式派对场合",
+        "产品外观严格依据dense_caption"
+      ]
+    },
+    {
+      "template_id": "fashion_womens_dress_001",
+      "template_name": "女装连衣裙·穿搭与日常场景",
+      "category": "服装鞋包",
+      "sub_category": "女装连衣裙",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "20-38岁关注通勤、约会、周末出行和穿搭效率的女性消费者",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "女装连衣裙",
+        "通勤穿搭",
+        "约会穿搭",
+        "度假女装"
+      ],
+      "required_visual_proofs": [
+        "面料/印花/剪裁细节",
+        "真人模特上身",
+        "腰线/裙长/下摆比例",
+        "通勤/约会/周末/旅行场合",
+        "一衣多场景"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "neck-down",
+        "torso",
+        "back view",
+        "hands",
+        "walking silhouette"
+      ],
+      "disallowed": [
+        "只拍挂拍",
+        "没有上身效果",
+        "没有穿搭或日常场景",
+        "过度夸张不符合日常穿着"
+      ],
+      "system": "你是女装穿搭广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)女装连衣裙广告分镜脚本。广告调性：轻盈、可穿、场景化。允许自然完整人物和全身展示，重点展示上身比例、穿搭关系和日常使用场景。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "第一眼细节",
+          "duration": 3,
+          "guide": "微距展示面料、印花、褶皱、纽扣、领口、袖口或下摆，严格依据dense_caption。"
+        },
+        {
+          "scene": 2,
+          "name": "上身版型",
+          "duration": 4,
+          "guide": "真人模特正面、侧面或背影上身/全身，展示腰线、裙长、肩线、袖型和下摆比例。"
+        },
+        {
+          "scene": 3,
+          "name": "一衣多场景",
+          "duration": 4,
+          "guide": "通勤电梯、咖啡约会、周末街区或旅行阳光下快切，同一条连衣裙通过配饰或外套变化场合。"
+        },
+        {
+          "scene": 4,
+          "name": "动态穿着",
+          "duration": 2,
+          "guide": "行走、转身或坐下起身，展示裙摆、垂坠和舒适度。"
+        },
+        {
+          "scene": 5,
+          "name": "完整造型",
+          "duration": 2,
+          "guide": "完整穿搭定格，展示正面或背影轮廓，末尾浮现品牌和购买CTA。"
+        }
+      ],
+      "rules": [
+        "必须展示真人上身版型，不能只用挂拍或静物",
+        "必须展示至少一个通勤、约会、周末或旅行日常场景",
+        "必须展示裙长、腰线、下摆或完整穿搭比例",
+        "产品外观严格依据dense_caption"
+      ]
+    },
+    {
+      "template_id": "fashion_footwear_001",
+      "template_name": "鞋履·上脚与步态",
+      "category": "服装鞋包",
+      "sub_category": "鞋履",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "20-40岁关注穿搭完成度、舒适度和场景适配的消费者",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "高跟鞋",
+        "乐福鞋",
+        "运动鞋",
+        "靴子"
+      ],
+      "required_visual_proofs": [
+        "鞋面/鞋跟/鞋底细节",
+        "上脚效果",
+        "行走步态",
+        "搭配关系",
+        "使用场合"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "foot detail",
+        "lower-body crop",
+        "walking silhouette",
+        "hands tying laces"
+      ],
+      "disallowed": [
+        "只拍鞋盒",
+        "只拍静物",
+        "没有上脚效果"
+      ],
+      "system": "你是鞋履广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)鞋履广告分镜脚本。广告调性：利落、可穿、风格明确。允许自然完整人物和自然人脸，重点展示上脚、步态和场景适配。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "结构特写",
+          "duration": 3,
+          "guide": "微距展示鞋面材质、鞋头、鞋跟、鞋底纹路、缝线或品牌细节，严格依据dense_caption。"
+        },
+        {
+          "scene": 2,
+          "name": "上脚瞬间",
+          "duration": 3,
+          "guide": "脚部或小腿以下穿上产品，展示鞋型与脚背/裤脚/裙摆的比例关系。"
+        },
+        {
+          "scene": 3,
+          "name": "步态证明",
+          "duration": 4,
+          "guide": "低机位跟拍行走、转身或轻踏，展示稳定性、舒适感和鞋跟/鞋底动态。"
+        },
+        {
+          "scene": 4,
+          "name": "场合搭配",
+          "duration": 3,
+          "guide": "办公室、约会、通勤街角、健身房、旅行或晚宴入口，根据产品定位选择场景。"
+        },
+        {
+          "scene": 5,
+          "name": "产品落版",
+          "duration": 2,
+          "guide": "上脚定格与静物产品并列，展示颜色和轮廓，末尾浮现品牌和CTA。"
+        }
+      ],
+      "rules": [
+        "必须有上脚展示和行走动态",
+        "必须展示鞋面/鞋底/鞋跟等结构细节",
+        "使用场景必须与目标人群和产品风格一致",
+        "产品外观严格依据dense_caption"
+      ]
+    },
+    {
+      "template_id": "fashion_bag_001",
+      "template_name": "箱包手袋·携带与容量",
+      "category": "服装鞋包",
+      "sub_category": "箱包",
+      "product_name": "",
+      "selling_points": [],
+      "target_audience": "22-45岁关注通勤、旅行、社交穿搭和品质感的消费者",
+      "distribution_scenarios": [
+        "douyin",
+        "tiktok",
+        "youtube"
+      ],
+      "duration": 15,
+      "best_for": [
+        "手袋",
+        "托特包",
+        "背包",
+        "旅行箱",
+        "商务包"
+      ],
+      "required_visual_proofs": [
+        "材质/五金/缝线细节",
+        "手拎/肩背/斜挎效果",
+        "容量或分区",
+        "通勤/旅行/社交场合",
+        "完整外形"
+      ],
+      "allowed_person_policy": [
+        "full body",
+        "front view",
+        "natural face",
+        "hands",
+        "shoulder crop",
+        "torso",
+        "back view",
+        "walking silhouette"
+      ],
+      "disallowed": [
+        "只拍桌面静物",
+        "没有携带效果",
+        "容量凭空夸大"
+      ],
+      "system": "你是箱包广告导演。根据产品的dense_caption，生成一段15秒竖屏(9:16)箱包/手袋广告分镜脚本。广告调性：实用、质感、穿搭完成度。允许自然完整人物和自然人脸，重点展示携带方式、容量和场景。",
+      "scenes": [
+        {
+          "scene": 1,
+          "name": "材质钩子",
+          "duration": 3,
+          "guide": "微距展示皮革/织物/金属五金/拉链/缝线/纹理，光线强调触感和结构。"
+        },
+        {
+          "scene": 2,
+          "name": "携带效果",
+          "duration": 3,
+          "guide": "脖子以下模特手拎、肩背、斜挎或拉动箱包，展示尺寸、比例和搭配关系。"
+        },
+        {
+          "scene": 3,
+          "name": "容量证明",
+          "duration": 3,
+          "guide": "打开包体或箱体，展示分区、收纳物和拿取动线；容量表现必须依据dense_caption，不能虚构。"
+        },
+        {
+          "scene": 4,
+          "name": "场合通行",
+          "duration": 4,
+          "guide": "通勤电梯、机场安检、咖啡会议、晚宴入口或周末街区，产品随人物移动保持清晰。"
+        },
+        {
+          "scene": 5,
+          "name": "完整外形",
+          "duration": 2,
+          "guide": "静物与携带定格切换，展示正面、侧面和背面轮廓，末尾浮现品牌和CTA。"
+        }
+      ],
+      "rules": [
+        "必须展示手拎/肩背/斜挎/拉动等真实携带效果",
+        "容量和分区展示不得超过dense_caption可见信息",
+        "至少一个镜头必须进入通勤、旅行、社交或商务场景",
+        "产品外观严格依据dense_caption"
+      ]
+    }
   ]
 }

@@ -31,6 +31,35 @@ _FAKE_SCORE = {
     "revision_suggestions": ["简化手部"], "render_recommendation": "shortlist"
 }
 
+_HIGH_RENDER_SCORE_JSON = (
+    '{"scores": {"first_3_seconds_hook":90, "product_clarity":90, "brand_fit":90, '
+    '"audience_relevance":90, "visual_memorability":90, "platform_fit":90, '
+    '"seedance_feasibility":90, "generation_risk_control":90, "commercial_intent":90}, '
+    '"strengths": ["画面精致"], "weaknesses": [], '
+    '"revision_suggestions": [], "render_recommendation": "render"}'
+)
+
+
+def _fashion_brief():
+    return {
+        "product_name": "不对称金绣白色礼服西装",
+        "category": "服装鞋包",
+        "sub_category": "高定礼服",
+        "platform": "douyin",
+        "constraints": {
+            "category_requirements": {
+                "required_visual_proofs": ["上身或上脚/手拎效果", "使用场合"],
+            },
+            "person_policy": {
+                "face_allowed": False,
+                "human_body_allowed": True,
+                "hands_allowed": True,
+                "model_required": True,
+                "allowed_body_framing": ["neck-down", "back view"],
+            },
+        },
+    }
+
 
 class TestComputeOverall(unittest.TestCase):
     def test_weighted_average(self):
@@ -96,6 +125,38 @@ class TestScoreCandidate(unittest.TestCase):
         self.assertEqual(result["scores"]["overall"], compute_overall(result["scores"]))
         self.assertEqual(result["render_recommendation"], "render")
         self.assertEqual(result["strengths"], ["微距钩子强"])
+
+    @patch("core.creative_scoring.chat_text", return_value=_HIGH_RENDER_SCORE_JSON)
+    def test_fashion_candidate_without_worn_display_is_capped(self, _mock):
+        cand = {
+            "candidate_id": "C009",
+            "creative_route": "产品感官特写",
+            "shot_plan": [
+                {"visual": "米白半身人台展示礼服，刺绣钉珠微距，暗场光影。"}
+            ],
+        }
+        result = score_creative_candidate(_fashion_brief(), cand)
+
+        self.assertLessEqual(result["scores"]["product_clarity"], 65)
+        self.assertLessEqual(result["scores"]["commercial_intent"], 70)
+        self.assertEqual(result["render_recommendation"], "revise")
+        self.assertTrue(any("上身" in w or "真人" in w for w in result["weaknesses"]))
+
+    @patch("core.creative_scoring.chat_text", return_value=_HIGH_RENDER_SCORE_JSON)
+    def test_fashion_candidate_with_model_occasion_and_silhouette_can_render(self, _mock):
+        cand = {
+            "candidate_id": "C010",
+            "creative_route": "品牌大片",
+            "shot_plan": [
+                {"visual": "真人模特全身上身展示，自然人脸，展示肩线、腰线、完整轮廓和垂坠。"},
+                {"visual": "晚宴入口背影行走，礼服西装在暖光中成为焦点。"},
+            ],
+        }
+        result = score_creative_candidate(_fashion_brief(), cand)
+
+        self.assertEqual(result["scores"]["product_clarity"], 90)
+        self.assertEqual(result["scores"]["commercial_intent"], 90)
+        self.assertEqual(result["render_recommendation"], "render")
 
 
 if __name__ == "__main__":
