@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from unittest.mock import patch
 
-from core.output_package import build_final_prompt_package, build_report_md
+from core.output_package import build_final_spec_package, build_report_md
 
 
 _BRIEF = {
@@ -31,11 +31,11 @@ _DECISION = {"recommended_candidate_id": "C001", "should_render": True, "confide
                                         "do_not_retry_if": ["颜色错"]}}
 
 
-class TestBuildFinalPromptPackage(unittest.TestCase):
-    @patch("core.output_package.chat", return_value="【小云雀提示词成品】...")
-    def test_package_has_prompt_and_summary(self, _mock):
-        pkg = build_final_prompt_package(_BRIEF, _CAND, _SCORE, None, _DECISION)
-        self.assertIn("小云雀提示词成品", pkg["xiaoyunque_prompt"])
+class TestBuildFinalSpecPackage(unittest.TestCase):
+    @patch("core.output_package.chat", return_value="# Brand Film Spec - 错金浪纹对戒\n\n规格书成品")
+    def test_package_has_brand_film_spec_and_summary(self, _mock):
+        pkg = build_final_spec_package(_BRIEF, _CAND, _SCORE, None, _DECISION)
+        self.assertIn("Brand Film Spec", pkg["brand_film_spec"])
         self.assertTrue(pkg["summary"])
         self.assertEqual(pkg["selected_candidate"]["candidate_id"], "C001")
         self.assertIsNone(pkg["storyboard_simulation"])
@@ -44,7 +44,7 @@ class TestBuildFinalPromptPackage(unittest.TestCase):
 
     @patch("core.output_package.chat", return_value="成品")
     def test_report_answers_required_questions(self, _mock):
-        pkg = build_final_prompt_package(_BRIEF, _CAND, _SCORE, None, _DECISION)
+        pkg = build_final_spec_package(_BRIEF, _CAND, _SCORE, None, _DECISION)
         report = build_report_md(
             pkg,
             all_candidates_count=8,
@@ -59,6 +59,7 @@ class TestBuildFinalPromptPackage(unittest.TestCase):
         self.assertIn("确认产品颜色", report)
         self.assertIn("简化手部", report)
         self.assertIn("强hook且可行", report)
+        self.assertIn(".brand-film-spec.md", report)
 
 
 if __name__ == "__main__":

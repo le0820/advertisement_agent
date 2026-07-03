@@ -50,7 +50,7 @@ class TestCliFastMode(unittest.TestCase):
 
 
 class TestCliDecisionMode(unittest.TestCase):
-    @patch("core.output_package.chat", return_value="FINAL XIAOYUNQUE PROMPT")
+    @patch("core.output_package.chat", return_value="# Brand Film Spec - 对戒\n\nFINAL SPEC")
     @patch("core.render_decision.chat_json_object")
     @patch("core.creative_scoring.chat_text", return_value=_FAKE_SCORE_JSON)
     @patch("core.creative_search.chat_json_array")
@@ -76,12 +76,13 @@ class TestCliDecisionMode(unittest.TestCase):
             stem = out[:-4]
             for suffix in [".features.json", ".brief.json", ".candidates.json",
                            ".scores.json", ".shortlist.json", ".decision.json",
-                           ".package.json", ".txt", ".report.md"]:
+                           ".package.json", ".brand-film-spec.md", ".report.md"]:
                 self.assertTrue(os.path.exists(stem + suffix), f"missing {suffix}")
-            with open(out) as fh:
-                self.assertIn("FINAL XIAOYUNQUE PROMPT", fh.read())
+            with open(stem + ".brand-film-spec.md") as fh:
+                self.assertIn("FINAL SPEC", fh.read())
             with open(stem + ".package.json") as fh:
                 pkg = json.loads(fh.read())
+            self.assertIn("brand_film_spec", pkg)
             self.assertEqual(pkg["selected_candidate"]["candidate_id"], "C001")
 
 

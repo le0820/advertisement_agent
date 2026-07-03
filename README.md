@@ -15,20 +15,20 @@
  ─► shortlist (规则筛选, 可拒绝低质量创意)
  ─► (可选) 关键帧预演 storyboard
  ─► render_decision (是否值得花一次视频积分)
- ─► 最终 prompt 包 + 决策报告
- ─► (人工) 上传小云雀
+ ─► brand-film-spec 规格书 + 决策报告
+ ─► (人工) 上传 brand-film-spec.md 到小云雀视频生成 agent
 ```
 
 ## 模式
 
 ```bash
-# fast (默认, 原流程): 一个最终 prompt
+# fast (默认, 原流程): 一个最终 .txt prompt
 python main.py product.jpg --mode fast
 
-# explore: 8 候选 → 评分 → shortlist, 不生成最终 prompt
+# explore: 8 候选 → 评分 → shortlist, 不生成最终上传规格书
 python main.py product.jpg --mode explore
 
-# decision (推荐): 完整流程, 只推荐 1 个最值得花积分的方案
+# decision (推荐): 完整流程, 只推荐 1 个最值得花积分的方案并生成 brand-film-spec
 python main.py product.jpg --mode decision \
   --num-candidates 8 --top-k 3 \
   --platform douyin --aspect-ratio 9:16 --duration 15
@@ -41,7 +41,7 @@ python main.py product.jpg --mode decision \
 复制 `.env.example` 为 `.env`，填入两个 key：
 ```
 ARK_API_KEY=your-ark-key        # 火山方舟 Doubao (特征提取 + 评分裁判)
-DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意搜索/渲染决策/最终 prompt)
+DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意搜索/渲染决策/brand-film-spec)
 ```
 
 ## 输出 (data/<图片名>.*)
@@ -56,7 +56,8 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意搜索/渲染决策/最终 pro
 | `.storyboard.json` | 关键帧预演 (`--storyboard` 启用, 默认关闭) |
 | `.decision.json` | 是否值得花积分 + 失败修正建议 |
 | `.package.json` | 完整机器可读包 |
-| `.txt` | 可直接粘贴到小云雀的最终 prompt |
+| `.brand-film-spec.md` | 最终上传给小云雀视频生成 agent 的品牌片规格书 (`decision`) |
+| `.txt` | fast 模式兼容输出，可直接粘贴到小云雀 |
 | `.report.md` | 决策报告 (候选排序/淘汰原因/推荐理由/上传检查) |
 
 ## 模型使用
@@ -67,7 +68,7 @@ DEEPSEEK_API_KEY=your-deepseek  # DeepSeek (创意搜索/渲染决策/最终 pro
 | 创意搜索 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
 | 评分 | ARK responses (多模态) | `doubao-seed-2-0-lite-260428` | `--score-model` |
 | 渲染决策 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
-| 最终 prompt | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
+| brand-film-spec | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
 
 特征提取与评分均走 ARK responses 端点。
 可切换模型：
@@ -101,7 +102,7 @@ python main.py product.jpg --mode decision --score-model doubao-seed-evolving
 --avoid-face                     显式规避清晰真实人脸；服装类默认允许自然人脸和全身人物
 --storyboard                     启用关键帧预演 (默认关闭省成本)
 --score-model MODEL              评分裁判模型 (覆盖默认 doubao-seed-2-0-lite-260428)
---deepseek-model MODEL           DeepSeek 模型覆盖 (创意搜索/决策/prompt)
+--deepseek-model MODEL           DeepSeek 模型覆盖 (创意搜索/决策/brand-film-spec)
 --ark-model MODEL                ARK 模型覆盖 (特征提取, 默认 doubao-seed-2-1-turbo-260628)
 ```
 
@@ -153,7 +154,7 @@ core/
   shortlist.py               评分 → shortlist (规则, P1 核心)
   storyboard_simulator.py    候选 → 关键帧 prompt (最小实现, opt-in)
   render_decision.py         shortlist → 是否花积分 (规则+LLM)
-  output_package.py          最终 prompt + 决策报告
+  output_package.py          brand-film-spec + 决策报告
 templates/  prompts/  schemas/  tests/  data/
 ```
 

@@ -1,6 +1,6 @@
-"""组装最终可粘贴到小云雀的 prompt + 决策报告。
+"""组装最终上传给小云雀视频生成 agent 的品牌片规格书 + 决策报告。
 
-输出 xiaoyunque_prompt (纯文本, 直接粘贴) + 完整 package dict + report.md。
+输出 brand_film_spec (markdown, 上传给小云雀视频生成 agent) + 完整 package dict + report.md。
 严格约束产品外观来自 dense_caption, 对敏感类目加入产品真实性约束。
 """
 
@@ -13,7 +13,7 @@ from typing import Any
 from .deepseek_client import chat
 
 _PROMPT_PATH = (
-    Path(__file__).resolve().parent.parent / "prompts" / "build_final_prompt.txt"
+    Path(__file__).resolve().parent.parent / "prompts" / "build_brand_film_spec.txt"
 )
 
 _SENSITIVE_CATEGORIES = {"珠宝饰品", "服装鞋包", "高定礼服", "美妆", "医美"}
@@ -43,9 +43,16 @@ def _sensitive_constraints(brief: dict[str, Any]) -> str:
     return "；".join(parts) if parts else "无额外约束"
 
 
-def _build_xiaoyunque_prompt(
+def _storyboard_block(storyboard_simulation: dict[str, Any] | None) -> str:
+    if not storyboard_simulation:
+        return "（未启用关键帧预演）"
+    return json.dumps(storyboard_simulation, ensure_ascii=False, indent=2)
+
+
+def _build_brand_film_spec(
     brief: dict[str, Any], candidate: dict[str, Any],
     score: dict[str, Any], decision: dict[str, Any],
+    storyboard_simulation: dict[str, Any] | None,
     template: dict[str, Any] | None, model: str | None, api_key: str | None,
 ) -> str:
     prompt = _PROMPT_PATH.read_text(encoding="utf-8").format(
@@ -53,8 +60,8 @@ def _build_xiaoyunque_prompt(
         candidate_json=json.dumps(candidate, ensure_ascii=False, indent=2),
         score_json=json.dumps(score, ensure_ascii=False, indent=2),
         decision_json=json.dumps(decision, ensure_ascii=False, indent=2),
-        aspect_ratio=brief.get("aspect_ratio", "9:16"),
-        duration=brief.get("duration_seconds", 15),
+        storyboard_block=_storyboard_block(storyboard_simulation),
+        product_name=brief.get("product_name", "未命名产品"),
         dense_caption=brief.get("dense_caption", ""),
         must_show_second=brief.get("constraints", {}).get("must_show_product_by_second", 3),
         sensitive_constraints=_sensitive_constraints(brief),
@@ -93,7 +100,7 @@ def _summary(brief: dict[str, Any], candidate: dict[str, Any],
     )
 
 
-def build_final_prompt_package(
+def build_final_spec_package(
     brief: dict[str, Any],
     candidate: dict[str, Any],
     score: dict[str, Any],
@@ -103,7 +110,7 @@ def build_final_prompt_package(
     model: str | None = None,
     api_key: str | None = None,
 ) -> dict[str, Any]:
-    """组装最终 prompt 包。
+    """组装最终规格书包。
 
     Args:
         brief: creative_brief。
@@ -118,11 +125,12 @@ def build_final_prompt_package(
     Returns:
         output_package dict (见 plan 数据结构契约)。
     """
-    xiaoyunque_prompt = _build_xiaoyunque_prompt(
-        brief, candidate, score, render_decision, template, model, api_key
+    brand_film_spec = _build_brand_film_spec(
+        brief, candidate, score, render_decision, storyboard_simulation,
+        template, model, api_key
     )
     return {
-        "xiaoyunque_prompt": xiaoyunque_prompt,
+        "brand_film_spec": brand_film_spec,
         "summary": _summary(brief, candidate, score, render_decision),
         "creative_brief": brief,
         "selected_candidate": candidate,
@@ -131,6 +139,23 @@ def build_final_prompt_package(
         "render_decision": render_decision,
         "manual_upload_notes": _manual_upload_notes(brief, render_decision),
     }
+
+
+def build_final_prompt_package(
+    brief: dict[str, Any],
+    candidate: dict[str, Any],
+    score: dict[str, Any],
+    storyboard_simulation: dict[str, Any] | None,
+    render_decision: dict[str, Any],
+    template: dict[str, Any] | None = None,
+    model: str | None = None,
+    api_key: str | None = None,
+) -> dict[str, Any]:
+    """Backward-compatible wrapper for callers using the old prompt-package name."""
+    return build_final_spec_package(
+        brief, candidate, score, storyboard_simulation, render_decision,
+        template, model, api_key
+    )
 
 
 def build_report_md(
@@ -214,6 +239,6 @@ def build_report_md(
     lines.append(f"- render_recommendation: {score.get('render_recommendation')}")
     lines.append("")
 
-    lines.append("## 最终提示词")
-    lines.append("见同名 `.txt` 文件，可直接粘贴到小云雀。")
+    lines.append("## 最终上传规格书")
+    lines.append("见同名 `.brand-film-spec.md` 文件，上传给小云雀视频生成 agent。")
     return "\n".join(lines)
