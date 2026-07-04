@@ -109,5 +109,32 @@ class TestCliExploreMode(unittest.TestCase):
             self.assertFalse(os.path.exists(stem + ".package.json"))
 
 
+class TestCliCodexMode(unittest.TestCase):
+    @patch("main.extract_features")
+    def test_codex_mode_writes_run_context_without_llm_calls(self, mock_extract):
+        with tempfile.TemporaryDirectory() as d:
+            img = os.path.join(d, "hero.jpg")
+            ref = os.path.join(d, "macro.jpg")
+            out = os.path.join(d, "out.txt")
+            rc = main.main([
+                "--mode", "codex", img, "-o", out,
+                "--reference-image", ref,
+                "--commercial-goal", "brand_film",
+                "--platform", "douyin",
+            ])
+
+            self.assertEqual(rc, 0)
+            mock_extract.assert_not_called()
+            context_path = out.replace(".txt", ".codex-run.json")
+            self.assertTrue(os.path.exists(context_path))
+            with open(context_path) as fh:
+                context = json.loads(fh.read())
+            self.assertEqual(context["owner_agent"]["id"], "codex")
+            self.assertEqual(context["model_policy"]["external_llm_vlm_runtime"],
+                             "disabled_by_default")
+            self.assertEqual(len(context["image_inputs"]), 2)
+            self.assertEqual(context["user_options"]["commercial_goal"], "brand_film")
+
+
 if __name__ == "__main__":
     unittest.main()

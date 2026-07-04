@@ -4,10 +4,12 @@
   fast     (默认) 原流程: 提取特征 → 模版匹配 → 生成一个最终 prompt
   explore  生成多创意候选 → 评分 → shortlist (不生成最终上传规格书)
   decision 完整流程: explore → render_decision → brand-film-spec + 决策报告
+  codex    Codex 分支工作流: 写出 .codex-run.json, 由 Codex 线程作为模型中枢执行
 
 输出 (data/<stem>.* 或 -o 指定路径的同名族):
   .features.json .brief.json .candidates.json .scores.json .shortlist.json
   .storyboard.json(可选) .decision.json .package.json .brand-film-spec.md .report.md
+  .codex-run.json(Codex mode)
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from core.brief import build_creative_brief
+from core.codex_harness import build_codex_run_context, write_codex_run_context
 from core.creative_scoring import score_creative_candidates
 from core.creative_search import generate_creative_candidates
 from core.deepseek_client import DeepSeekError
@@ -98,6 +101,22 @@ def _run_fast(args, features, stem: Path, ark_model, deepseek_model) -> int:
     txt_path.write_text(prompt, encoding="utf-8")
     print(f"\n分镜提示词已写入: {txt_path}")
     print(f"产品特征已写入: {stem.with_suffix('.features.json')}")
+    return 0
+
+
+def _run_codex(args) -> int:
+    """Codex branch: write a run context packet, no external model calls."""
+    stem = _stem_path(args.image, args.output)
+    context = build_codex_run_context(
+        args.image,
+        reference_images=args.reference_image or [],
+        user_options=_user_options(args),
+        output_stem=stem,
+    )
+    context_path = write_codex_run_context(context, stem.with_suffix(".codex-run.json"))
+    print("[codex] 已写出 Codex harness 运行上下文")
+    print(f"  → {context_path}")
+    print("  这个模式不调用 Doubao/DeepSeek/ARK；由 Codex 线程按 harness 读图并生成 brand-film-spec。")
     return 0
 
 
@@ -208,9 +227,10 @@ def main(argv: list[str] | None = None) -> int:
                         help="输出文件族主路径覆盖 (默认 data/<图片名>.*)")
     parser.add_argument("--list-categories", action="store_true",
                         help="列出可用类目体系后退出")
-    parser.add_argument("--mode", choices=["fast", "explore", "decision"], default="fast",
+    parser.add_argument("--mode", choices=["fast", "explore", "decision", "codex"],
+                        default="fast",
                         help="fast=原流程; explore=候选+评分+shortlist; "
-                             "decision=完整流程+最终推荐 (推荐)")
+                             "decision=旧 API 完整流程; codex=写出 Codex harness 运行包")
     parser.add_argument("--num-candidates", type=int, default=8, help="创意候选数量")
     parser.add_argument("--top-k", type=int, default=3, help="shortlist 上限")
     parser.add_argument("--min-score", type=int, default=80, help="shortlist overall 门槛")
@@ -237,6 +257,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="显式规避清晰真实人脸；服装类默认允许自然人脸和全身人物")
     parser.add_argument("--storyboard", action="store_true",
                         help="启用关键帧预演 (默认关闭省成本, P2 将增强)")
+    parser.add_argument("--reference-image", action="append", default=None,
+                        help="Codex mode 附加产品/细节/参考图, 可多次传")
     parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖 (特征提取)")
     parser.add_argument("--deepseek-model", default=None, help="DeepSeek 模型名覆盖")
     parser.add_argument("--score-model", default=None, help="ARK 裁判模型名; 不设置则用默认 doubao-seed-2-0-lite-260428 (responses 接口)")
@@ -251,6 +273,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.image:
         parser.error("image is required (unless --list-categories)")
+
+    if args.mode == "codex":
+        return _run_codex(args)
 
     print(f"[1/6] 提取产品特征 (Doubao 多模态): {args.image}")
     try:
