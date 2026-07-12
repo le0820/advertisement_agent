@@ -10,23 +10,42 @@ import main
 
 
 def _features():
-    return {"category": "珠宝饰品", "sub_category": "情侣对戒",
+    return {"category": "服饰配件", "sub_category": "饰品",
             "product_name": "对戒", "selling_points": ["浪纹"],
             "target_audience": "情侣", "dense_caption": "银白金属戒",
             "distribution_scenarios": ["douyin"]}
 
 
 def _cand(cid):
+    proof_tags = ["product_macro", "worn_scale", "craft_detail",
+                  "styling_context", "accessory_hero"]
     return {"candidate_id": cid, "creative_route": "品牌大片", "hook": "h",
-            "one_sentence_idea": "idea", "narrative_spine": "s", "shot_plan": [],
-            "seedance_prompt_risk": {"risk_level": "low", "risk_reasons": []}}
+            "one_sentence_idea": "idea", "narrative_spine": "s",
+            "product_truth": "银白金属外观戒指",
+            "category_strategy": {
+                "profile_id": "fashion_accessories_v2", "subcategory_id": "accessory",
+                "consumer_tension": "纪念物需要独特视觉", "product_first_seen_at": 0.5,
+                "proof_sequence": [], "required_proofs_covered": proof_tags,
+                "claims_used": [],
+                "product_fidelity_lock": {"must_keep": ["银白色"],
+                                          "must_not_add": ["logo"],
+                                          "cross_shot_continuity": ["结构不变"]},
+                "reference_pattern_ids": ["A01"]},
+            "shot_plan": [{"shot_id": "S01", "time_range": "0-3s",
+                           "purpose": "hook", "visual": "佩戴微距",
+                           "camera": "慢推", "lighting": "侧光", "sound": "轻响",
+                           "copy_or_voiceover": "", "product_visibility": "hero",
+                           "proof_tags": proof_tags, "product_fidelity": "结构不变"}],
+            "renderer_risk": {"risk_level": "low", "risk_reasons": [],
+                              "fallback": "静态佩戴"}}
 
 
 _FAKE_SCORE_JSON = (
     '{"candidate_id": "C001", '
-    '"scores": {"first_3_seconds_hook":90, "product_clarity":85, "brand_fit":80, '
-    '"audience_relevance":80, "visual_memorability":85, "platform_fit":80, '
-    '"seedance_feasibility":82, "generation_risk_control":80, "commercial_intent":80}, '
+    '"scores": {"hook_strength":90, "product_truth_fidelity":90, '
+    '"category_proof_coverage":90, "consumer_relevance":85, "brand_fit":80, '
+    '"visual_memorability":85, "narrative_coherence":85, "platform_fit":80, '
+    '"renderer_feasibility":85, "risk_control":85, "commercial_intent":80}, '
     '"strengths": [], "weaknesses": [], "revision_suggestions": [], '
     '"render_recommendation": "render"}'
 )
@@ -63,7 +82,11 @@ class TestCliDecisionMode(unittest.TestCase):
         mock_decision.return_value = {
             "recommended_candidate_id": "C001", "should_render": True,
             "confidence": 85, "reason": "值得", "expected_failure_modes": ["手部"],
+            "decision_evidence": ["品类证据完整"], "blocking_gates": [],
             "pre_render_checklist": ["确认颜色"],
+            "renderer_plan": {"adapter_requirements": ["结构不变"],
+                              "optional_keyframes": [], "retry_budget": 1,
+                              "replace_candidate_on": ["产品变款"]},
             "if_first_render_fails": {"likely_causes": ["手部"], "recommended_fix": "简化",
                                        "do_not_retry_if": ["颜色错"]}}
         with tempfile.TemporaryDirectory() as d:
@@ -134,6 +157,22 @@ class TestCliCodexMode(unittest.TestCase):
                              "disabled_by_default")
             self.assertEqual(len(context["image_inputs"]), 2)
             self.assertEqual(context["user_options"]["commercial_goal"], "brand_film")
+            self.assertEqual(context["reference_evidence"]["sample_count"], 11)
+            self.assertEqual(set(context["available_categories"]),
+                             {"美妆个护", "食品饮料", "服饰配件"})
+
+    @patch("main.extract_features")
+    def test_codex_is_default_mode(self, mock_extract):
+        with tempfile.TemporaryDirectory() as directory:
+            image = os.path.join(directory, "hero.jpg")
+            output = os.path.join(directory, "out")
+            rc = main.main([image, "-o", output, "--category-hint", "美妆个护"])
+
+            self.assertEqual(rc, 0)
+            mock_extract.assert_not_called()
+            with open(output + ".codex-run.json") as handle:
+                context = json.load(handle)
+            self.assertEqual(context["user_options"]["category_hint"], "美妆个护")
 
 
 if __name__ == "__main__":

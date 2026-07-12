@@ -1,16 +1,23 @@
-"""分镜模版检索 + 提示词组装。
+"""Three-category base-template lookup and legacy prompt assembly.
 
-工作流:
-  产品图 → extract_features(多模态) → match_template(类目)
-        → build_prompt(caption, template) → 分镜提示词
-        → 人工上传小云雀生成广告视频
+Taxonomy and subcategory requirements come from category profiles. Templates
+provide only three pacing references and cannot override proof or claim rules.
 """
 
 from __future__ import annotations
 
+import copy
 import json
 from pathlib import Path
 from typing import Any
+
+from .category_profiles import (
+    build_category_requirements,
+    build_taxonomy,
+    list_category_taxonomy,
+    normalize_primary_category,
+    normalize_subcategory,
+)
 
 _TEMPLATES_PATH = (
     Path(__file__).resolve().parent.parent / "templates" / "storyboard_templates.json"
@@ -30,17 +37,32 @@ def match_template(
     """根据类目检索分镜模版。未匹配返回 None。
 
     Args:
-        category: 一级类目，如 "珠宝饰品" / "消费电子" / "汽车出行"。
-        sub_category: 二级类目，不传或未命中则返回该类目第一个模版。
+        category: 三大一级类目或可迁移的旧别名。
+        sub_category: 预留子类或旧子类别名。
     """
-    cat_templates = _load_templates().get(category, [])
+    canonical_category = normalize_primary_category(category)
+    canonical_subcategory = normalize_subcategory(canonical_category, sub_category)
+    cat_templates = _load_templates().get(canonical_category, [])
     if not cat_templates:
         return None
-    if sub_category:
+    selected = None
+    if canonical_subcategory:
         for t in cat_templates:
-            if t.get("sub_category") == sub_category:
-                return t
-    return cat_templates[0]
+            if t.get("sub_category") == canonical_subcategory:
+                selected = t
+                break
+    if selected is None:
+        selected = cat_templates[0]
+
+    result = copy.deepcopy(selected)
+    taxonomy = build_taxonomy(canonical_category, canonical_subcategory)
+    result["resolved_taxonomy"] = taxonomy
+    result["category_profile"] = build_category_requirements({
+        "taxonomy": taxonomy,
+        "category": canonical_category,
+        "sub_category": canonical_subcategory,
+    })
+    return result
 
 
 def build_prompt(dense_caption: str, template: dict[str, Any]) -> str:
@@ -89,9 +111,5 @@ def build_prompt(dense_caption: str, template: dict[str, Any]) -> str:
 
 
 def list_categories() -> dict[str, list[str]]:
-    """列出所有一级类目及其二级子类。"""
-    templates = _load_templates()
-    return {
-        cat: [t.get("sub_category", "") for t in items]
-        for cat, items in templates.items()
-    }
+    """List the profile registry, independent of template count."""
+    return list_category_taxonomy()

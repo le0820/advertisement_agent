@@ -17,19 +17,28 @@ _PROMPT_PATH = (
 )
 
 
-def _normalize(raw: dict[str, Any], candidate_id: str) -> dict[str, Any]:
+def _normalize(
+    raw: dict[str, Any],
+    candidate_id: str,
+    profile_id: str = "",
+) -> dict[str, Any]:
     keyframes = raw.get("keyframes") or []
     if not isinstance(keyframes, list):
         keyframes = []
+    for keyframe in keyframes:
+        if isinstance(keyframe, dict) and not isinstance(keyframe.get("proof_tags"), list):
+            keyframe["proof_tags"] = []
     review = raw.get("storyboard_review") or {}
     if not isinstance(review, dict):
         review = {}
     review.setdefault("visual_consistency_risk", "")
     review.setdefault("product_fidelity_risk", "")
+    review.setdefault("category_proof_risk", "")
     review.setdefault("model_difficulty", "medium")
     review.setdefault("recommendation", "acceptable")
     return {
         "candidate_id": candidate_id,
+        "profile_id": profile_id,
         "keyframes": keyframes,
         "storyboard_review": review,
     }
@@ -62,4 +71,8 @@ def generate_storyboard_simulation(
         model=model,
         api_key=api_key,
     )
-    return _normalize(raw, candidate_id)
+    profile_id = str(
+        brief.get("category_profile", {}).get("profile_id", "")
+        if isinstance(brief.get("category_profile"), dict) else ""
+    )
+    return _normalize(raw, candidate_id, profile_id)

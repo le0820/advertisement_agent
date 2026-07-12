@@ -23,11 +23,16 @@ class TestCodexHarness(unittest.TestCase):
             "disabled_by_default",
         )
         self.assertIn("video_generation_port", harness)
+        self.assertEqual(
+            harness["category_framework"]["supported_primary_categories"],
+            ["美妆个护", "食品饮料", "服饰配件"],
+        )
 
     def test_normalizes_multiple_images(self):
         images = normalize_image_inputs("hero.jpg", ["side.jpg", "macro.jpg"])
 
         self.assertEqual(images[0]["role"], "primary_product")
+        self.assertEqual(images[0]["source_id"], "IMG01")
         self.assertEqual(images[0]["source"], "hero.jpg")
         self.assertEqual(images[1]["role"], "alternate_angle")
         self.assertEqual(images[2]["order"], 3)
@@ -47,10 +52,16 @@ class TestCodexHarness(unittest.TestCase):
         )
 
         self.assertEqual(context["owner_agent"]["id"], "codex")
-        self.assertIn("feature_extraction", context["stage_order"])
+        self.assertIn("product_understanding", context["stage_order"])
+        self.assertIn("category_resolution", context["stage_order"])
+        self.assertIn("category_aware_scoring", context["stage_order"])
         self.assertIn("brand_film_spec", context["stage_order"])
         self.assertEqual(len(context["image_inputs"]), 2)
         self.assertEqual(context["user_options"]["commercial_goal"], "brand_film")
+        self.assertEqual(
+            context["input_contract"]["defaults"]["commercial_goal"],
+            "brand_film",
+        )
         self.assertEqual(context["user_options"]["duration_seconds"], 15)
         self.assertNotIn("duration", context["user_options"])
         self.assertNotIn("slogan", context["user_options"])
@@ -59,6 +70,15 @@ class TestCodexHarness(unittest.TestCase):
         self.assertEqual(
             context["video_generation_port"]["default_adapter"],
             "manual_seedance_upload",
+        )
+        self.assertEqual(context["reference_evidence"]["sample_count"], 11)
+        self.assertEqual(
+            set(context["available_categories"]),
+            {"美妆个护", "食品饮料", "服饰配件"},
+        )
+        self.assertEqual(
+            context["artifact_schema_map"][".features.json"],
+            "schemas/product_understanding.schema.json",
         )
 
     def test_writes_context(self):

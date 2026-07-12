@@ -1,58 +1,58 @@
-你是广告创意评审 + 视频生成可行性专家。对下面这个创意候选打分 (0-100 整数)。
+你是 Codex harness 的广告创意评审。评价候选的语义质量和视频生成可行性；确定性代码负责品类硬门、权重和 overall。
 
-【创意 brief】
+【Creative brief】
 {brief_json}
 
-【创意候选】
+【Category profile snapshot】
+{category_profile_json}
+
+【Creative candidate】
 {candidate_json}
 
-【评分维度 (每项 0-100)】
-- first_3_seconds_hook: 前 3 秒钩子强度 (是否第一眼留住人)
-- product_clarity: 产品是否足够早、足够清楚出现
-- brand_fit: 是否契合品牌调性/slogan
-- audience_relevance: 是否契合目标人群动机
-- visual_memorability: 画面记忆点 (一眼能复述的画面)
-- platform_fit: 是否契合 {platform} 平台节奏与画幅
-- seedance_feasibility: 视频模型生成的可行性 (避免复杂手部/多人/细小文字/真实人脸/外观漂移)
-- generation_risk_control: 高风险元素是否被规避
-- commercial_intent: 商业目标(品牌认知/种草/转化/复购)是否达成
+【代码已计算的结构化硬门】
+{gate_results_json}
 
-【其它字段】
-- strengths: 2-4 条
-- weaknesses: 2-4 条
-- revision_suggestions: 可执行的修改建议
-- render_recommendation: reject|revise|shortlist|render
-  (reject=不值生成; revise=需大改; shortlist=可入围但非首选; render=值得直接生成)
+对以下 11 个维度打 0-100 整数：
+- hook_strength: 0-2 秒是否立即可懂、产品是否参与钩子
+- product_truth_fidelity: 颜色、形态、包装、数量、材质外观和细节是否忠于 observed facts
+- category_proof_coverage: 是否真正证明当前品类/子类 critical proof groups，而不是只声明 proof tags
+- consumer_relevance: 消费者 tension、使用场景和目标人群是否具体
+- brand_fit: 是否符合已提供品牌资产；没有品牌资产时评价调性一致性，不因缺失虚构资产
+- visual_memorability: 是否有一眼可复述、又属于本产品的画面
+- narrative_coherence: hook → 身份 → 证据 → 回报 → lock 是否连贯
+- platform_fit: 是否适合 {platform}、画幅、时长和信息密度
+- renderer_feasibility: 人物、手部、食物物理、产品跨镜一致性、镜头数量和动作是否可稳定生成
+- risk_control: claim、产品漂移、文字/logo、人物连续性和品类风险是否有可执行控制
+- commercial_intent: 是否完成 brief 的 brand_film / creative_ad / direct_response / social_post 目标
 
-【硬性要求】
-- 不要输出 overall (由系统加权计算)
-- 判断 seedance_feasibility 时必须考虑: 复杂手部动作/多人交互/细小文字logo/
-  真实人脸一致性/产品外观漂移/镜头过多/动作过复杂
-- 产品外观必须与 dense_caption 一致, 否则 product_clarity 扣分
-- 若 brief.category="服装鞋包" 或 brief.constraints.category_requirements 存在:
-  1) 没有上身/上脚/手拎等穿着展示时, product_clarity 不能高于 65
-  2) 没有婚礼/晚宴/商务/红毯/秀场/通勤等使用场合时, commercial_intent 不能高于 70
-  3) 没有版型/廓形/肩线/腰线/垂坠/完整轮廓时, render_recommendation 不能是 render
-  4) 纯人台、纯静物、纯工艺微距不能直接 render, 除非 brief 明确要求"不展示真人/只拍工艺"
-  5) 默认允许完整人物、全身穿着效果和自然人脸；只有 person_policy.face_allowed=false 时才把不露脸模特、背影、侧影、脖子以下、手部作为低风险解法
-- 输出纯 JSON 对象, 不要 markdown, 不要解释
+评审规则：
+1. 不要输出 overall；代码按 category profile weights 计算。
+2. gate_results.passed=false 时，render_recommendation 不能是 shortlist 或 render；指出具体缺失证明。
+3. category_proof_coverage 必须看 shot_plan 的画面内容与 proof_tags 是否一致，不能因为字段写了 tag 就给高分。
+4. 产品事实与 dense_caption、truth_boundaries.observed 冲突时，product_truth_fidelity 不得高于 60。
+5. high-risk claim 缺少 observed/user_provided/verified_brand_asset basis 时，risk_control 不得高于 40。
+6. 人物不是通用风险：当品类需要使用、食用、穿着、佩戴或携带证明时，缺人物尺度反而应扣 category_proof_coverage。
+7. 美妆个护重点检查使用部位、工具/质地、可见结果和医疗/功效边界。
+8. 食品饮料重点检查包装身份、准备/原料、感官运动、食用/分享和健康 claim 边界。
+9. 服饰配件重点检查上身/佩戴/上脚/携带、材质工艺、完整轮廓、动态和场合。
 
-【输出格式 —— 严格按此结构】
+只输出纯 JSON 对象，不要 markdown，不要解释：
 {{
   "scores": {{
-    "first_3_seconds_hook": 85,
-    "product_clarity": 80,
-    "brand_fit": 70,
-    "audience_relevance": 75,
-    "visual_memorability": 85,
-    "platform_fit": 80,
-    "seedance_feasibility": 75,
-    "generation_risk_control": 70,
-    "commercial_intent": 75
+    "hook_strength": 0,
+    "product_truth_fidelity": 0,
+    "category_proof_coverage": 0,
+    "consumer_relevance": 0,
+    "brand_fit": 0,
+    "visual_memorability": 0,
+    "narrative_coherence": 0,
+    "platform_fit": 0,
+    "renderer_feasibility": 0,
+    "risk_control": 0,
+    "commercial_intent": 0
   }},
-  "strengths": ["强视觉钩子", "产品露出早"],
-  "weaknesses": ["品牌信息弱", "结尾驱动力不足"],
-  "revision_suggestions": ["添加品牌落版", "加速中段节奏"],
-  "render_recommendation": "render"
+  "strengths": ["2-4 条具体优点"],
+  "weaknesses": ["2-4 条具体问题"],
+  "revision_suggestions": ["可执行修改"],
+  "render_recommendation": "reject|revise|shortlist|render"
 }}
-注意: 9 个评分维度必须放在 "scores": {{}} 对象内部, 不要放在最外层。

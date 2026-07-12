@@ -1,0 +1,15 @@
+{
+  "task_id": "ad_brand_film_spec_contract",
+  "name": "Brand-film-spec downstream contract",
+  "category": "Professional Knowledge Work",
+  "edgebench_subclass": "downstream artifact contract",
+  "agent_query": "Preserve the final .brand-film-spec.md as the downstream Xiaoyunque/Seedance contract, not a plain prompt or loose report.",
+  "submit_paths": ["core", "prompts", "schemas", "tests", "README.md"],
+  "submit_exclude": ["data/", "__pycache__/", ".pytest_cache/"],
+  "judge": {
+    "eval_cmd": "python judge/eval.py --submission <submission>",
+    "parser": "structured_json",
+    "score_direction": "maximize",
+    "selection": "score_first"
+  }
+}

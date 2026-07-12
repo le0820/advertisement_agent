@@ -1,43 +1,72 @@
 {
   "harness_id": "codex_brand_film_spec",
-  "version": "2026-07-04",
-  "purpose": "Let the Codex thread act as the model hub for product-image to brand-film-spec work. The repository provides templates, schemas, deterministic gates, and artifact contracts; Codex owns image understanding, creative reasoning, scoring judgment, and final spec writing.",
+  "version": "2.0.0",
+  "updated_at": "2026-07-10",
+  "purpose": "Codex is the only semantic model hub from product images to brand-film-spec. The repository supplies three-category profiles, reference evidence, schemas, deterministic gates, artifact naming, and a renderer port.",
   "owner_agent": {
     "id": "codex",
     "role": "model_hub_agent",
     "responsibilities": [
-      "inspect one or more product images supplied in the Codex thread",
-      "convert visual facts into the existing feature and creative-brief contracts",
-      "generate, critique, shortlist, and select the creative route",
-      "write the final brand-film-spec markdown and companion report",
-      "optionally call imagegen for keyframe previsualization assets"
+      "inspect one or more product images and keep per-image evidence",
+      "separate observed facts, inferences, unknowns, and forbidden inferences",
+      "resolve one of three primary categories and preserve extensible subcategory fields",
+      "generate genuinely different creative routes with explicit proof tags",
+      "score with the selected category profile and deterministic overall",
+      "decide whether a candidate deserves video-generation cost",
+      "write the final brand-film-spec and renderer handoff",
+      "optionally use imagegen for product-fidelity and continuity probes"
     ]
   },
   "model_policy": {
     "external_llm_vlm_runtime": "disabled_by_default",
-    "reason": "The Codex branch workflow should not split image understanding, creative generation, judging, and final writing across unrelated LLM/VLM services.",
+    "semantic_authority": "codex_thread",
+    "reason": "Product truth, creative reasoning, evaluation, decision, and final writing must stay under one model context.",
     "codex_controls_stages": [
       "image_intake",
-      "feature_extraction",
-      "creative_candidate_generation",
-      "creative_scoring",
+      "product_understanding",
+      "category_resolution",
+      "creative_generation",
+      "category_aware_scoring",
       "render_decision",
       "brand_film_spec"
     ],
     "deterministic_code_controls": [
-      "template/category lookup",
-      "brief field normalization",
-      "score-weight documentation",
-      "shortlist eligibility rules",
-      "artifact naming"
+      "category and subcategory alias normalization",
+      "category profile validation and score weights",
+      "structured proof-tag gate evaluation",
+      "shortlist eligibility and ordering",
+      "artifact and renderer-port contracts"
     ],
     "optional_plugins": [
       {
         "id": "imagegen",
         "required": false,
-        "use": "Generate 3-5 still keyframes or visual-risk probes before sending a spec to the expensive video renderer.",
-        "boundary": "Imagegen may create preview assets, but Codex still owns the product-fidelity review and final render decision."
+        "use": "Generate 3-5 still keyframe probes when product fidelity, human interaction, food physics, or cross-shot continuity is risky.",
+        "boundary": "Generated keyframes are review evidence only. They cannot replace source product images or grant new product claims."
       }
+    ]
+  },
+  "category_framework": {
+    "framework_id": "codex_commerce_3c",
+    "profiles": "harness/category_profiles.json",
+    "profiles_schema": "schemas/category_profiles.schema.json",
+    "reference_manifest": "harness/reference_video_manifest.json",
+    "reference_analysis": "docs/reference-video-analysis.md",
+    "supported_primary_categories": ["美妆个护", "食品饮料", "服饰配件"],
+    "reserved_subcategories": {
+      "美妆个护": ["美甲", "美妆", "护肤品", "医美用品"],
+      "食品饮料": ["零食", "饮料", "速冻速食", "预制菜"],
+      "服饰配件": ["服装", "饰品", "鞋包"]
+    },
+    "subcategory_extension_contract": {
+      "status_enum": ["matched", "provisional", "unresolved", "custom"],
+      "required_fields": ["candidate_name", "parent_hint", "reason", "future_profile_required", "custom_attributes"],
+      "rule": "Never force a misleading reserved subcategory. Use custom or unresolved and preserve a future profile candidate."
+    },
+    "reference_policy": [
+      "Reference samples calibrate proof order and pacing only.",
+      "Do not copy sample faces, packaging, logos, slogans, exact copy, product designs, or unsupported claims.",
+      "Do not assume the synthetic style of the samples is the desired brand-film aesthetic."
     ]
   },
   "input_contract": {
@@ -46,7 +75,7 @@
         "name": "product_images",
         "type": "image[]",
         "min_items": 1,
-        "description": "One or more product images sent by the user in the Codex thread or referenced by local path/URL."
+        "description": "One or more product images supplied in the Codex thread or by local path/URL."
       }
     ],
     "image_roles": [
@@ -69,204 +98,184 @@
       "usage_scenes",
       "cta",
       "forbidden_claims",
-      "avoid_face"
+      "avoid_face",
+      "category_hint",
+      "subcategory_hint",
+      "subcategory_extension"
+    ],
+    "defaults": {
+      "platform": "douyin",
+      "aspect_ratio": "9:16",
+      "duration_seconds": 15,
+      "commercial_goal": "brand_film"
+    },
+    "precedence": [
+      "explicit user facts and constraints",
+      "directly visible product-image evidence",
+      "verified packaging or brand assets",
+      "category-profile defaults",
+      "reference-video patterns"
     ]
   },
   "stages": [
     {
       "id": "image_intake",
       "owner": "codex",
-      "inputs": [
-        "product_images",
-        "optional_text_fields"
-      ],
-      "outputs": [
-        "source_image_manifest",
-        "user_intent_summary"
-      ],
+      "inputs": ["product_images", "optional_text_fields"],
+      "outputs": ["source_image_manifest", "user_intent_summary"],
       "artifact_suffix": ".codex-run.json",
       "instructions": [
-        "Treat uploaded images as the highest-priority source of truth.",
-        "If multiple images conflict, call out the conflict and prefer the primary product image for final product facts.",
-        "Do not infer unverifiable brand history, sales numbers, or awards."
+        "Assign a stable source_id and role to every image.",
+        "Keep product images separate from mood references.",
+        "Record conflicts across images; do not silently merge incompatible variants."
       ]
     },
     {
-      "id": "feature_extraction",
+      "id": "product_understanding",
       "owner": "codex",
-      "inputs": [
-        "product_images",
-        "prompts/extract_features.txt",
-        "templates/storyboard_templates.json"
-      ],
-      "outputs": [
-        "features"
-      ],
+      "inputs": ["source_image_manifest", "prompts/extract_features.txt", "harness/category_profiles.json"],
+      "outputs": ["product_understanding"],
       "artifact_suffix": ".features.json",
-      "schema": "schemas/creative_brief.schema.json#feature-source-fields",
+      "schema": "schemas/product_understanding.schema.json",
       "instructions": [
-        "Produce category, sub_category, product_name, selling_points, target_audience, dense_caption, and distribution_scenarios.",
-        "Keep dense_caption factual and specific enough to drive video prompts.",
-        "Apply the fashion-vs-jewelry guardrail when embroidery, beads, metallic thread, or gemstone-like reflections are product craft rather than jewelry."
+        "Populate product_identity, taxonomy, visual_facts, commercial_hypotheses, truth_boundaries, and dense_caption.",
+        "Cite source image ids in observations and taxonomy evidence.",
+        "Use visible material appearance when actual material composition is unknown.",
+        "Never infer clinical, health, ingredient, authenticity, material-purity, durability, or numerical claims from appearance alone."
+      ]
+    },
+    {
+      "id": "category_resolution",
+      "owner": "codex_plus_rules",
+      "inputs": ["product_understanding", "harness/category_profiles.json", "core/category_profiles.py"],
+      "outputs": ["resolved_taxonomy", "category_profile_snapshot"],
+      "instructions": [
+        "Resolve exactly one supported primary category.",
+        "Use matched or provisional only when a reserved subcategory is defensible.",
+        "Use unresolved or custom plus subcategory_extension when the registry does not fit.",
+        "Apply legacy aliases only as migration, never expose them as current top-level choices."
       ]
     },
     {
       "id": "creative_brief",
       "owner": "codex_plus_rules",
-      "inputs": [
-        "features",
-        "optional_text_fields",
-        "core/brief.py"
-      ],
-      "outputs": [
-        "creative_brief"
-      ],
+      "inputs": ["product_understanding", "resolved_taxonomy", "category_profile_snapshot", "optional_text_fields", "core/brief.py"],
+      "outputs": ["creative_brief"],
       "artifact_suffix": ".brief.json",
       "schema": "schemas/creative_brief.schema.json",
       "instructions": [
-        "Preserve user-provided commercial inputs over inferred values.",
-        "Keep person_policy explicit, especially for fashion products and avoid_face requests.",
-        "Do not turn avoid_face into a ban on human body display when the product needs wearing, carrying, or on-foot proof."
+        "User commercial inputs override hypotheses but never rewrite observed product facts.",
+        "Snapshot critical proof groups, scoring weights, claim boundaries, person policy, and renderer risks.",
+        "Do not default to avoiding people when the category requires application, consumption, wearing, scale, or carry proof."
       ]
     },
     {
       "id": "template_selection",
       "owner": "codex_plus_rules",
-      "inputs": [
-        "creative_brief",
-        "templates/storyboard_templates.json"
-      ],
-      "outputs": [
-        "selected_template"
-      ],
+      "inputs": ["creative_brief", "templates/storyboard_templates.json"],
+      "outputs": ["selected_base_template"],
       "instructions": [
-        "Use templates as creative references, not as a runtime model.",
-        "If no exact sub-category template exists, use the closest category template and state the mismatch in the report."
+        "Use exactly one of the three base templates as a pacing reference.",
+        "Subcategory differences come from category_profile, not duplicated templates.",
+        "A template cannot override product truth, claim boundaries, or critical proof groups."
       ]
     },
     {
-      "id": "creative_candidate_generation",
+      "id": "creative_generation",
       "owner": "codex",
-      "inputs": [
-        "creative_brief",
-        "selected_template",
-        "prompts/generate_creative_candidates.txt"
-      ],
-      "outputs": [
-        "creative_candidates"
-      ],
+      "inputs": ["creative_brief", "selected_base_template", "harness/reference_video_manifest.json", "prompts/generate_creative_candidates.txt"],
+      "outputs": ["creative_candidates"],
       "artifact_suffix": ".candidates.json",
       "schema": "schemas/creative_candidate.schema.json",
       "instructions": [
-        "Generate several genuinely different creative routes instead of superficial prompt variants.",
-        "Each route must show how the product appears in the first 3 seconds.",
-        "For fashion, include worn/carry/on-foot proof, silhouette or full-outline proof, and an actual occasion."
+        "Generate 4-6 meaningfully different routes, not wording variants.",
+        "Every route must declare product_first_seen_at, proof_sequence, required_proofs_covered, claims_used, and product_fidelity_lock.",
+        "Every shot must declare proof_tags and product_fidelity.",
+        "Cover every critical proof group before marking a route render-ready.",
+        "Reference pattern ids explain structure; they do not authorize copying sample content."
       ]
     },
     {
-      "id": "creative_scoring",
-      "owner": "codex",
-      "inputs": [
-        "creative_brief",
-        "creative_candidates",
-        "prompts/score_creative_candidate.txt",
-        "core/creative_scoring.py"
-      ],
-      "outputs": [
-        "creative_scores"
-      ],
+      "id": "category_aware_scoring",
+      "owner": "codex_plus_rules",
+      "inputs": ["creative_brief", "creative_candidates", "prompts/score_creative_candidate.txt", "core/category_profiles.py", "core/creative_scoring.py"],
+      "outputs": ["creative_scores"],
       "artifact_suffix": ".scores.json",
       "schema": "schemas/creative_score.schema.json",
       "instructions": [
-        "Score the nine existing dimensions as integers from 0 to 100.",
-        "Compute overall with the repository weights, not as a free-form subjective score.",
-        "Use reject/revise/shortlist/render exactly as defined in the schema."
+        "Score the v2 dimensions from 0 to 100 as integers.",
+        "Use the selected category profile weights; code computes overall.",
+        "Run structured category gates before render recommendation.",
+        "A high overall cannot override failed product timing, critical proof, unsupported-claim, fidelity, feasibility, or risk gates."
       ]
     },
     {
       "id": "shortlist",
       "owner": "deterministic_rules",
-      "inputs": [
-        "creative_candidates",
-        "creative_scores",
-        "core/shortlist.py"
-      ],
-      "outputs": [
-        "shortlist"
-      ],
+      "inputs": ["creative_candidates", "creative_scores", "creative_brief", "core/shortlist.py"],
+      "outputs": ["shortlist"],
       "artifact_suffix": ".shortlist.json",
       "instructions": [
-        "Prefer eligible_for_render candidates before merely high-overall candidates.",
-        "Mark low feasibility, weak product clarity, and reject recommendations as render-ineligible."
+        "Eligible candidates sort before ineligible candidates.",
+        "Reject or revise recommendations are not render-eligible.",
+        "Profile score floors and category gate results are mandatory eligibility inputs."
       ]
     },
     {
       "id": "keyframe_previsualization_optional",
       "owner": "codex_optional_imagegen",
-      "inputs": [
-        "shortlist",
-        "prompts/generate_storyboard_simulator.txt",
-        "imagegen plugin"
-      ],
-      "outputs": [
-        "storyboard_simulation",
-        "optional_keyframe_assets"
-      ],
+      "inputs": ["shortlist", "creative_brief", "prompts/generate_storyboard_simulator.txt", "imagegen plugin"],
+      "outputs": ["storyboard_simulation", "optional_keyframe_assets"],
       "artifact_suffix": ".storyboard.json",
+      "schema": "schemas/storyboard_simulation.schema.json",
       "instructions": [
-        "Use this stage when visual risk is high or when the user asks to see still-frame probes.",
-        "Generated keyframes are evidence for review, not replacements for the original product images.",
-        "If generated previews drift from product facts, revise or reject the candidate before video generation."
+        "Use when fidelity, people, hands, food physics, or continuity risk is material.",
+        "Keyframes must cover critical proof groups, not only attractive hero frames.",
+        "Reject or revise previews that drift from original product images."
       ]
     },
     {
       "id": "render_decision",
       "owner": "codex_plus_rules",
-      "inputs": [
-        "creative_brief",
-        "shortlist",
-        "storyboard_simulation",
-        "prompts/make_render_decision.txt"
-      ],
-      "outputs": [
-        "render_decision"
-      ],
+      "inputs": ["creative_brief", "shortlist", "storyboard_simulation", "prompts/make_render_decision.txt", "core/render_decision.py"],
+      "outputs": ["render_decision"],
       "artifact_suffix": ".decision.json",
       "schema": "schemas/render_decision.schema.json",
       "instructions": [
-        "Recommend exactly one candidate only when it is worth spending a video-render credit.",
-        "If no candidate clears feasibility and product-fidelity gates, set should_render=false.",
-        "Keep expected failure modes and first-render fixes concrete enough to control retry cost."
+        "Recommend at most one eligible candidate.",
+        "Return should_render=false when no route passes all hard gates.",
+        "State evidence, blocking gates, expected failures, retry budget, and candidate-replacement triggers.",
+        "Decision is about spending renderer cost, not about whether an idea sounds attractive."
       ]
     },
     {
       "id": "brand_film_spec",
       "owner": "codex",
-      "inputs": [
-        "creative_brief",
-        "selected_candidate",
-        "selected_score",
-        "render_decision",
-        "prompts/build_brand_film_spec.txt"
-      ],
-      "outputs": [
-        "brand_film_spec",
-        "output_package",
-        "decision_report"
-      ],
-      "artifact_suffixes": [
-        ".brand-film-spec.md",
-        ".package.json",
-        ".report.md"
-      ],
+      "inputs": ["product_understanding", "creative_brief", "selected_candidate", "selected_score", "render_decision", "storyboard_simulation", "prompts/build_brand_film_spec.txt"],
+      "outputs": ["brand_film_spec", "final_package", "decision_report"],
+      "artifact_suffixes": [".brand-film-spec.md", ".package.json", ".report.md"],
+      "schema": "schemas/brand_film_package.schema.json",
       "instructions": [
-        "Write the markdown spec only from accepted product facts and the selected creative route.",
-        "Make the spec renderer-agnostic: it should be usable by Seedance today and by another video adapter later.",
-        "Do not include hidden reasoning; include operational checks and retry guidance."
+        "Write the downstream creative-director specification, not a generic text-to-video prompt.",
+        "Include product truth lock, consumer proposition, category proof chain, time beats, claim boundaries, production controls, renderer fallback, and adapter boundary.",
+        "Do not invent brand history, brand name, slogan, certification, material, ingredient, efficacy, nutrition, authenticity, or numerical facts.",
+        "The package must be sufficient for a replaceable renderer without allowing the renderer to rewrite creative direction."
+      ]
+    },
+    {
+      "id": "renderer_handoff",
+      "owner": "adapter_port",
+      "inputs": ["brand_film_spec", "final_package", "original_product_images", "optional_keyframe_assets"],
+      "outputs": ["render_job_or_asset", "renderer_identity", "failure_telemetry", "product_fidelity_review"],
+      "instructions": [
+        "The adapter executes the accepted specification and returns telemetry.",
+        "The adapter must not rewrite product facts, taxonomy, claim boundaries, selected route, or proof sequence.",
+        "Retries and candidate replacement return to Codex."
       ]
     }
   ],
   "artifacts": {
+    "output_stem": "data/<primary-image-stem>",
     "file_suffixes": [
       ".codex-run.json",
       ".features.json",
@@ -280,36 +289,30 @@
       ".brand-film-spec.md",
       ".report.md"
     ],
-    "required_final_artifacts": [
-      ".decision.json",
-      ".package.json",
-      ".brand-film-spec.md",
-      ".report.md"
-    ],
-    "may_be_absent_when_not_used": [
-      ".storyboard.json"
-    ]
+    "schema_map": {
+      ".features.json": "schemas/product_understanding.schema.json",
+      ".brief.json": "schemas/creative_brief.schema.json",
+      ".candidates.json": "schemas/creative_candidate.schema.json[]",
+      ".scores.json": "schemas/creative_score.schema.json[]",
+      ".storyboard.json": "schemas/storyboard_simulation.schema.json",
+      ".decision.json": "schemas/render_decision.schema.json",
+      ".package.json": "schemas/brand_film_package.schema.json"
+    },
+    "primary_delivery": ".brand-film-spec.md",
+    "machine_readable_delivery": ".package.json",
+    "audit_delivery": ".report.md"
   },
   "video_generation_port": {
-    "contract_name": "brand_film_spec_to_video_renderer",
-    "input_artifacts": [
-      ".brand-film-spec.md",
-      ".package.json",
-      "optional_keyframe_assets"
-    ],
+    "port_id": "pluggable_video_renderer",
     "default_adapter": "manual_seedance_upload",
-    "pluggable_adapters": [
-      "seedance_manual",
-      "seedance_api_future",
-      "kling_adapter_future",
-      "runway_adapter_future",
-      "veo_adapter_future",
-      "other_video_agent"
+    "required_inputs": ["brand-film-spec.md", "package.json", "original product images"],
+    "optional_inputs": ["approved keyframe assets"],
+    "adapter_contract": [
+      "do not rewrite product facts, claims, taxonomy, selected route, or proof sequence",
+      "return adapter/model identity and output or job id",
+      "return failure telemetry and product-fidelity review",
+      "never silently spend a second render when retry_budget is exhausted"
     ],
-    "boundary": [
-      "Codex owns creative direction, fidelity constraints, scoring, and render decision.",
-      "The video adapter only executes the accepted spec and returns render outputs or failure telemetry.",
-      "Retry decisions come back through render_decision rather than being improvised inside a renderer."
-    ]
+    "replaceable_adapters": ["manual_seedance_upload", "seedance_api", "kling", "runway", "veo", "other_video_agent"]
   }
 }

@@ -1,7 +1,7 @@
-"""组装最终上传给小云雀视频生成 agent 的品牌片规格书 + 决策报告。
+"""组装交给可插拔视频生成 adapter 的品牌片规格书 + 决策报告。
 
-输出 brand_film_spec (markdown, 上传给小云雀视频生成 agent) + 完整 package dict + report.md。
-严格约束产品外观来自 dense_caption, 对敏感类目加入产品真实性约束。
+输出 brand_film_spec markdown、完整 package 和 report.md，并携带产品事实锁、
+claim boundaries 与 renderer handoff。
 """
 
 from __future__ import annotations
@@ -16,16 +16,15 @@ _PROMPT_PATH = (
     Path(__file__).resolve().parent.parent / "prompts" / "build_brand_film_spec.txt"
 )
 
-_SENSITIVE_CATEGORIES = {"珠宝饰品", "服装鞋包", "高定礼服", "美妆", "医美"}
-
 
 def _sensitive_constraints(brief: dict[str, Any]) -> str:
-    cat = brief.get("category", "")
     constraints = brief.get("constraints", {})
     person_policy = constraints.get("person_policy") or {}
-    parts: list[str] = []
-    if cat in _SENSITIVE_CATEGORIES:
-        parts.append("本品类易过度美化, 必须保持产品真实材质/颜色/工艺, 不得美化失真")
+    profile = brief.get("category_profile") or {}
+    parts: list[str] = [
+        str(value) for value in profile.get("claim_guardrails", []) if value
+    ]
+    parts.append("产品颜色、形态、包装、材质外观和可见细节必须跨镜一致")
     if person_policy.get("model_required") and not person_policy.get("face_allowed", True):
         framing = "、".join(person_policy.get("allowed_body_framing", []))
         parts.append(
@@ -65,6 +64,26 @@ def _build_brand_film_spec(
         dense_caption=brief.get("dense_caption", ""),
         must_show_second=brief.get("constraints", {}).get("must_show_product_by_second", 3),
         sensitive_constraints=_sensitive_constraints(brief),
+        category_profile_json=json.dumps(
+            brief.get("category_profile", {}), ensure_ascii=False, indent=2
+        ),
+        truth_boundaries_json=json.dumps(
+            brief.get("truth_boundaries", {}), ensure_ascii=False, indent=2
+        ),
+        claim_boundaries_json=json.dumps(
+            brief.get("claim_boundaries", {}), ensure_ascii=False, indent=2
+        ),
+        product_fidelity_lock_json=json.dumps(
+            candidate.get("category_strategy", {}).get("product_fidelity_lock", {}),
+            ensure_ascii=False,
+            indent=2,
+        ),
+        renderer_port_json=json.dumps({
+            "port_id": "pluggable_video_renderer",
+            "required_inputs": ["brand-film-spec.md", "package.json"],
+            "optional_inputs": ["keyframe assets", "original product images"],
+            "adapter_must_not_rewrite": ["product facts", "claim boundaries", "selected route", "proof sequence"],
+        }, ensure_ascii=False, indent=2),
     )
     return chat(
         [{"role": "user", "content": prompt}],
@@ -77,14 +96,14 @@ def _manual_upload_notes(brief: dict[str, Any], decision: dict[str, Any]) -> lis
     person_policy = brief.get("constraints", {}).get("person_policy") or {}
     notes = [
         f"画幅选 {brief.get('aspect_ratio', '9:16')}, 时长 {brief.get('duration_seconds', 15)} 秒",
-        "上传前对照 pre_render_checklist 逐条确认产品外观与 dense_caption 一致",
+        "送入视频生成 adapter 前，逐条确认产品事实锁和品类证据链",
     ]
     if person_policy.get("model_required") and not person_policy.get("face_allowed", True):
         notes.append("如生成真人脸失败, 改用脖子以下/背影/侧影模特, 保留穿着效果")
     elif person_policy.get("model_required") and person_policy.get("face_allowed", True):
         notes.append("服装类可使用完整人物和自然人脸, 但上传前确认服装版型、垂坠和场合仍是画面重点")
     elif brief.get("constraints", {}).get("avoid_face_generation"):
-        notes.append("如小云雀生成真人脸失败, 改用产品特写/人台/背影")
+        notes.append("如人物生成失败，改用产品特写、背影或局部身体，但保留品类证据")
     notes.extend(decision.get("pre_render_checklist", []))
     return notes
 
@@ -129,14 +148,41 @@ def build_final_spec_package(
         brief, candidate, score, render_decision, storyboard_simulation,
         template, model, api_key
     )
+    product_fidelity_lock = (
+        candidate.get("category_strategy", {}).get("product_fidelity_lock", {})
+        if isinstance(candidate.get("category_strategy"), dict) else {}
+    )
+    renderer_handoff = {
+        "port_id": "pluggable_video_renderer",
+        "required_inputs": ["brand-film-spec.md", "package.json"],
+        "optional_inputs": ["original product images", "approved keyframe assets"],
+        "adapter_must_not_rewrite": [
+            "product facts",
+            "taxonomy",
+            "claim boundaries",
+            "selected creative route",
+            "category proof sequence",
+        ],
+        "return_contract": [
+            "rendered asset or job id",
+            "adapter and model identity",
+            "failure telemetry",
+            "product fidelity review status",
+        ],
+    }
     return {
+        "package_version": "2.0",
         "brand_film_spec": brand_film_spec,
         "summary": _summary(brief, candidate, score, render_decision),
         "creative_brief": brief,
+        "category_profile": brief.get("category_profile", {}),
         "selected_candidate": candidate,
         "score": score,
         "storyboard_simulation": storyboard_simulation,
         "render_decision": render_decision,
+        "product_fidelity_lock": product_fidelity_lock,
+        "claim_boundaries": brief.get("claim_boundaries", {}),
+        "renderer_handoff": renderer_handoff,
         "manual_upload_notes": _manual_upload_notes(brief, render_decision),
     }
 
@@ -185,6 +231,13 @@ def build_report_md(
         f"(should_render={dec.get('should_render')}, "
         f"confidence={dec.get('confidence')})"
     )
+    taxonomy = package.get("creative_brief", {}).get("taxonomy", {})
+    if taxonomy:
+        lines.append(
+            f"- 品类: {taxonomy.get('primary_category', '')} / "
+            f"{taxonomy.get('subcategory') or taxonomy.get('subcategory_extension', {}).get('candidate_name', '待细分')} "
+            f"({taxonomy.get('subcategory_status', '')})"
+        )
     lines.append("")
 
     lines.append("## 被淘汰的候选及原因")
@@ -237,8 +290,21 @@ def build_report_md(
     lines.append(f"- creative_route: {cand.get('creative_route')}")
     lines.append(f"- overall: {score.get('scores', {}).get('overall', 0)}")
     lines.append(f"- render_recommendation: {score.get('render_recommendation')}")
+    gates = score.get("hard_gate_results", {})
+    lines.append(f"- category_gates_passed: {gates.get('passed')}")
+    lines.append(f"- critical_group_coverage: {gates.get('critical_group_coverage')}")
+    lines.append("")
+
+    lines.append("## Claim 边界")
+    claim_boundaries = package.get("claim_boundaries", {})
+    for item in claim_boundaries.get("forbidden", []):
+        lines.append(f"- 禁止: {item}")
+    for item in claim_boundaries.get("requires_user_evidence", []):
+        lines.append(f"- 需证据: {item}")
+    if not claim_boundaries.get("forbidden") and not claim_boundaries.get("requires_user_evidence"):
+        lines.append("- (无额外项)")
     lines.append("")
 
     lines.append("## 最终上传规格书")
-    lines.append("见同名 `.brand-film-spec.md` 文件，上传给小云雀视频生成 agent。")
+    lines.append("见同名 `.brand-film-spec.md` 文件，交给选定的视频生成 adapter。")
     return "\n".join(lines)

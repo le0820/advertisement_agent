@@ -1,0 +1,405 @@
+{
+  "$schema": "../schemas/category_profiles.schema.json",
+  "framework_id": "codex_commerce_3c",
+  "version": "2.0.0",
+  "source_reference": {
+    "manifest": "harness/reference_video_manifest.json",
+    "dataset_root": "data/src",
+    "sample_count": 11,
+    "analysis_scope": "visual_only_eight_uniform_frames_per_video",
+    "calibration_rule": "Use reference videos to learn proof order and pacing, never to copy faces, wording, logos, product designs, or unsupported claims."
+  },
+  "taxonomy_contract": {
+    "primary_category_enum": ["美妆个护", "食品饮料", "服饰配件"],
+    "subcategory_status_enum": ["matched", "provisional", "unresolved", "custom"],
+    "extension_fields": [
+      "candidate_name",
+      "parent_hint",
+      "reason",
+      "future_profile_required",
+      "custom_attributes"
+    ]
+  },
+  "legacy_aliases": {
+    "categories": {
+      "美妆": "美妆个护",
+      "医美": "美妆个护",
+      "食品": "食品饮料",
+      "零食饮料": "食品饮料",
+      "服装鞋包": "服饰配件",
+      "珠宝饰品": "服饰配件"
+    },
+    "subcategories": {
+      "美妆个护": {
+        "彩妆": "美妆",
+        "唇妆": "美妆",
+        "眼妆": "美妆",
+        "甲油": "美甲",
+        "指甲油": "美甲",
+        "护肤": "护肤品",
+        "医美": "医美用品"
+      },
+      "食品饮料": {
+        "糖果": "零食",
+        "巧克力": "零食",
+        "休闲食品": "零食",
+        "酒水": "饮料",
+        "即食食品": "速冻速食",
+        "方便食品": "速冻速食",
+        "料理包": "预制菜"
+      },
+      "服饰配件": {
+        "高定礼服": "服装",
+        "男士西装": "服装",
+        "婚礼礼服": "服装",
+        "晚宴礼服": "服装",
+        "旗袍 / 中式礼服": "服装",
+        "女装连衣裙": "服装",
+        "珠宝首饰": "饰品",
+        "设计师首饰": "饰品",
+        "情侣对戒": "饰品",
+        "求婚钻戒": "饰品",
+        "珠宝腕表": "饰品",
+        "鞋履": "鞋包",
+        "箱包": "鞋包"
+      }
+    }
+  },
+  "categories": {
+    "美妆个护": {
+      "profile_id": "beauty_personal_care_v2",
+      "source_sample_ids": ["XYQ-BEAUTY-01", "XYQ-BEAUTY-02", "XYQ-BEAUTY-03", "XYQ-BEAUTY-04"],
+      "subcategories": {
+        "美甲": {
+          "id": "nail",
+          "status": "reserved",
+          "aliases": ["甲油", "指甲油", "美甲用品"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["nail_color_finish", "nail_application_or_tool", "variant_range"],
+          "critical_proof_groups": [
+            {"id": "nail_finish", "any_of": ["nail_color_finish", "finish_result"]}
+          ],
+          "claim_risks": ["不可凭图片声称无毒、持久天数或医疗级安全"]
+        },
+        "美妆": {
+          "id": "makeup",
+          "status": "reserved",
+          "aliases": ["彩妆", "唇妆", "眼妆", "底妆"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["application_area_closeup", "applicator_or_texture", "finish_result"],
+          "critical_proof_groups": [
+            {"id": "makeup_application_site", "any_of": ["application_area_closeup", "application_demo"]}
+          ],
+          "claim_risks": ["不可把单帧效果扩写为永久、无痛、治疗或保证性效果"]
+        },
+        "护肤品": {
+          "id": "skincare",
+          "status": "reserved",
+          "aliases": ["护肤", "面霜", "精华", "洁面"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["skin_texture_context", "texture_application", "skin_finish"],
+          "critical_proof_groups": [
+            {"id": "skincare_texture_use", "any_of": ["texture_application", "application_demo"]}
+          ],
+          "claim_risks": ["不可凭外观推断成分浓度、临床功效、适用肤质或见效周期"]
+        },
+        "医美用品": {
+          "id": "medical_aesthetic_supply",
+          "status": "reserved",
+          "aliases": ["医美", "医用敷料", "医美耗材"],
+          "critical_group_mode": "replace",
+          "additional_proof_tags": ["package_label_truth", "professional_context", "non_clinical_mechanism", "hero_lock"],
+          "critical_proof_groups": [
+            {"id": "medical_product_identity", "any_of": ["package_label_truth", "product_pack"]},
+            {"id": "professional_use_boundary", "any_of": ["professional_context", "usage_context"]},
+            {"id": "safe_mechanism", "any_of": ["non_clinical_mechanism", "product_macro"]},
+            {"id": "medical_lock", "any_of": ["hero_lock", "pack_lock"]}
+          ],
+          "claim_risks": ["不得生成诊疗过程、疗效承诺、适应症、资质或监管批准信息，除非用户提供可核验依据"]
+        }
+      },
+      "image_understanding": {
+        "must_extract": [
+          "包装与可见品牌文字",
+          "产品形态、容器、 applicator 或工具",
+          "颜色、质地、光泽和可见妆效",
+          "可见使用部位与使用线索",
+          "同图中的色号或套装关系"
+        ],
+        "must_separate": ["图片直接可见事实", "基于品类的合理推断", "未知或需用户确认"],
+        "must_not_infer": ["成分浓度", "临床功效", "安全等级", "持久时间", "批准资质", "保证性前后对比"]
+      },
+      "person_policy": {
+        "face_allowed": true,
+        "human_body_allowed": true,
+        "hands_allowed": true,
+        "model_required": false,
+        "allowed_body_framing": ["product-only", "hands", "application area", "face close-up", "lifestyle portrait"]
+      },
+      "creative_contract": {
+        "route_families": ["痛点到妆效", "质地与使用感", "色彩或款式表达", "生活方式品牌片"],
+        "required_proof_tags": ["product_pack", "product_macro", "application_demo", "finish_result", "hero_lock"],
+        "critical_proof_groups": [
+          {"id": "beauty_product_identity", "any_of": ["product_pack", "product_macro"]},
+          {"id": "beauty_usage", "any_of": ["application_demo", "usage_context"]},
+          {"id": "beauty_visible_outcome", "any_of": ["finish_result", "texture_result"]},
+          {"id": "beauty_final_lock", "any_of": ["hero_lock", "pack_lock"]}
+        ],
+        "recommended_beat_order": ["0-2s 问题或欲望钩子并同帧露出产品", "2-5s 产品身份与质地/工具", "5-9s 使用或局部证据", "9-12s 可见结果与情绪回报", "12-15s 产品锁定与品牌句"],
+        "reference_pattern_ids": ["U01", "U02", "B01", "B02", "B03", "U05"]
+      },
+      "scoring": {
+        "weights": {
+          "hook_strength": 0.10,
+          "product_truth_fidelity": 0.15,
+          "category_proof_coverage": 0.17,
+          "consumer_relevance": 0.10,
+          "brand_fit": 0.07,
+          "visual_memorability": 0.09,
+          "narrative_coherence": 0.06,
+          "platform_fit": 0.06,
+          "renderer_feasibility": 0.08,
+          "risk_control": 0.08,
+          "commercial_intent": 0.04
+        },
+        "hard_floors": {
+          "product_truth_fidelity": 75,
+          "category_proof_coverage": 70,
+          "renderer_feasibility": 70,
+          "risk_control": 65
+        },
+        "minimum_critical_group_coverage": 1.0
+      },
+      "claim_guardrails": [
+        "不得凭图片新增治疗、无痛、永久、绝对安全或保证见效表达",
+        "前后效果必须被明确标记为创意演绎，且只能呈现图片或用户资料支持的可见变化",
+        "品牌名、色号、成分、资质和数字必须来自可见包装或用户输入"
+      ],
+      "renderer_risks": ["局部五官和手部变形", "妆效跨镜漂移", "容器和 applicator 结构漂移", "小字与 logo 乱码", "不真实的皮肤纹理"],
+      "spec_contract": {
+        "required_category_fields": ["使用部位", "质地或工具", "可见结果", "claim 边界", "产品锁定镜头"],
+        "fallback": "若人物一致性失败，保留局部使用部位、手部和产品微距，删除复杂全脸连续动作。"
+      }
+    },
+    "食品饮料": {
+      "profile_id": "food_beverage_v2",
+      "source_sample_ids": ["XYQ-FOOD-01", "XYQ-FOOD-02", "XYQ-FOOD-03", "XYQ-FOOD-04"],
+      "subcategories": {
+        "零食": {
+          "id": "snack",
+          "status": "reserved",
+          "aliases": ["糖果", "巧克力", "休闲食品"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["bite_or_break", "texture_macro", "sharing_occasion"],
+          "critical_proof_groups": [
+            {"id": "snack_texture", "any_of": ["bite_or_break", "texture_macro", "sensory_macro"]}
+          ],
+          "claim_risks": ["不可把好吃、低负担或儿童适用扩写为健康功效"]
+        },
+        "饮料": {
+          "id": "beverage",
+          "status": "reserved",
+          "aliases": ["酒水", "饮品", "冲调饮品"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["pour_or_mix", "temperature_or_bubbles", "drinking_moment"],
+          "critical_proof_groups": [
+            {"id": "beverage_motion", "any_of": ["pour_or_mix", "temperature_or_bubbles"]}
+          ],
+          "claim_risks": ["不可凭包装推断酒精度、糖含量、营养数据或提神功效"]
+        },
+        "速冻速食": {
+          "id": "frozen_or_instant",
+          "status": "reserved",
+          "aliases": ["即食食品", "方便食品", "速食"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["preparation_step", "time_or_convenience", "steam_or_served_texture"],
+          "critical_proof_groups": [
+            {"id": "convenience_preparation", "any_of": ["preparation_step", "time_or_convenience"]}
+          ],
+          "claim_risks": ["烹饪时间、份量和配料丰富度必须有包装或用户资料依据"]
+        },
+        "预制菜": {
+          "id": "prepared_dish",
+          "status": "reserved",
+          "aliases": ["料理包", "半成品菜", "预制料理"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["ingredient_to_dish", "heating_or_cooking", "plated_result"],
+          "critical_proof_groups": [
+            {"id": "prepared_dish_transformation", "any_of": ["ingredient_to_dish", "heating_or_cooking"]}
+          ],
+          "claim_risks": ["不得虚构原料产地、厨师背书、现制过程或零添加"]
+        }
+      },
+      "image_understanding": {
+        "must_extract": [
+          "包装、品牌、规格和可见标签文字",
+          "食物形态、颜色、表面质地和配料可见性",
+          "开封、冲泡、加热、摆盘或饮用线索",
+          "单份、分享、送礼或家庭场景线索"
+        ],
+        "must_separate": ["包装直接支持的事实", "画面可见的感官描述", "不可核验的营养或健康推断"],
+        "must_not_infer": ["原料产地", "营养数据", "零添加", "减脂或保健功效", "儿童健康功效", "烹饪时间"]
+      },
+      "person_policy": {
+        "face_allowed": true,
+        "human_body_allowed": true,
+        "hands_allowed": true,
+        "model_required": false,
+        "allowed_body_framing": ["food-only", "hands", "eating close-up", "seated lifestyle", "sharing group"]
+      },
+      "creative_contract": {
+        "route_families": ["食欲感官片", "场景需求解决", "原料到成品", "分享或礼赠时刻"],
+        "required_proof_tags": ["package_identity", "ingredient_or_preparation", "sensory_macro", "consumption_or_serving", "pack_lock"],
+        "critical_proof_groups": [
+          {"id": "food_product_identity", "any_of": ["package_identity", "pack_lock"]},
+          {"id": "food_sensory_proof", "any_of": ["sensory_macro", "steam_or_served_texture", "texture_macro"]},
+          {"id": "food_use", "any_of": ["consumption_or_serving", "drinking_moment", "sharing_occasion"]},
+          {"id": "food_final_lock", "any_of": ["pack_lock", "hero_lock"]}
+        ],
+        "recommended_beat_order": ["0-2s 饥饿/口感/场景钩子并露出商品", "2-5s 包装、原料或准备动作", "5-9s 食物质地与温度运动", "9-12s 食用、饮用或分享回报", "12-15s 包装与成品共同锁定"],
+        "reference_pattern_ids": ["U01", "U02", "F01", "F02", "F03", "U05"]
+      },
+      "scoring": {
+        "weights": {
+          "hook_strength": 0.10,
+          "product_truth_fidelity": 0.14,
+          "category_proof_coverage": 0.18,
+          "consumer_relevance": 0.09,
+          "brand_fit": 0.07,
+          "visual_memorability": 0.11,
+          "narrative_coherence": 0.06,
+          "platform_fit": 0.06,
+          "renderer_feasibility": 0.07,
+          "risk_control": 0.07,
+          "commercial_intent": 0.05
+        },
+        "hard_floors": {
+          "product_truth_fidelity": 75,
+          "category_proof_coverage": 70,
+          "renderer_feasibility": 70,
+          "risk_control": 65
+        },
+        "minimum_critical_group_coverage": 1.0
+      },
+      "claim_guardrails": [
+        "不得凭图片新增健康、减脂、儿童发育、治疗或零添加表达",
+        "配料、产地、规格、营养数字和烹饪时间只能来自可见包装或用户输入",
+        "成品镜头不得凭空增加图片中不存在的配料、份量或包装版本"
+      ],
+      "renderer_risks": ["食物形态跨镜漂移", "包装文字乱码", "筷子和手部交互失败", "蒸汽或液体物理失真", "成品与包装内容不一致"],
+      "spec_contract": {
+        "required_category_fields": ["包装身份", "感官质地", "准备或食用动作", "场景回报", "食品 claim 边界"],
+        "fallback": "若进食或筷子动作失败，改为稳定手持、端碗、倒入、蒸汽和成品微距，不改变食品形态。"
+      }
+    },
+    "服饰配件": {
+      "profile_id": "fashion_accessories_v2",
+      "source_sample_ids": ["XYQ-FASHION-01", "XYQ-FASHION-02", "XYQ-FASHION-03"],
+      "subcategories": {
+        "服装": {
+          "id": "apparel",
+          "status": "reserved",
+          "aliases": ["成衣", "礼服", "西装", "外套", "针织"],
+          "critical_group_mode": "extend",
+          "additional_proof_tags": ["worn_full_view", "silhouette_fit", "material_construction", "movement_drape"],
+          "critical_proof_groups": [
+            {"id": "apparel_fit", "any_of": ["worn_full_view", "silhouette_fit"]}
+          ],
+          "claim_risks": ["材质成分、保暖等级、工艺来源和设计师背书必须有依据"]
+        },
+        "饰品": {
+          "id": "accessory",
+          "status": "reserved",
+          "aliases": ["首饰", "珠宝", "手表", "围巾", "帽子"],
+          "critical_group_mode": "replace",
+          "additional_proof_tags": ["worn_scale", "craft_detail", "styling_context", "accessory_hero"],
+          "critical_proof_groups": [
+            {"id": "accessory_identity", "any_of": ["product_macro", "accessory_hero"]},
+            {"id": "accessory_scale", "any_of": ["worn_scale", "on_body_or_carry"]},
+            {"id": "accessory_craft", "any_of": ["craft_detail", "material_construction"]},
+            {"id": "accessory_context", "any_of": ["styling_context", "use_occasion"]},
+            {"id": "accessory_lock", "any_of": ["accessory_hero", "hero_lock"]}
+          ],
+          "claim_risks": ["不可凭外观声称天然宝石、贵金属纯度、正品来源、限量或投资价值"]
+        },
+        "鞋包": {
+          "id": "shoes_bags",
+          "status": "reserved",
+          "aliases": ["鞋履", "箱包", "手袋", "背包"],
+          "critical_group_mode": "replace",
+          "additional_proof_tags": ["on_foot_or_carry", "material_hardware", "full_outline", "capacity_or_function", "use_occasion"],
+          "critical_proof_groups": [
+            {"id": "shoes_bags_use", "any_of": ["on_foot_or_carry", "worn_full_view"]},
+            {"id": "shoes_bags_detail", "any_of": ["material_hardware", "material_construction"]},
+            {"id": "shoes_bags_outline", "any_of": ["full_outline", "silhouette_fit"]},
+            {"id": "shoes_bags_context", "any_of": ["use_occasion", "styling_context"]},
+            {"id": "shoes_bags_lock", "any_of": ["hero_lock", "accessory_hero"]}
+          ],
+          "claim_risks": ["容量、防水、耐磨、皮料和承重不得超过图片或用户资料可证明范围"]
+        }
+      },
+      "image_understanding": {
+        "must_extract": [
+          "完整外形、比例与正侧背可见结构",
+          "面料、金属、宝石感表面、缝线、五金和工艺细节",
+          "穿着、佩戴、上脚或携带方式",
+          "与人体尺度、搭配和使用场合有关的线索"
+        ],
+        "must_separate": ["可见材质外观", "不可确认的真实材质成分", "产品主体与装饰工艺"],
+        "must_not_infer": ["面料或金属成分", "天然宝石", "品牌真伪", "设计师来源", "容量和耐用数字"]
+      },
+      "person_policy": {
+        "face_allowed": true,
+        "human_body_allowed": true,
+        "hands_allowed": true,
+        "model_required": true,
+        "allowed_body_framing": ["full body", "natural face", "back view", "side profile", "neck-down", "torso", "hands", "on-foot", "carry view"]
+      },
+      "creative_contract": {
+        "route_families": ["穿搭与身份", "材质工艺", "动态轮廓", "场合通行"],
+        "required_proof_tags": ["on_body_or_carry", "material_construction", "silhouette_fit", "movement_or_function", "use_occasion", "hero_lock"],
+        "critical_proof_groups": [
+          {"id": "fashion_use", "any_of": ["on_body_or_carry", "worn_full_view", "on_foot_or_carry"]},
+          {"id": "fashion_detail", "any_of": ["material_construction", "material_hardware", "craft_detail"]},
+          {"id": "fashion_outline", "any_of": ["silhouette_fit", "full_outline", "worn_scale"]},
+          {"id": "fashion_occasion", "any_of": ["use_occasion", "styling_context"]},
+          {"id": "fashion_final_lock", "any_of": ["hero_lock", "accessory_hero"]}
+        ],
+        "recommended_beat_order": ["0-2s 上身/佩戴/上脚/携带的完整钩子", "2-5s 材质、工艺或五金细节", "5-9s 完整轮廓、比例与动态", "9-12s 真实使用场合或功能", "12-15s 完整造型与产品锁定"],
+        "reference_pattern_ids": ["U01", "U02", "A01", "A02", "A03", "U05"]
+      },
+      "scoring": {
+        "weights": {
+          "hook_strength": 0.08,
+          "product_truth_fidelity": 0.16,
+          "category_proof_coverage": 0.19,
+          "consumer_relevance": 0.08,
+          "brand_fit": 0.08,
+          "visual_memorability": 0.10,
+          "narrative_coherence": 0.06,
+          "platform_fit": 0.05,
+          "renderer_feasibility": 0.08,
+          "risk_control": 0.06,
+          "commercial_intent": 0.06
+        },
+        "hard_floors": {
+          "product_truth_fidelity": 78,
+          "category_proof_coverage": 75,
+          "renderer_feasibility": 70,
+          "risk_control": 65
+        },
+        "minimum_critical_group_coverage": 1.0
+      },
+      "claim_guardrails": [
+        "不得把外观相似写成具体材质成分、天然宝石、贵金属纯度或品牌真伪",
+        "必须展示人体尺度或真实携带/穿着关系，不能整片只拍静物微距",
+        "功能、容量、保暖、防水、耐磨和工艺来源只能来自用户资料或清晰可见证据"
+      ],
+      "renderer_risks": ["服装或配件跨镜变款", "人体与产品比例漂移", "手指和佩戴动作失败", "纹理、五金或宝石数量改变", "完整轮廓被裁切"],
+      "spec_contract": {
+        "required_category_fields": ["人体尺度关系", "材质工艺证据", "完整轮廓", "动态或功能", "使用场合", "产品保真锁"],
+        "fallback": "若人物连续性失败，减少人物身份叙事但保留脖子以下、背影、行走、手拎或上脚的产品证明。"
+      }
+    }
+  }
+}

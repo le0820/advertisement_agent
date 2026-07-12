@@ -1,15 +1,43 @@
 {
-  "$comment": "创意评分文档契约。overall 由代码加权计算，非 LLM 给出。",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "creative_score.schema.json",
+  "title": "Category-aware creative score",
   "type": "object",
-  "required": ["candidate_id", "scores", "render_recommendation"],
+  "required": [
+    "score_version",
+    "candidate_id",
+    "profile_id",
+    "weights",
+    "scores",
+    "hard_gate_results",
+    "render_recommendation"
+  ],
   "properties": {
+    "score_version": {"const": "2.0"},
     "candidate_id": {"type": "string"},
+    "profile_id": {"type": "string"},
+    "weights": {"type": "object"},
     "scores": {
       "type": "object",
-      "required": ["first_3_seconds_hook", "product_clarity", "brand_fit",
-                   "audience_relevance", "visual_memorability", "platform_fit",
-                   "seedance_feasibility", "generation_risk_control",
-                   "commercial_intent", "overall"]
+      "required": [
+        "hook_strength",
+        "product_truth_fidelity",
+        "category_proof_coverage",
+        "consumer_relevance",
+        "brand_fit",
+        "visual_memorability",
+        "narrative_coherence",
+        "platform_fit",
+        "renderer_feasibility",
+        "risk_control",
+        "commercial_intent",
+        "overall"
+      ],
+      "additionalProperties": {"type": "integer", "minimum": 0, "maximum": 100}
+    },
+    "hard_gate_results": {
+      "type": "object",
+      "required": ["passed", "failures", "critical_group_coverage", "critical_groups", "unsafe_claims"]
     },
     "strengths": {"type": "array", "items": {"type": "string"}},
     "weaknesses": {"type": "array", "items": {"type": "string"}},

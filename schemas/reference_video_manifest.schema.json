@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "reference_video_manifest.schema.json",
+  "title": "Xiaoyunque reference video analysis manifest",
+  "type": "object",
+  "required": ["manifest_id", "version", "analysis_method", "patterns", "samples", "derived_rules"],
+  "properties": {
+    "manifest_id": {"type": "string"},
+    "version": {"type": "string"},
+    "analysis_method": {"type": "object"},
+    "patterns": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["name", "description"]
+      }
+    },
+    "samples": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {
+        "type": "object",
+        "required": [
+          "sample_id",
+          "source_path",
+          "sha256",
+          "bytes",
+          "duration_seconds",
+          "resolution",
+          "primary_category",
+          "taxonomy",
+          "observed_product",
+          "observed_beats",
+          "pattern_ids"
+        ]
+      }
+    },
+    "derived_rules": {"type": "object"}
+  }
+}

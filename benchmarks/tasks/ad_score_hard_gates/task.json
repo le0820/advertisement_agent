@@ -1,0 +1,15 @@
+{
+  "task_id": "ad_score_hard_gates",
+  "name": "Fashion creative scoring hard gates",
+  "category": "Professional Knowledge Work",
+  "edgebench_subclass": "client-style rubric with deterministic guardrails",
+  "agent_query": "Improve advertisement_agent so fashion candidates cannot be recommended for render unless they show worn display, a real use occasion, and silhouette or tailoring proof.",
+  "submit_paths": ["core", "prompts", "schemas", "tests"],
+  "submit_exclude": ["data/", "__pycache__/", ".pytest_cache/"],
+  "judge": {
+    "eval_cmd": "python judge/eval.py --submission <submission>",
+    "parser": "structured_json",
+    "score_direction": "maximize",
+    "selection": "score_first"
+  }
+}

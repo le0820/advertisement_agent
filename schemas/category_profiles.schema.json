@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "category_profiles.schema.json",
+  "title": "Codex commerce category profiles",
+  "type": "object",
+  "required": [
+    "framework_id",
+    "version",
+    "taxonomy_contract",
+    "legacy_aliases",
+    "categories"
+  ],
+  "properties": {
+    "framework_id": {"type": "string"},
+    "version": {"type": "string"},
+    "source_reference": {"type": "object"},
+    "taxonomy_contract": {
+      "type": "object",
+      "required": ["primary_category_enum", "subcategory_status_enum", "extension_fields"],
+      "properties": {
+        "primary_category_enum": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "string"},
+          "uniqueItems": true
+        },
+        "subcategory_status_enum": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        },
+        "extension_fields": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "legacy_aliases": {
+      "type": "object",
+      "required": ["categories", "subcategories"]
+    },
+    "categories": {
+      "type": "object",
+      "minProperties": 3,
+      "maxProperties": 3,
+      "additionalProperties": {"$ref": "#/$defs/categoryProfile"}
+    }
+  },
+  "$defs": {
+    "criticalGroup": {
+      "type": "object",
+      "required": ["id", "any_of"],
+      "properties": {
+        "id": {"type": "string"},
+        "any_of": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "subcategoryProfile": {
+      "type": "object",
+      "required": ["id", "status", "aliases", "critical_group_mode", "critical_proof_groups"],
+      "properties": {
+        "id": {"type": "string"},
+        "status": {"enum": ["active", "reserved"]},
+        "aliases": {"type": "array", "items": {"type": "string"}},
+        "critical_group_mode": {"enum": ["extend", "replace"]},
+        "additional_proof_tags": {"type": "array", "items": {"type": "string"}},
+        "critical_proof_groups": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/criticalGroup"}
+        },
+        "claim_risks": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "categoryProfile": {
+      "type": "object",
+      "required": [
+        "profile_id",
+        "source_sample_ids",
+        "subcategories",
+        "image_understanding",
+        "person_policy",
+        "creative_contract",
+        "scoring",
+        "claim_guardrails",
+        "renderer_risks",
+        "spec_contract"
+      ],
+      "properties": {
+        "profile_id": {"type": "string"},
+        "source_sample_ids": {"type": "array", "items": {"type": "string"}},
+        "subcategories": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/subcategoryProfile"}
+        },
+        "image_understanding": {"type": "object"},
+        "person_policy": {"type": "object"},
+        "creative_contract": {
+          "type": "object",
+          "required": ["route_families", "required_proof_tags", "critical_proof_groups", "recommended_beat_order"],
+          "properties": {
+            "route_families": {"type": "array", "items": {"type": "string"}},
+            "required_proof_tags": {"type": "array", "items": {"type": "string"}},
+            "critical_proof_groups": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/criticalGroup"}
+            },
+            "recommended_beat_order": {"type": "array", "items": {"type": "string"}},
+            "reference_pattern_ids": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "scoring": {
+          "type": "object",
+          "required": ["weights", "hard_floors", "minimum_critical_group_coverage"],
+          "properties": {
+            "weights": {
+              "type": "object",
+              "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1}
+            },
+            "hard_floors": {
+              "type": "object",
+              "additionalProperties": {"type": "integer", "minimum": 0, "maximum": 100}
+            },
+            "minimum_critical_group_coverage": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "claim_guardrails": {"type": "array", "items": {"type": "string"}},
+        "renderer_risks": {"type": "array", "items": {"type": "string"}},
+        "spec_contract": {"type": "object"}
+      }
+    }
+  }
+}

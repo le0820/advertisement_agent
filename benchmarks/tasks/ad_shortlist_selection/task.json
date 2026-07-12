@@ -1,0 +1,15 @@
+{
+  "task_id": "ad_shortlist_selection",
+  "name": "Render-safe shortlist selection",
+  "category": "Optimization",
+  "edgebench_subclass": "candidate ranking under hard constraints",
+  "agent_query": "Ensure shortlist ordering prioritizes render-eligible candidates over higher-overall candidates that are unsafe to generate.",
+  "submit_paths": ["core", "tests"],
+  "submit_exclude": ["data/", "__pycache__/", ".pytest_cache/"],
+  "judge": {
+    "eval_cmd": "python judge/eval.py --submission <submission>",
+    "parser": "structured_json",
+    "score_direction": "maximize",
+    "selection": "score_first"
+  }
+}

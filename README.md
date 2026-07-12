@@ -1,193 +1,222 @@
-# advertise_agent
+# advertisement_agent
 
-产品图片到品牌片规格书的 Codex harness。
+以 Codex 为唯一语义模型中枢的产品图片到 `brand-film-spec` harness。
 
-当前 `codex` 分支的主工作流是：用户在 Codex 线程里发送一张或多张产品图片，Codex 作为整个项目的模型中枢 agent，读取本仓库的创意模板、prompt、schema、规则和数据流定义，完成从产品事实到 `brand-film-spec` 的完整管道。视频生成是最后的可插拔 adapter，不再和创意推理绑死。
+当前 `codex` 分支只聚焦三个一级类目：
 
-旧的 Doubao / DeepSeek / ARK API 流程仍保留为兼容路径，但不再是本分支推荐的数据流。
+| 一级类目 | 预留子类 |
+|---|---|
+| 美妆个护 | 美甲、美妆、护肤品、医美用品 |
+| 食品饮料 | 零食、饮料、速冻速食、预制菜 |
+| 服饰配件 | 服装、饰品、鞋包 |
 
-## Codex 数据流
+用户在 Codex 任务中发送一张或多张产品图片后，Codex 在同一上下文内完成图片理解、创意生成、评分、决策和最终规格书。仓库负责提供 profile、参考证据、prompt、schema、确定性硬门和 renderer port；它不把语义工作拆给不同 LLM/VLM。
 
+## 数据流
+
+```text
+产品图片与用户约束
+  -> image_intake
+  -> product_understanding
+     observed / inferred / unknown / forbidden_inferences
+  -> category_resolution
+     三大类 + subcategory_status + subcategory_extension
+  -> creative_brief
+     category profile / proof groups / claim boundaries
+  -> creative_generation
+     proof tags / claims used / product fidelity lock
+  -> category_aware_scoring
+     11 维评分 + profile weights + deterministic gates
+  -> shortlist
+  -> optional imagegen keyframe probes
+  -> render_decision
+  -> brand-film-spec + package + report
+  -> pluggable video renderer
 ```
-产品图片(一张或多张)
- ─► Codex 模型中枢
- ─► harness/codex_brand_film_spec.json
- ─► prompts / templates / schemas / deterministic rules
- ─► features / brief / candidates / scores / shortlist
- ─► 可选 imagegen 关键帧预演
- ─► render_decision
- ─► brand-film-spec + package + report
- ─► pluggable video renderer adapter
+
+核心源文件：
+
+- `harness/codex_brand_film_spec.json`：Codex v2 阶段与交付契约
+- `harness/category_profiles.json`：三大类的 taxonomy、证据、权重、claim 和生成风险
+- `harness/reference_video_manifest.json`：11 条小云雀示例视频的可追溯视觉拆解
+- `docs/reference-video-analysis.md`：视频拆解结论与设计依据
+- `templates/storyboard_templates.json`：三个基础节奏模板，不重复承载子类规则
+- `schemas/`：每阶段产物契约
+
+## 参考视频
+
+`data/src` 当前包含 11 条示例视频：美妆个护 4 条、食品饮料 4 条、服饰配件 3 条。分析方法是每条视频均匀抽取 8 个时间点，只使用画面和可见字幕，没有把音频当作已验证证据。
+
+参考视频只校准短片的证明结构：
+
+```text
+0-2s   人物/需求/场景钩子，商品已可辨认
+2-5s   商品身份与第一个品类证据
+5-9s   最强品类证据
+9-12s  使用结果、感官回报或场合价值
+12-15s 稳定商品、包装或完整造型锁定
 ```
 
-核心约定见：
+三类的“证据”不同：
 
-- `harness/codex_brand_film_spec.json`: Codex 可执行的数据流契约
-- `harness/review.md`: 旧 harness 评审与目标设计
+- 美妆个护：使用部位、工具或质地、可见结果、产品锁定与功效边界。
+- 食品饮料：包装身份、准备或原料、感官运动、食用/饮用/分享与食品 claim 边界。
+- 服饰配件：上身/佩戴/上脚/携带、材质工艺、人体尺度或完整轮廓、动态与场合。
 
-## Codex 分支用法
+禁止复制参考样本的人物、包装、产品设计、logo、文案、品牌和不受支持的 claim，也不能把示例的合成画风当作所有品牌片的默认审美。
 
-最自然的用法是在 Codex 桌面线程里直接发送产品图片，然后要求：
+## 子类扩展
 
+每个产品理解产物都保留：
+
+```json
+{
+  "taxonomy": {
+    "primary_category": "美妆个护",
+    "subcategory": "",
+    "subcategory_status": "custom",
+    "subcategory_extension": {
+      "candidate_name": "私护清洁",
+      "parent_hint": "美妆个护",
+      "reason": "当前预留子类不能准确覆盖",
+      "future_profile_required": true,
+      "custom_attributes": {}
+    }
+  }
+}
 ```
-按 harness/codex_brand_film_spec.json 跑完整数据流，生成 brand-film-spec。
+
+`subcategory_status` 可取 `matched | provisional | unresolved | custom`。因此新增私护清洁、烘焙主食或其它子类时，可以先保留真实分类信息，再补 profile，不需要修改所有既有 artifact schema。
+
+旧一级类目只作为迁移别名：
+
+- `珠宝饰品` -> `服饰配件 / 饰品`
+- `服装鞋包` -> `服饰配件 / 服装或鞋包`
+- `美妆`、`医美` -> `美妆个护`
+- `食品`、`零食饮料` -> `食品饮料`
+
+它们不会出现在新的 `--list-categories` 结果中。
+
+## Codex 使用
+
+最直接的方式是在 Codex 任务中发送产品图片并说明：
+
+```text
+按 harness/codex_brand_film_spec.json 执行完整数据流，生成 brand-film-spec。
 ```
 
-Codex 应该自己完成图片理解、创意候选、评分、shortlist、render 决策和最终规格书写作。仓库里的 prompt、模板、schema 和规则是 harness 资产，不是外部模型调度器。
+Codex 应直接读取图片和仓库 harness 资产，完整写出阶段 artifact。图片是产品事实的最高优先级；品牌名、slogan、成分、材质、功效、营养、资质和数字若未提供，不得补写。
 
-也可以用 CLI 生成一个 Codex 运行上下文包：
+也可以先生成自包含的运行上下文：
 
 ```bash
-python main.py product.jpg --mode codex \
+python3 main.py product.jpg \
   --reference-image product-macro.jpg \
-  --platform douyin --aspect-ratio 9:16 --duration 15 \
+  --category-hint 服饰配件 \
+  --subcategory-hint 饰品 \
+  --platform douyin \
+  --aspect-ratio 9:16 \
+  --duration 15 \
   --commercial-goal brand_film \
   -o data/product
 ```
 
-这只会写出：
+`codex` 已是默认 mode；上面的命令只写 `data/product.codex-run.json`，不调用 Doubao、DeepSeek、ARK，也不需要 API key。上下文包含图片 manifest、用户选项、三类 registry、参考证据版本、阶段顺序、schema map、预期产物和 renderer port。
 
+显式写法仍可用：
+
+```bash
+python3 main.py product.jpg --mode codex -o data/product
+python3 main.py --list-categories
 ```
-data/product.codex-run.json
+
+## 产物契约
+
+| 文件 | 说明 | Schema |
+|---|---|---|
+| `.codex-run.json` | Codex 运行上下文 | harness 内部契约 |
+| `.features.json` | product_understanding v2 | `product_understanding.schema.json` |
+| `.brief.json` | profile-aware creative brief | `creative_brief.schema.json` |
+| `.candidates.json` | 创意候选数组 | `creative_candidate.schema.json[]` |
+| `.scores.json` | v2 评分数组 | `creative_score.schema.json[]` |
+| `.shortlist.json` | 候选与 render eligibility | 规则产物 |
+| `.storyboard.json` | 可选 imagegen 关键帧预演 | `storyboard_simulation.schema.json` |
+| `.decision.json` | 是否支付视频生成成本 | `render_decision.schema.json` |
+| `.package.json` | 完整机器可读交付 | `brand_film_package.schema.json` |
+| `.brand-film-spec.md` | 下游视频 agent 的主交付 | markdown contract |
+| `.report.md` | 给人的决策与风险报告 | markdown |
+
+`.features.json` 的关键变化是把 dense caption 从“混合判断”改成有来源边界的产品理解；`.candidates.json` 的关键变化是每条路线必须提交 `product_first_seen_at`、`proof_sequence`、`proof_tags`、`claims_used` 与 `product_fidelity_lock`。
+
+## 评分与硬门
+
+v2 使用 11 个维度：
+
+```text
+hook_strength
+product_truth_fidelity
+category_proof_coverage
+consumer_relevance
+brand_fit
+visual_memorability
+narrative_coherence
+platform_fit
+renderer_feasibility
+risk_control
+commercial_intent
 ```
 
-`--mode codex` 不调用 Doubao、DeepSeek、ARK，也不需要 API key。这个 JSON 只是把图片、用户选项、阶段顺序、产物路径和视频生成 port 打包给 Codex。
+每个一级类目在 `category_profiles.json` 中有自己的权重，权重总和由代码校验为 1。`overall` 由代码计算，Codex 不能自由填写。
 
-## 输出文件
+高 overall 不能覆盖以下硬门：
 
-Codex harness 复用原来的产物家族：
+- 产品未在 3 秒前清晰出现。
+- 当前品类或子类的 critical proof groups 未全部覆盖。
+- 出现 high-risk 且无 observed/user/verified basis 的 claim。
+- `product_truth_fidelity`、`category_proof_coverage`、`renderer_feasibility` 或 `risk_control` 低于 profile floor。
+- recommendation 为 `reject` 或 `revise`。
 
-| 文件 | 说明 |
-|------|------|
-| `.codex-run.json` | Codex 运行上下文包 |
-| `.features.json` | 产品事实与 dense caption |
-| `.brief.json` | 创意 brief |
-| `.candidates.json` | N 个创意候选 |
-| `.scores.json` | 9 维评分 + weighted overall |
-| `.shortlist.json` | 入围候选与 render 资格 |
-| `.storyboard.json` | 可选关键帧预演 |
-| `.decision.json` | 是否值得花视频生成额度 |
-| `.package.json` | 完整机器可读包 |
-| `.brand-film-spec.md` | 最终给视频生成 adapter 的品牌片规格书 |
-| `.report.md` | 决策报告 |
+shortlist 先按 `eligible_for_render` 排序，再比较 overall 和 renderer feasibility。没有 eligible 候选时，render decision 直接 `should_render=false`，不消耗外部模型或视频生成额度。
 
-## 视频生成 Port
+## Imagegen 预演
 
-视频生成不是当前 harness 的固定模型调用，而是一个 port：
+当产品跨镜一致性、人物/手部、食品物理、穿着关系或完整轮廓风险较高时，Codex 可以调用 imagegen 生成 3-5 张关键帧 probe。关键帧必须覆盖 critical proof groups，不能只做漂亮 hero frame。
 
-- 输入：`.brand-film-spec.md`、`.package.json`、可选关键帧资产
+原始产品图始终是产品事实源。预演图出现颜色、包装、结构、数量、食物形态、人体比例或服饰轮廓漂移时，应 revise 或换候选，而不是把错误交给视频 renderer。
+
+## Renderer Port
+
+视频生成是可替换 port：
+
+- 必需输入：`.brand-film-spec.md`、`.package.json`、原始产品图
+- 可选输入：已通过审查的关键帧资产
 - 默认 adapter：人工上传 Seedance / 小云雀
-- 未来 adapter：Seedance API、Kling、Runway、Veo 或其它视频 agent
+- 可替换 adapter：Seedance API、Kling、Runway、Veo 或其它视频 agent
 
-原则：Codex 负责创意方向、产品保真、评分、render 决策和重试策略；视频 adapter 只执行已接受的规格书并返回结果或失败信息。
-
-## 可选 Imagegen
-
-`harness/codex_brand_film_spec.json` 允许 Codex 在关键帧风险高时使用 `imagegen` 生成 3-5 张 still-frame probe。生成图只能作为预演证据，不能替代原始产品图片。如果预演图出现产品颜色、材质、结构漂移，Codex 应先修正或拒绝候选，而不是把风险推给视频生成。
+adapter 只能执行规格书，不能改写产品事实、taxonomy、claim boundaries、选中路线或品类证据顺序。它必须返回 adapter/model identity、输出或 job id、失败 telemetry 和产品保真审查结果；重试与换候选回到 Codex 决策层。
 
 ## 旧 API 兼容模式
 
-旧命令仍可用：
+以下路径保留用于回归和迁移，不是推荐主流程：
 
 ```bash
-# fast: 原流程, 一个最终 .txt prompt
-python main.py product.jpg --mode fast
-
-# explore: 候选 -> 评分 -> shortlist, 不生成最终规格书
-python main.py product.jpg --mode explore
-
-# decision: 旧 API 完整流程, 生成 brand-film-spec
-python main.py product.jpg --mode decision \
-  --num-candidates 8 --top-k 3 \
-  --platform douyin --aspect-ratio 9:16 --duration 15
+python3 main.py product.jpg --mode fast
+python3 main.py product.jpg --mode explore
+python3 main.py product.jpg --mode decision
 ```
 
-旧 API 模式需要 `.env`：
+这些模式仍可能调用 ARK / DeepSeek，但其产物会被归一化到 v2 三类 taxonomy、profile 评分和 renderer contract。需要的 key 仍从 `.env` 读取：
 
-```
-ARK_API_KEY=your-ark-key
-DEEPSEEK_API_KEY=your-deepseek
-```
-
-旧模型路由：
-
-| 步骤 | 接口 | 默认模型 | 控制参数 |
-|------|------|---------|---------|
-| 特征提取 | ARK responses 多模态 | `doubao-seed-evolving` | `--ark-model` |
-| 创意搜索 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
-| 评分 | ARK responses 文本 | `doubao-seed-2-0-lite-260428` | `--score-model` |
-| 渲染决策 | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
-| brand-film-spec | DeepSeek chat | `deepseek-v4-pro` | `--deepseek-model` |
-
-## 常用参数
-
-```
---mode {codex,fast,explore,decision}
---reference-image PATH           Codex mode 附加产品/细节/参考图, 可多次传
---num-candidates 8               创意候选数
---top-k 3                        shortlist 上限
---min-score 80                   shortlist overall 门槛
---platform douyin                douyin|xiaohongshu|video_account|tiktok|youtube
---aspect-ratio 9:16              9:16|16:9|1:1
---duration 15                    视频时长秒
---commercial-goal creative_ad    brand_film|creative_ad|direct_response|social_post
---slogan "" --brand-name ""      品牌资产, 留空不捏造
---target-audience ""             目标人群
---selling-point ""               补充卖点, 可多次传
---pain-point ""                  用户痛点, 可多次传
---usage-scene ""                 使用场景, 可多次传
---cta ""                         行动号召文案
---forbidden-claim ""             禁用 claim, 可多次传
---avoid-face                     显式规避清晰真实人脸
---storyboard                     旧 API 模式启用关键帧预演
---score-model MODEL              旧 API 评分裁判模型
---deepseek-model MODEL           旧 API DeepSeek 模型
---ark-model MODEL                旧 API ARK 模型
+```text
+ARK_API_KEY=...
+DEEPSEEK_API_KEY=...
 ```
 
-## 评分维度
-
-`overall` 仍由固定权重计算，不由模型自由给出：
-
-| 维度 | 权重 |
-|------|------|
-| first_3_seconds_hook | 15% |
-| product_clarity | 15% |
-| visual_memorability | 15% |
-| seedance_feasibility | 15% |
-| brand_fit | 10% |
-| audience_relevance | 10% |
-| platform_fit | 10% |
-| generation_risk_control | 5% |
-| commercial_intent | 5% |
-
-shortlist 规则：overall 降序、低于 `--min-score` 淘汰、低 feasibility 或弱 product clarity 标记不可生成、eligible 候选优先。
-
-服装鞋包有额外硬门槛：必须有穿着/上脚/携带展示，必须有版型/廓形/完整轮廓证明，必须进入婚礼、晚宴、商务、秀场、通勤等真实使用场合。只有显式 `--avoid-face` 时才规避清晰真实人脸；默认允许完整人物、全身穿着效果和自然人脸。
-
-## 结构
-
-```
-main.py
-core/
-  codex_harness.py          Codex 运行上下文包, 不调用外部模型
-  llm_client.py             旧 ARK client
-  deepseek_client.py        旧 DeepSeek client
-  extract_features.py       旧 API 图 -> 特征 JSON
-  brief.py                  特征 -> 创意 brief 规则
-  creative_search.py        旧 API brief -> 候选
-  creative_scoring.py       评分权重与服装硬门槛
-  shortlist.py              评分 -> shortlist 规则
-  render_decision.py        旧 API render decision
-  output_package.py         brand-film-spec + report 包装
-harness/
-  codex_brand_film_spec.json
-  review.md
-templates/  prompts/  schemas/  tests/  data/
-```
-
-测试：
+## 验证
 
 ```bash
 python3 -m unittest discover -s tests -v
+python3 -m json.tool harness/codex_brand_film_spec.json >/dev/null
+python3 -m json.tool harness/category_profiles.json >/dev/null
+python3 -m json.tool harness/reference_video_manifest.json >/dev/null
 ```

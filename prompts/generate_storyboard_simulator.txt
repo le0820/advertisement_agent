@@ -1,31 +1,35 @@
-你是分镜关键帧预演师。为下面这个创意候选生成 3-5 个关键帧 prompt,
-供用户在用图片模型预演后再决定是否消耗视频积分。
+你是 Codex harness 的关键帧预演师。为候选生成 3-5 个可交给 imagegen 的关键帧 prompt，用于在支付视频生成成本前验证产品保真、品类证据和跨镜连续性。
 
-【brief】
+【Creative brief】
 {brief_json}
 
-【创意候选】
+【Creative candidate】
 {candidate_json}
 
-【每个关键帧字段】
-- keyframe_id: KF01, KF02, ...
-- time: 如 "0s", "3s"
-- frame_purpose: hook|product_reveal|proof|emotional_peak|brand_lock
-- image_prompt_cn: 中文关键帧 prompt (构图/景别/光线/材质/产品外观)
-- image_prompt_en: 英文关键帧 prompt
-- negative_prompt: 负面约束 (多余文字/水印/错误logo/变形手部)
-- continuity_notes: 与前后帧的连续性说明
-- product_fidelity_notes: 产品外观保真要点 (严格依据 dense_caption)
+每个关键帧必须包含：
+- keyframe_id: KF01, KF02...
+- time: 对应 shot_plan 时间点
+- frame_purpose: hook|product_reveal|proof|application|sensory|emotional_peak|brand_lock
+- proof_tags: 该帧实际证明的品类 tag
+- image_prompt_cn: 中文构图、景别、光线、人物/食品/穿着关系和产品事实
+- image_prompt_en: 英文版本
+- negative_prompt: 错误颜色、错误包装、错误数量、变形手部、文字水印、错误 logo、食物/液体物理、人体比例等
+- continuity_notes: 与前后帧保持一致的元素
+- product_fidelity_notes: 从 product_fidelity_lock 提取的 must_keep / must_not_add
 
-【storyboard_review 字段】
-- visual_consistency_risk: 关键帧之间视觉一致性风险
-- product_fidelity_risk: 产品外观漂移风险
-- model_difficulty: 图片模型生成难度 low|medium|high
+storyboard_review 必须包含：
+- visual_consistency_risk
+- product_fidelity_risk
+- category_proof_risk
+- model_difficulty: low|medium|high
 - recommendation: revise|acceptable|strong
 
-【硬性要求】
-- 产品颜色/材质/结构严格依据 dense_caption, 不得臆造
-- 对不适合图片预演的镜头 (如复杂运动) 在 continuity_notes 给 warning
-- 若 brief.category="服装鞋包", 关键帧必须覆盖至少一个穿着/携带展示、一个版型或完整轮廓展示、一个使用场合展示
-- 服装类默认允许完整人物、全身展示和自然人脸；若 brief.constraints.person_policy.face_allowed=false, 才用脖子以下、背影、侧影或局部身体构图
-- 输出纯 JSON 对象, 不要 markdown, 不要解释
+硬门：
+- 3-5 帧合计必须覆盖 category_profile 的全部 critical proof groups，不能只生成 hero beauty shots。
+- 商品颜色、结构、包装、数量和可见细节严格依据原图与 dense_caption。
+- 美妆个护要验证使用部位/工具或质地/可见结果；医美用品不得生成诊疗和疗效。
+- 食品饮料要验证包装/准备或感官/食用或分享，不能新增配料和份量。
+- 服饰配件要验证上身/佩戴/上脚/携带、细节、人体尺度或完整轮廓、场合。
+- face_allowed=false 时才规避清晰人脸；但不能因此删除品类要求的人体尺度证明。
+- 不适合静帧验证的复杂运动必须在 continuity_notes 标 warning，并给低风险替代。
+- 输出纯 JSON 对象，不要 markdown，不要解释。

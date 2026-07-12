@@ -40,8 +40,12 @@ def _clamp_int(v: Any, lo: int, hi: int) -> int:
         return lo
 
 
-def _normalize(raw: dict[str, Any], fallback_id: str | None,
-               force_skip: bool) -> dict[str, Any]:
+def _normalize(
+    raw: dict[str, Any],
+    fallback_id: str | None,
+    force_skip: bool,
+    brief: dict[str, Any],
+) -> dict[str, Any]:
     fail = raw.get("if_first_render_fails") or {}
     if not isinstance(fail, dict):
         fail = {}
@@ -55,15 +59,34 @@ def _normalize(raw: dict[str, Any], fallback_id: str | None,
         return [str(x) for x in v] if isinstance(v, list) else []
 
     should_render = bool(raw.get("should_render", False)) and not force_skip
-    recommended = None if force_skip else (raw.get("recommended_candidate_id") or fallback_id)
+    recommended = fallback_id if should_render else None
+    renderer_plan = raw.get("renderer_plan") or {}
+    if not isinstance(renderer_plan, dict):
+        renderer_plan = {}
 
     return {
+        "decision_version": "2.0",
+        "category_profile_id": str(
+            brief.get("category_profile", {}).get("profile_id", "")
+            if isinstance(brief.get("category_profile"), dict) else ""
+        ),
         "recommended_candidate_id": recommended,
         "should_render": should_render,
         "confidence": _clamp_int(raw.get("confidence", 0), 0, 100),
         "reason": str(raw.get("reason", "")),
+        "decision_evidence": _str_list("decision_evidence"),
+        "blocking_gates": _str_list("blocking_gates"),
         "expected_failure_modes": _str_list("expected_failure_modes"),
         "pre_render_checklist": _str_list("pre_render_checklist"),
+        "renderer_plan": {
+            "adapter_requirements": [str(x) for x in renderer_plan.get("adapter_requirements", [])]
+            if isinstance(renderer_plan.get("adapter_requirements"), list) else [],
+            "optional_keyframes": [str(x) for x in renderer_plan.get("optional_keyframes", [])]
+            if isinstance(renderer_plan.get("optional_keyframes"), list) else [],
+            "retry_budget": _clamp_int(renderer_plan.get("retry_budget", 1), 0, 3),
+            "replace_candidate_on": [str(x) for x in renderer_plan.get("replace_candidate_on", [])]
+            if isinstance(renderer_plan.get("replace_candidate_on"), list) else [],
+        },
         "if_first_render_fails": {
             "likely_causes": _fail_list("likely_causes"),
             "recommended_fix": str(fail.get("recommended_fix", "")),
@@ -97,7 +120,15 @@ def make_render_decision(
     # 没有可生成候选时直接 fast-fail, 不调用 LLM (省一次 API 调用)
     if fallback_id is None:
         eligible_total = len([r for r in shortlisted if r.get("eligible_for_render")])
+        blocking = []
+        for row in shortlisted:
+            blocking.extend(str(value) for value in row.get("ineligible_reasons", []))
         return {
+            "decision_version": "2.0",
+            "category_profile_id": str(
+                brief.get("category_profile", {}).get("profile_id", "")
+                if isinstance(brief.get("category_profile"), dict) else ""
+            ),
             "recommended_candidate_id": None,
             "should_render": False,
             "confidence": 0,
@@ -105,8 +136,16 @@ def make_render_decision(
                 f"没有候选通过 render eligibility 门槛 (eligible {eligible_total}/"
                 f"{len(shortlisted)}), 不值得消耗视频积分。"
             ),
+            "decision_evidence": [],
+            "blocking_gates": list(dict.fromkeys(blocking)),
             "expected_failure_modes": [],
             "pre_render_checklist": [],
+            "renderer_plan": {
+                "adapter_requirements": [],
+                "optional_keyframes": [],
+                "retry_budget": 0,
+                "replace_candidate_on": [],
+            },
             "if_first_render_fails": {
                 "likely_causes": [],
                 "recommended_fix": "",
@@ -118,10 +157,13 @@ def make_render_decision(
         brief_json=json.dumps(brief, ensure_ascii=False, indent=2),
         shortlist_json=json.dumps(shortlisted, ensure_ascii=False, indent=2),
         storyboard_block=_storyboard_block(sims),
+        category_profile_json=json.dumps(
+            brief.get("category_profile", {}), ensure_ascii=False, indent=2
+        ),
     )
     raw = chat_json_object(
         [{"role": "user", "content": prompt}],
         model=model,
         api_key=api_key,
     )
-    return _normalize(raw, fallback_id, force_skip=False)
+    return _normalize(raw, fallback_id, force_skip=False, brief=brief)

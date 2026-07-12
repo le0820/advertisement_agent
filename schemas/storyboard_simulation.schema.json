@@ -1,10 +1,24 @@
 {
-  "$comment": "关键帧预演文档契约 (P2 增强目标，P0 仅最小实现)。",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "storyboard_simulation.schema.json",
+  "title": "Optional image-generation keyframe probe",
   "type": "object",
-  "required": ["candidate_id", "keyframes", "storyboard_review"],
+  "required": ["candidate_id", "profile_id", "keyframes", "storyboard_review"],
   "properties": {
     "candidate_id": {"type": "string"},
-    "keyframes": {"type": "array", "items": {"type": "object"}},
-    "storyboard_review": {"type": "object"}
+    "profile_id": {"type": "string"},
+    "keyframes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["keyframe_id", "time", "frame_purpose", "proof_tags", "image_prompt_cn", "image_prompt_en", "negative_prompt", "continuity_notes", "product_fidelity_notes"]
+      }
+    },
+    "storyboard_review": {
+      "type": "object",
+      "required": ["visual_consistency_risk", "product_fidelity_risk", "category_proof_risk", "model_difficulty", "recommendation"]
+    }
   }
 }

@@ -1,10 +1,10 @@
 """广告分镜提示词生成 CLI。
 
 模式:
-  fast     (默认) 原流程: 提取特征 → 模版匹配 → 生成一个最终 prompt
+  fast     旧兼容流程: 提取特征 → 模版匹配 → 生成一个最终 prompt
   explore  生成多创意候选 → 评分 → shortlist (不生成最终上传规格书)
   decision 完整流程: explore → render_decision → brand-film-spec + 决策报告
-  codex    Codex 分支工作流: 写出 .codex-run.json, 由 Codex 线程作为模型中枢执行
+  codex    (默认) 写出 .codex-run.json, 由 Codex 线程作为模型中枢执行
 
 输出 (data/<stem>.* 或 -o 指定路径的同名族):
   .features.json .brief.json .candidates.json .scores.json .shortlist.json
@@ -79,6 +79,8 @@ def _user_options(args) -> dict:
         "cta": getattr(args, "cta", None),
         "forbidden_claim": getattr(args, "forbidden_claim", None),
         "avoid_face": True if getattr(args, "avoid_face", False) else None,
+        "category_hint": getattr(args, "category_hint", None),
+        "subcategory_hint": getattr(args, "subcategory_hint", None),
     }
 
 
@@ -146,7 +148,8 @@ def _run_explore(args, features, stem: Path, ark_model, deepseek_model, score_mo
 
     print("[5/6] shortlist")
     shortlisted = select_shortlist(
-        candidates, scores, top_k=args.top_k, min_overall=args.min_score
+        candidates, scores, top_k=args.top_k, min_overall=args.min_score,
+        brief=brief,
     )
     _write_json(stem.with_suffix(".shortlist.json"), shortlisted)
     print(f"  → shortlist {len(shortlisted)} 个")
@@ -220,7 +223,7 @@ def _run_decision(args, features, stem: Path, ark_model, deepseek_model, score_m
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="产品图 → 分镜提示词 (供小云雀人工测试)"
+        description="产品图 → Codex 控制的 brand-film-spec harness"
     )
     parser.add_argument("image", nargs="?", help="产品样例图本地路径或 URL")
     parser.add_argument("-o", "--output", default=None,
@@ -228,17 +231,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--list-categories", action="store_true",
                         help="列出可用类目体系后退出")
     parser.add_argument("--mode", choices=["fast", "explore", "decision", "codex"],
-                        default="fast",
-                        help="fast=原流程; explore=候选+评分+shortlist; "
-                             "decision=旧 API 完整流程; codex=写出 Codex harness 运行包")
-    parser.add_argument("--num-candidates", type=int, default=8, help="创意候选数量")
+                        default="codex",
+                        help="codex=推荐主流程; fast=原流程; explore=候选+评分+shortlist; "
+                             "decision=旧 API 完整流程")
+    parser.add_argument("--num-candidates", type=int, default=6, help="旧 API 创意候选数量")
     parser.add_argument("--top-k", type=int, default=3, help="shortlist 上限")
     parser.add_argument("--min-score", type=int, default=80, help="shortlist overall 门槛")
     parser.add_argument("--platform", default="douyin",
                         choices=["douyin", "xiaohongshu", "video_account", "tiktok", "youtube"])
     parser.add_argument("--aspect-ratio", default="9:16", choices=["9:16", "16:9", "1:1"])
     parser.add_argument("--duration", type=int, default=15, help="视频时长秒数")
-    parser.add_argument("--commercial-goal", default="creative_ad",
+    parser.add_argument("--commercial-goal", default="brand_film",
                         choices=["brand_film", "creative_ad", "direct_response", "social_post"])
     parser.add_argument("--slogan", default=None, help="品牌 slogan (留空不捏造)")
     parser.add_argument("--brand-name", default=None, help="品牌名 (留空不捏造)")
@@ -254,14 +257,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--forbidden-claim", default=None, action="append",
                         help="禁用 claim (可多次传, 如 最便宜/第一)")
     parser.add_argument("--avoid-face", action="store_true",
-                        help="显式规避清晰真实人脸；服装类默认允许自然人脸和全身人物")
+                        help="显式规避清晰真实人脸；仍保留品类所需的人体或局部证明")
+    parser.add_argument("--category-hint", default=None,
+                        choices=["美妆个护", "食品饮料", "服饰配件"],
+                        help="可选一级类目提示；只支持三大类")
+    parser.add_argument("--subcategory-hint", default=None,
+                        help="可选子类提示；不匹配预留值时由 taxonomy extension 保留")
     parser.add_argument("--storyboard", action="store_true",
-                        help="启用关键帧预演 (默认关闭省成本, P2 将增强)")
+                        help="旧 API 模式生成关键帧预演 JSON；Codex 模式可选使用 imagegen")
     parser.add_argument("--reference-image", action="append", default=None,
                         help="Codex mode 附加产品/细节/参考图, 可多次传")
     parser.add_argument("--ark-model", default=None, help="ARK Doubao 模型名覆盖 (特征提取)")
     parser.add_argument("--deepseek-model", default=None, help="DeepSeek 模型名覆盖")
-    parser.add_argument("--score-model", default=None, help="ARK 裁判模型名; 不设置则用默认 doubao-seed-2-0-lite-260428 (responses 接口)")
+    parser.add_argument("--score-model", default=None, help="旧 API ARK 裁判模型名覆盖")
     args = parser.parse_args(argv)
 
     _load_env()

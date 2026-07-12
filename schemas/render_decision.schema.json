@@ -1,15 +1,51 @@
 {
-  "$comment": "是否值得消耗一次视频积分的决策文档契约。",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "render_decision.schema.json",
+  "title": "Renderer-agnostic render decision",
   "type": "object",
-  "required": ["recommended_candidate_id", "should_render", "reason",
-               "pre_render_checklist", "if_first_render_fails"],
+  "required": [
+    "decision_version",
+    "category_profile_id",
+    "recommended_candidate_id",
+    "should_render",
+    "confidence",
+    "reason",
+    "decision_evidence",
+    "blocking_gates",
+    "expected_failure_modes",
+    "pre_render_checklist",
+    "renderer_plan",
+    "if_first_render_fails"
+  ],
   "properties": {
+    "decision_version": {"const": "2.0"},
+    "category_profile_id": {"type": "string"},
     "recommended_candidate_id": {"type": ["string", "null"]},
     "should_render": {"type": "boolean"},
-    "confidence": {"type": "integer"},
+    "confidence": {"type": "integer", "minimum": 0, "maximum": 100},
     "reason": {"type": "string"},
+    "decision_evidence": {"type": "array", "items": {"type": "string"}},
+    "blocking_gates": {"type": "array", "items": {"type": "string"}},
     "expected_failure_modes": {"type": "array", "items": {"type": "string"}},
     "pre_render_checklist": {"type": "array", "items": {"type": "string"}},
-    "if_first_render_fails": {"type": "object"}
+    "renderer_plan": {
+      "type": "object",
+      "required": ["adapter_requirements", "optional_keyframes", "retry_budget", "replace_candidate_on"],
+      "properties": {
+        "adapter_requirements": {"type": "array", "items": {"type": "string"}},
+        "optional_keyframes": {"type": "array", "items": {"type": "string"}},
+        "retry_budget": {"type": "integer", "minimum": 0},
+        "replace_candidate_on": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "if_first_render_fails": {
+      "type": "object",
+      "required": ["likely_causes", "recommended_fix", "do_not_retry_if"],
+      "properties": {
+        "likely_causes": {"type": "array", "items": {"type": "string"}},
+        "recommended_fix": {"type": "string"},
+        "do_not_retry_if": {"type": "array", "items": {"type": "string"}}
+      }
+    }
   }
 }

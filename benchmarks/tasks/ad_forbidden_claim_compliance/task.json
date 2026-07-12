@@ -1,0 +1,15 @@
+{
+  "task_id": "ad_forbidden_claim_compliance",
+  "name": "Forbidden-claim compliance propagation",
+  "category": "Professional Knowledge Work",
+  "edgebench_subclass": "advertising compliance rubric",
+  "agent_query": "Ensure user-provided forbidden claims are carried into the creative brief and enforced by the candidate-generation and final-spec surfaces.",
+  "submit_paths": ["core", "prompts", "schemas", "tests"],
+  "submit_exclude": ["data/", "__pycache__/", ".pytest_cache/"],
+  "judge": {
+    "eval_cmd": "python judge/eval.py --submission <submission>",
+    "parser": "structured_json",
+    "score_direction": "maximize",
+    "selection": "score_first"
+  }
+}

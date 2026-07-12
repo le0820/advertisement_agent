@@ -1,0 +1,348 @@
+{
+  "$schema": "../schemas/reference_video_manifest.schema.json",
+  "manifest_id": "xiaoyunque_three_category_reference_set",
+  "version": "2026-07-10",
+  "analysis_method": {
+    "dataset_root": "data/src",
+    "sample_count": 11,
+    "sampling": "8 frames at the midpoint of 8 equal-duration segments",
+    "scope": "visual frames and visible on-screen copy only",
+    "not_analyzed": ["full audio transcript", "music structure", "frame-accurate edit list"],
+    "interpretation_boundary": "Beat times and product labels are approximate observations. They calibrate proof structure, not factual product claims or reusable creative assets."
+  },
+  "patterns": {
+    "U01": {
+      "name": "human_or_context_hook",
+      "description": "Open on a recognizable person, need state, occasion, or product-in-use context instead of an abstract empty scene."
+    },
+    "U02": {
+      "name": "product_by_three_seconds",
+      "description": "Show the product, package, worn item, or clearly identifiable food within the first three seconds."
+    },
+    "U03": {
+      "name": "proof_escalation",
+      "description": "Move from identity to category-specific proof rather than repeating beauty shots of the same product."
+    },
+    "U04": {
+      "name": "consumer_reward",
+      "description": "Resolve the opening need with a visible finish, sensory reward, styling completion, convenience, or social occasion."
+    },
+    "U05": {
+      "name": "product_or_pack_lock",
+      "description": "End on a stable product, package, complete look, or product-plus-result composition suitable for brand lockup."
+    },
+    "B01": {
+      "name": "localized_concern_to_finish",
+      "description": "Beauty examples connect a specific area or concern to a close, visually legible finish."
+    },
+    "B02": {
+      "name": "tool_texture_package_triangle",
+      "description": "Beauty proof alternates among package identity, applicator or product form, and visible texture or finish."
+    },
+    "B03": {
+      "name": "result_with_lifestyle_anchor",
+      "description": "A face, hand, nail, or lifestyle portrait gives the final beauty result human scale and emotion."
+    },
+    "F01": {
+      "name": "need_or_occasion_to_food",
+      "description": "Food examples start from hunger, breakfast, gifting, family, or another immediate consumption occasion."
+    },
+    "F02": {
+      "name": "ingredient_or_preparation_proof",
+      "description": "Ingredients, preparation, serving, or pack identity make the food proposition concrete."
+    },
+    "F03": {
+      "name": "sensory_motion",
+      "description": "Steam, stretch, pour, gloss, bite, softness, or texture closeups create appetite without relying only on copy."
+    },
+    "F04": {
+      "name": "consumption_or_sharing_reward",
+      "description": "Eating, drinking, holding a warm bowl, or sharing converts food beauty into a consumer outcome."
+    },
+    "A01": {
+      "name": "worn_or_carried_first",
+      "description": "Fashion examples establish fit, scale, or carry relationship before isolating detail."
+    },
+    "A02": {
+      "name": "detail_to_silhouette",
+      "description": "Material, knit, collar, stitching, or hardware detail is followed by a complete outline or look."
+    },
+    "A03": {
+      "name": "movement_and_occasion",
+      "description": "Walking, sitting, carrying, or entering a setting proves how the item behaves in an actual use context."
+    }
+  },
+  "samples": [
+    {
+      "sample_id": "XYQ-BEAUTY-01",
+      "source_path": "data/src/美妆个护/01_041.mp4",
+      "sha256": "feff3a4d561c8f3791acf81762a6056e5751372ba5860fe5ad0bb21e75303183",
+      "bytes": 19467658,
+      "duration_seconds": 15.6,
+      "resolution": "720x1280",
+      "primary_category": "美妆个护",
+      "taxonomy": {
+        "subcategory": "美妆",
+        "subcategory_status": "provisional",
+        "subcategory_extension": {"candidate_name": "眼周遮瑕", "parent_hint": "美妆", "reason": "由眼周问题、遮瑕文案和管状产品推断", "future_profile_required": false}
+      },
+      "observed_product": "眼周遮瑕类管状彩妆",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "人物眼周问题与结果欲望钩子", "proof_tags": ["application_area_closeup", "usage_context"]},
+        {"approx_time": "2-4s", "observation": "手持单支产品，建立容器和装饰识别", "proof_tags": ["product_pack"]},
+        {"approx_time": "4-7s", "observation": "眼部与妆效近景", "proof_tags": ["finish_result"]},
+        {"approx_time": "7-13s", "observation": "多产品陈列、人物持物和生活方式结果", "proof_tags": ["product_macro", "usage_context", "texture_result"]},
+        {"approx_time": "13-16s", "observation": "单支产品稳定锁定", "proof_tags": ["hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "B01", "B02", "B03"]
+    },
+    {
+      "sample_id": "XYQ-BEAUTY-02",
+      "source_path": "data/src/美妆个护/02_004.mp4",
+      "sha256": "12e94b085f1385ac8f6d5205b168f57987343a75c6926bc6c71b16785f562492",
+      "bytes": 34227655,
+      "duration_seconds": 14.04,
+      "resolution": "1080x1920",
+      "primary_category": "美妆个护",
+      "taxonomy": {
+        "subcategory": "",
+        "subcategory_status": "custom",
+        "subcategory_extension": {"candidate_name": "私护清洁", "parent_hint": "美妆个护", "reason": "现有四个预留子类不能准确覆盖可见的抑菌洗液产品", "future_profile_required": true}
+      },
+      "observed_product": "管状私护清洁/抑菌洗液",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "人物与私护需求同帧，产品已出现", "proof_tags": ["usage_context", "product_pack"]},
+        {"approx_time": "2-5s", "observation": "手持包装和标签近景", "proof_tags": ["package_label_truth", "product_pack"]},
+        {"approx_time": "5-8s", "observation": "窗边静物陈列建立温和生活方式", "proof_tags": ["product_macro", "usage_context"]},
+        {"approx_time": "8-14s", "observation": "手持与人物生活方式回报，产品持续在场", "proof_tags": ["usage_context", "hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "B02", "B03"]
+    },
+    {
+      "sample_id": "XYQ-BEAUTY-03",
+      "source_path": "data/src/美妆个护/03_7d512b18-7144-48fe-941c-ab3a7cb8c76b.mp4",
+      "sha256": "d0443ee9d00df1c662063848f9cdcba6e84230c14bf8e0d6f0ab1edf5b5bb977",
+      "bytes": 4032403,
+      "duration_seconds": 14.302,
+      "resolution": "1080x1920",
+      "primary_category": "美妆个护",
+      "taxonomy": {
+        "subcategory": "美甲",
+        "subcategory_status": "matched",
+        "subcategory_extension": {"candidate_name": "甲油", "parent_hint": "美甲", "reason": "瓶装甲油、指甲色彩和色卡均清晰可见", "future_profile_required": false}
+      },
+      "observed_product": "多色甲油/美甲产品",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "美甲店人物展示完成甲面", "proof_tags": ["nail_color_finish", "usage_context"]},
+        {"approx_time": "2-4s", "observation": "手部与玻璃珠猫眼效果近景", "proof_tags": ["application_area_closeup", "finish_result"]},
+        {"approx_time": "4-7s", "observation": "手持单瓶建立包装与色号质感", "proof_tags": ["product_pack"]},
+        {"approx_time": "7-10s", "observation": "多指完成效果", "proof_tags": ["nail_color_finish"]},
+        {"approx_time": "10-14s", "observation": "色卡范围与人物持卡收尾", "proof_tags": ["variant_range", "hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "B01", "B02", "B03"]
+    },
+    {
+      "sample_id": "XYQ-BEAUTY-04",
+      "source_path": "data/src/美妆个护/04_0701cdf2-37d4-42cb-82ee-dd3cc71b250d.mp4",
+      "sha256": "988349b296db8b2f0af04b686e9aeebc482dac84e916fbaf4dc30f55af0fc490",
+      "bytes": 4176831,
+      "duration_seconds": 15.069,
+      "resolution": "1080x1920",
+      "primary_category": "美妆个护",
+      "taxonomy": {
+        "subcategory": "美妆",
+        "subcategory_status": "matched",
+        "subcategory_extension": {"candidate_name": "唇部彩妆", "parent_hint": "美妆", "reason": "唇部局部、手持瓶体和妆效均可见", "future_profile_required": false}
+      },
+      "observed_product": "粉色瓶装唇部彩妆",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "人物提问式钩子并手持产品", "proof_tags": ["usage_context", "product_pack"]},
+        {"approx_time": "2-6s", "observation": "唇部局部质地和光泽近景", "proof_tags": ["application_area_closeup", "texture_result"]},
+        {"approx_time": "6-8s", "observation": "手持瓶体建立产品身份", "proof_tags": ["product_pack"]},
+        {"approx_time": "8-13s", "observation": "人物侧脸和生活方式结果", "proof_tags": ["finish_result", "usage_context"]},
+        {"approx_time": "13-15s", "observation": "产品置于水面稳定锁定", "proof_tags": ["hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "B01", "B02", "B03"]
+    },
+    {
+      "sample_id": "XYQ-FOOD-01",
+      "source_path": "data/src/食品饮料/01_012.mp4",
+      "sha256": "dad003fbae9500a1a0dde1589b8a50a82db048042b58a0a5fa0b0932e302ce8a",
+      "bytes": 37754623,
+      "duration_seconds": 14.12,
+      "resolution": "1080x1920",
+      "primary_category": "食品饮料",
+      "taxonomy": {
+        "subcategory": "速冻速食",
+        "subcategory_status": "provisional",
+        "subcategory_extension": {"candidate_name": "方便粉面", "parent_hint": "速冻速食", "reason": "杯装、冲泡后粉面和便利场景可见", "future_profile_required": false}
+      },
+      "observed_product": "杯装酸辣粉/方便粉面",
+      "observed_beats": [
+        {"approx_time": "0-3s", "observation": "深夜饥饿场景与杯装商品同帧", "proof_tags": ["usage_context", "package_identity"]},
+        {"approx_time": "3-6s", "observation": "粉条提拉和成品碗近景", "proof_tags": ["sensory_macro", "steam_or_served_texture"]},
+        {"approx_time": "6-9s", "observation": "配料丰富度与汤面特写", "proof_tags": ["sensory_macro"]},
+        {"approx_time": "9-12s", "observation": "人物食用与暖意回报", "proof_tags": ["consumption_or_serving"]},
+        {"approx_time": "12-14s", "observation": "双手端碗的稳定成品收尾", "proof_tags": ["hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "F01", "F02", "F03", "F04"]
+    },
+    {
+      "sample_id": "XYQ-FOOD-02",
+      "source_path": "data/src/食品饮料/02_003.mp4",
+      "sha256": "45efcfb1de30f0197c367073be394f4a2cd8375235e9d52c295d99b5679adbf7",
+      "bytes": 38349613,
+      "duration_seconds": 14.6,
+      "resolution": "1080x1920",
+      "primary_category": "食品饮料",
+      "taxonomy": {
+        "subcategory": "零食",
+        "subcategory_status": "provisional",
+        "subcategory_extension": {"candidate_name": "烘焙主食", "parent_hint": "零食", "reason": "现有预留类目可临时承载，但全麦面包更适合未来独立烘焙子类", "future_profile_required": true}
+      },
+      "observed_product": "盒装全麦切片面包",
+      "observed_beats": [
+        {"approx_time": "0-3s", "observation": "早餐人物持面包，包装位于桌面", "proof_tags": ["usage_context", "package_identity"]},
+        {"approx_time": "3-6s", "observation": "按压回弹证明柔软质地", "proof_tags": ["texture_macro"]},
+        {"approx_time": "6-9s", "observation": "人物闻香与口感回报", "proof_tags": ["consumption_or_serving"]},
+        {"approx_time": "9-11s", "observation": "谷物和牛奶构成原料联想", "proof_tags": ["ingredient_or_preparation"]},
+        {"approx_time": "11-15s", "observation": "包装与切片面包共同锁定", "proof_tags": ["pack_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "F01", "F02", "F03", "F04"]
+    },
+    {
+      "sample_id": "XYQ-FOOD-03",
+      "source_path": "data/src/食品饮料/03_004.mp4",
+      "sha256": "9d4272e7f101f1dc8c018f57b935d65bea93903c32e91b83a58e8c45ba39f872",
+      "bytes": 46772847,
+      "duration_seconds": 15.92,
+      "resolution": "1080x1920",
+      "primary_category": "食品饮料",
+      "taxonomy": {
+        "subcategory": "零食",
+        "subcategory_status": "matched",
+        "subcategory_extension": {"candidate_name": "巧克力礼盒", "parent_hint": "零食", "reason": "巧克力单粒、粉体和礼盒均清晰可见", "future_profile_required": false}
+      },
+      "observed_product": "松露巧克力礼盒",
+      "observed_beats": [
+        {"approx_time": "0-3s", "observation": "人物持红色礼盒建立节庆送礼场景", "proof_tags": ["sharing_occasion", "package_identity"]},
+        {"approx_time": "3-6s", "observation": "粉体和松露感原料视觉", "proof_tags": ["ingredient_or_preparation", "texture_macro"]},
+        {"approx_time": "6-10s", "observation": "开盒、多口味和包装价值", "proof_tags": ["package_identity", "pack_lock"]},
+        {"approx_time": "10-13s", "observation": "人物入口体验", "proof_tags": ["bite_or_break", "consumption_or_serving"]},
+        {"approx_time": "13-16s", "observation": "聚会手持单粒巧克力", "proof_tags": ["sharing_occasion", "hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "F01", "F02", "F03", "F04"]
+    },
+    {
+      "sample_id": "XYQ-FOOD-04",
+      "source_path": "data/src/食品饮料/04_040.mp4",
+      "sha256": "6f2b714288790745197ca3e72a7badd4a649fe7eadc67fce90dd914cc8898c10",
+      "bytes": 29041571,
+      "duration_seconds": 11.72,
+      "resolution": "1080x1920",
+      "primary_category": "食品饮料",
+      "taxonomy": {
+        "subcategory": "零食",
+        "subcategory_status": "matched",
+        "subcategory_extension": {"candidate_name": "儿童软糖", "parent_hint": "零食", "reason": "儿童、软糖形态和罐装包装可见", "future_profile_required": false}
+      },
+      "observed_product": "罐装儿童山楂类五色软糖",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "儿童持罐建立家庭零食场景", "proof_tags": ["usage_context", "package_identity"]},
+        {"approx_time": "2-5s", "observation": "山楂等原料板和产品形态", "proof_tags": ["ingredient_or_preparation", "sensory_macro"]},
+        {"approx_time": "5-8s", "observation": "儿童咀嚼与酸甜口感回报", "proof_tags": ["consumption_or_serving"]},
+        {"approx_time": "8-12s", "observation": "手持罐装产品收尾", "proof_tags": ["pack_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "F01", "F02", "F03", "F04"]
+    },
+    {
+      "sample_id": "XYQ-FASHION-01",
+      "source_path": "data/src/服饰配件/01_013.mp4",
+      "sha256": "d7fc7adce6da60e0a01dc1d42b671049d5d2b4a194bc756082f44bd92dcaed89",
+      "bytes": 48049693,
+      "duration_seconds": 16.0,
+      "resolution": "1080x1920",
+      "primary_category": "服饰配件",
+      "taxonomy": {
+        "subcategory": "鞋包",
+        "subcategory_status": "matched",
+        "subcategory_extension": {"candidate_name": "格纹背包", "parent_hint": "鞋包", "reason": "背包轮廓、肩背和五金细节清晰可见", "future_profile_required": false}
+      },
+      "observed_product": "棕色皮革拼格纹双肩包",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "人物正面持包建立尺度与搭配", "proof_tags": ["on_foot_or_carry", "full_outline"]},
+        {"approx_time": "2-6s", "observation": "翻盖、格纹、缝线和五金近景", "proof_tags": ["material_hardware"]},
+        {"approx_time": "6-9s", "observation": "户外肩背全身行走", "proof_tags": ["on_foot_or_carry", "use_occasion"]},
+        {"approx_time": "9-13s", "observation": "咖啡馆场景和包体使用", "proof_tags": ["styling_context", "use_occasion"]},
+        {"approx_time": "13-16s", "observation": "桌面静物与人物同场锁定", "proof_tags": ["hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "A01", "A02", "A03"]
+    },
+    {
+      "sample_id": "XYQ-FASHION-02",
+      "source_path": "data/src/服饰配件/02_035.mp4",
+      "sha256": "c37220f55097f4838656945cd4916dfe08719d5ffd54132e431431834c62af2b",
+      "bytes": 52652271,
+      "duration_seconds": 16.535,
+      "resolution": "1080x1920",
+      "primary_category": "服饰配件",
+      "taxonomy": {
+        "subcategory": "服装",
+        "subcategory_status": "matched",
+        "subcategory_extension": {"candidate_name": "针织开衫", "parent_hint": "服装", "reason": "完整上身、麻花纹理和开衫版型可见", "future_profile_required": false}
+      },
+      "observed_product": "灰色麻花纹针织开衫",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "室内完整上身造型开场", "proof_tags": ["worn_full_view", "silhouette_fit"]},
+        {"approx_time": "2-6s", "observation": "麻花纹、袖口和触感近景", "proof_tags": ["material_construction"]},
+        {"approx_time": "6-10s", "observation": "正侧面版型与搭配", "proof_tags": ["silhouette_fit"]},
+        {"approx_time": "10-13s", "observation": "户外行走证明动态", "proof_tags": ["movement_drape", "use_occasion"]},
+        {"approx_time": "13-17s", "observation": "室内坐姿与完整造型收尾", "proof_tags": ["worn_full_view", "hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "A01", "A02", "A03"]
+    },
+    {
+      "sample_id": "XYQ-FASHION-03",
+      "source_path": "data/src/服饰配件/03_038.mp4",
+      "sha256": "b5a4717505901847122b33a0a902869420c6d58b1af77846877a58548c497315",
+      "bytes": 46700948,
+      "duration_seconds": 17.375,
+      "resolution": "1080x1920",
+      "primary_category": "服饰配件",
+      "taxonomy": {
+        "subcategory": "服装",
+        "subcategory_status": "matched",
+        "subcategory_extension": {"candidate_name": "双面穿保暖外套", "parent_hint": "服装", "reason": "外套完整上身、翻领、袖口和双面穿展示可见", "future_profile_required": false}
+      },
+      "observed_product": "棕色双面穿羊羔绒感外套",
+      "observed_beats": [
+        {"approx_time": "0-2s", "observation": "城市街头完整上身开场", "proof_tags": ["worn_full_view", "use_occasion"]},
+        {"approx_time": "2-6s", "observation": "翻领、皮革感表面和扣带细节", "proof_tags": ["material_construction"]},
+        {"approx_time": "6-10s", "observation": "全身比例与日常造型", "proof_tags": ["silhouette_fit"]},
+        {"approx_time": "10-14s", "observation": "室内保暖场景、袖口和反面材质", "proof_tags": ["movement_or_function", "material_construction"]},
+        {"approx_time": "14-17s", "observation": "双面穿完整造型锁定", "proof_tags": ["worn_full_view", "hero_lock"]}
+      ],
+      "pattern_ids": ["U01", "U02", "U03", "U04", "U05", "A01", "A02", "A03"]
+    }
+  ],
+  "derived_rules": {
+    "shared_15_second_spine": [
+      "0-2s: human need, context, or use-state hook with product already identifiable",
+      "2-5s: product identity and first category proof",
+      "5-9s: strongest category-specific proof",
+      "9-12s: consumer reward or use occasion",
+      "12-15s: stable product, package, or complete-look lock"
+    ],
+    "category_differences": {
+      "美妆个护": "The proof object is a use area, applicator or texture, and visible finish, constrained by claim truth.",
+      "食品饮料": "The proof object is package identity, preparation or ingredients, sensory motion, and consumption or serving.",
+      "服饰配件": "The proof object is worn or carried scale, detail, complete outline, movement, and occasion."
+    },
+    "do_not_copy": [
+      "reference faces or character identity",
+      "visible brand names, packaging designs, slogans, or exact copy",
+      "unsupported efficacy, health, material, authenticity, or numerical claims",
+      "the synthetic visual style as a universal brand-film aesthetic"
+    ]
+  }
+}

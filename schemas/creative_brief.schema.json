@@ -1,41 +1,75 @@
 {
-  "$comment": "创意 brief 文档契约 (P0 仅作文档，不做强校验)。",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "creative_brief.schema.json",
+  "title": "Category-aware creative brief",
   "type": "object",
-  "required": ["product_name", "category", "dense_caption", "selling_points",
-               "target_audience", "commercial_goal", "platform", "aspect_ratio",
-               "duration_seconds", "constraints"],
+  "required": [
+    "schema_version",
+    "product_name",
+    "taxonomy",
+    "dense_caption",
+    "selling_points",
+    "target_audience",
+    "commercial_goal",
+    "platform",
+    "aspect_ratio",
+    "duration_seconds",
+    "category_profile",
+    "claim_boundaries",
+    "constraints"
+  ],
   "properties": {
+    "schema_version": {"const": "2.0"},
     "product_name": {"type": "string"},
-    "category": {"type": "string"},
+    "taxonomy": {"type": "object"},
+    "category": {"enum": ["美妆个护", "食品饮料", "服饰配件"]},
     "sub_category": {"type": "string"},
     "dense_caption": {"type": "string"},
+    "product_truth": {"type": "object"},
+    "truth_boundaries": {"type": "object"},
     "selling_points": {"type": "array", "items": {"type": "string"}},
     "target_audience": {"type": "string"},
     "distribution_scenarios": {"type": "array", "items": {"type": "string"}},
+    "pain_points": {"type": "array", "items": {"type": "string"}},
+    "usage_scenes": {"type": "array", "items": {"type": "string"}},
     "brand_name": {"type": "string"},
     "brand_stage": {"enum": ["unknown", "awareness", "conversion", "retargeting"]},
     "brand_assets": {"type": "object"},
     "commercial_goal": {"enum": ["brand_film", "creative_ad", "direct_response", "social_post"]},
     "platform": {"enum": ["douyin", "xiaohongshu", "video_account", "tiktok", "youtube"]},
     "aspect_ratio": {"enum": ["9:16", "16:9", "1:1"]},
-    "duration_seconds": {"type": "integer"},
+    "duration_seconds": {"type": "integer", "minimum": 1},
+    "cta": {"type": "string"},
+    "category_profile": {
+      "type": "object",
+      "required": [
+        "framework_version",
+        "profile_id",
+        "category",
+        "required_proof_tags",
+        "critical_proof_groups",
+        "hard_score_floors",
+        "score_weights"
+      ]
+    },
+    "claim_boundaries": {
+      "type": "object",
+      "required": ["allowed", "requires_user_evidence", "forbidden"],
+      "properties": {
+        "allowed": {"type": "array", "items": {"type": "string"}},
+        "requires_user_evidence": {"type": "array", "items": {"type": "string"}},
+        "forbidden": {"type": "array", "items": {"type": "string"}}
+      }
+    },
     "constraints": {
       "type": "object",
+      "required": ["must_show_product_by_second", "must_have_cta", "person_policy", "category_requirements"],
       "properties": {
-        "must_show_product_by_second": {"type": "integer"},
+        "must_show_product_by_second": {"type": "number", "minimum": 0},
         "must_have_cta": {"type": "boolean"},
         "avoid_face_generation": {"type": "boolean"},
         "avoid_complex_hand_motion": {"type": "boolean"},
-        "person_policy": {
-          "type": "object",
-          "properties": {
-            "face_allowed": {"type": "boolean"},
-            "human_body_allowed": {"type": "boolean"},
-            "hands_allowed": {"type": "boolean"},
-            "model_required": {"type": "boolean"},
-            "allowed_body_framing": {"type": "array", "items": {"type": "string"}}
-          }
-        },
+        "person_policy": {"type": "object"},
         "category_requirements": {"type": "object"}
       }
     },

@@ -1,10 +1,22 @@
 {
-  "$comment": "创意候选文档契约。",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "creative_candidate.schema.json",
+  "title": "Category-aware creative candidate",
   "type": "object",
-  "required": ["candidate_id", "creative_route", "one_sentence_idea", "hook",
-               "shot_plan", "seedance_prompt_risk"],
+  "required": [
+    "schema_version",
+    "candidate_id",
+    "creative_route",
+    "one_sentence_idea",
+    "hook",
+    "product_truth",
+    "category_strategy",
+    "shot_plan",
+    "renderer_risk"
+  ],
   "properties": {
-    "candidate_id": {"type": "string"},
+    "schema_version": {"const": "2.0"},
+    "candidate_id": {"type": "string", "pattern": "^C[0-9]{3}$"},
     "creative_route": {"type": "string"},
     "one_sentence_idea": {"type": "string"},
     "hook": {"type": "string"},
@@ -13,14 +25,106 @@
     "product_truth": {"type": "string"},
     "visual_metaphor": {"type": "string"},
     "narrative_spine": {"type": "string"},
-    "shot_plan": {"type": "array", "items": {"type": "object"}},
-    "seedance_prompt_risk": {
+    "category_strategy": {
       "type": "object",
-      "required": ["risk_level", "risk_reasons"],
+      "required": [
+        "profile_id",
+        "subcategory_id",
+        "consumer_tension",
+        "product_first_seen_at",
+        "proof_sequence",
+        "required_proofs_covered",
+        "claims_used",
+        "product_fidelity_lock",
+        "reference_pattern_ids"
+      ],
+      "properties": {
+        "profile_id": {"type": "string"},
+        "subcategory_id": {"type": "string"},
+        "consumer_tension": {"type": "string"},
+        "product_first_seen_at": {"type": "number", "minimum": 0},
+        "proof_sequence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["proof_id", "proof_tag", "shot_ids", "evidence_basis"],
+            "properties": {
+              "proof_id": {"type": "string"},
+              "proof_tag": {"type": "string"},
+              "shot_ids": {"type": "array", "items": {"type": "string"}},
+              "evidence_basis": {"enum": ["observed", "user_provided", "inferred", "creative_device"]}
+            }
+          }
+        },
+        "required_proofs_covered": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "claims_used": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text", "basis", "risk_level"],
+            "properties": {
+              "text": {"type": "string"},
+              "basis": {"enum": ["observed", "user_provided", "verified_brand_asset", "inferred", "none"]},
+              "risk_level": {"enum": ["low", "medium", "high"]}
+            }
+          }
+        },
+        "product_fidelity_lock": {
+          "type": "object",
+          "required": ["must_keep", "must_not_add", "cross_shot_continuity"],
+          "properties": {
+            "must_keep": {"type": "array", "items": {"type": "string"}},
+            "must_not_add": {"type": "array", "items": {"type": "string"}},
+            "cross_shot_continuity": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "reference_pattern_ids": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "shot_plan": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "shot_id",
+          "time_range",
+          "purpose",
+          "visual",
+          "camera",
+          "lighting",
+          "sound",
+          "copy_or_voiceover",
+          "product_visibility",
+          "proof_tags",
+          "product_fidelity"
+        ],
+        "properties": {
+          "shot_id": {"type": "string"},
+          "time_range": {"type": "string"},
+          "purpose": {"enum": ["hook", "product_reveal", "context", "proof", "application", "sensory", "emotional_peak", "brand_lock"]},
+          "visual": {"type": "string"},
+          "camera": {"type": "string"},
+          "lighting": {"type": "string"},
+          "sound": {"type": "string"},
+          "copy_or_voiceover": {"type": "string"},
+          "product_visibility": {"enum": ["none", "partial", "clear", "hero"]},
+          "proof_tags": {"type": "array", "items": {"type": "string"}},
+          "product_fidelity": {"type": "string"},
+          "continuity_risk": {"type": "string"}
+        }
+      }
+    },
+    "renderer_risk": {
+      "type": "object",
+      "required": ["risk_level", "risk_reasons", "fallback"],
       "properties": {
         "risk_level": {"enum": ["low", "medium", "high"]},
-        "risk_reasons": {"type": "array", "items": {"type": "string"}}
+        "risk_reasons": {"type": "array", "items": {"type": "string"}},
+        "fallback": {"type": "string"}
       }
-    }
+    },
+    "seedance_prompt_risk": {"type": "object", "description": "Legacy alias only."}
   }
 }

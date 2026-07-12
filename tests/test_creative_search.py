@@ -57,6 +57,9 @@ class TestGenerateCreativeCandidates(unittest.TestCase):
         self.assertEqual(cands[1]["candidate_id"], "C002")
         self.assertEqual(cands[0]["creative_route"], "品牌大片")
         self.assertIn("shot_plan", cands[0])
+        self.assertEqual(cands[0]["schema_version"], "2.0")
+        self.assertIn("category_strategy", cands[0])
+        self.assertIn("renderer_risk", cands[0])
         self.assertIn("seedance_prompt_risk", cands[0])
 
     def test_missing_fields_filled(self):
@@ -64,7 +67,8 @@ class TestGenerateCreativeCandidates(unittest.TestCase):
         self.assertEqual(c["candidate_id"], "C001")
         self.assertEqual(c["hook"], "")
         self.assertEqual(c["shot_plan"], [])
-        self.assertEqual(c["seedance_prompt_risk"]["risk_level"], "medium")
+        self.assertEqual(c["renderer_risk"]["risk_level"], "medium")
+        self.assertNotIn("seedance_prompt_risk", c)
 
     def test_invalid_risk_level_normalized(self):
         c = _normalize_candidate(

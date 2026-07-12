@@ -11,7 +11,7 @@ def _sl(cid, overall, eligible=True):
         "candidate_id": cid,
         "candidate": {"candidate_id": cid, "creative_route": "X", "shot_plan": []},
         "score": {"candidate_id": cid, "scores": {"overall": overall,
-                                                   "seedance_feasibility": 80},
+                                                   "renderer_feasibility": 80},
                   "render_recommendation": "render"},
         "overall": overall,
         "eligible_for_render": eligible,
@@ -39,7 +39,12 @@ class TestMakeRenderDecision(unittest.TestCase):
             "recommended_candidate_id": "C002",
             "should_render": True, "confidence": 85,
             "reason": "强hook且可行", "expected_failure_modes": ["手部"],
+            "decision_evidence": ["品类硬门通过"],
+            "blocking_gates": [],
             "pre_render_checklist": ["确认产品颜色"],
+            "renderer_plan": {"adapter_requirements": ["锁定产品"],
+                              "optional_keyframes": ["KF01"], "retry_budget": 1,
+                              "replace_candidate_on": ["产品变款"]},
             "if_first_render_fails": {"likely_causes": ["手部畸形"],
                                        "recommended_fix": "简化手部",
                                        "do_not_retry_if": ["产品颜色错"]}
@@ -48,9 +53,26 @@ class TestMakeRenderDecision(unittest.TestCase):
         sl = [_sl("C001", 80), _sl("C002", 90)]
         dec = make_render_decision(brief, sl, [])
         self.assertTrue(dec["should_render"])
+        self.assertEqual(dec["decision_version"], "2.0")
         self.assertEqual(dec["recommended_candidate_id"], "C002")
         self.assertEqual(dec["confidence"], 85)
         self.assertIn("确认产品颜色", dec["pre_render_checklist"])
+        self.assertEqual(dec["renderer_plan"]["retry_budget"], 1)
+
+    @patch("core.render_decision.chat_json_object")
+    def test_model_can_decline_cost_but_cannot_leave_recommendation(self, mock_chat):
+        mock_chat.return_value = {
+            "recommended_candidate_id": "C999",
+            "should_render": False,
+            "confidence": 70,
+            "reason": "关键帧仍有产品漂移风险",
+            "blocking_gates": ["product fidelity preview"],
+            "if_first_render_fails": {},
+        }
+        decision = make_render_decision({"product_name": "x"}, [_sl("C001", 90)], [])
+
+        self.assertFalse(decision["should_render"])
+        self.assertIsNone(decision["recommended_candidate_id"])
 
     @patch("core.render_decision.chat_json_object")
     def test_no_eligible_fast_fails_without_llm(self, mock_chat):
@@ -61,6 +83,9 @@ class TestMakeRenderDecision(unittest.TestCase):
         self.assertIsNone(dec["recommended_candidate_id"])
         self.assertEqual(dec["confidence"], 0)
         self.assertIn("render eligibility", dec["reason"])
+        self.assertEqual(dec["decision_version"], "2.0")
+        self.assertIn("x", dec["blocking_gates"])
+        self.assertEqual(dec["renderer_plan"]["retry_budget"], 0)
         mock_chat.assert_not_called()  # 关键: 没有调用 LLM
 
     @patch("core.render_decision.chat_json_object")

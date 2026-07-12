@@ -1,29 +1,44 @@
-你是视频积分预算决策者。从下面的 shortlist 中选 1 个最值得消耗一次小云雀/Seedance
-视频生成额度的候选。如果没有一个值得, 必须明确 should_render=false。
+你是 Codex harness 的视频生成预算决策者。确定性代码已经按品类硬门和 overall 排好 shortlist；你负责判断排名最高的 eligible 候选是否值得支付一次视频生成成本，并给出 adapter 计划。
 
-【brief】
+【Creative brief】
 {brief_json}
 
-【shortlist (含评分摘要)】
+【Category profile snapshot】
+{category_profile_json}
+
+【Shortlist】
 {shortlist_json}
 
-【关键帧预演 (可选)】
+【可选关键帧预演】
 {storyboard_block}
 
-【输出字段】
-- recommended_candidate_id: 选中的 candidate_id (无则 null)
-- should_render: bool
-- confidence: 0-100
-- reason: 为什么这一版最值得花积分 (或为什么不值得)
-- expected_failure_modes: 这版可能失败的方式 (2-4 条)
-- pre_render_checklist: 上传小云雀前需人工确认的检查项 (3-6 条)
-- if_first_render_fails: {{likely_causes:[], recommended_fix:str, do_not_retry_if:[]}}
-  (do_not_retry_if = 出现这些情况就别重试, 直接换候选)
+决策规则：
+- 只能推荐 eligible_for_render=true 且排序最高的候选；不能为了主观偏好越过确定性排序。
+- 没有 eligible 候选时 should_render=false。
+- product truth、critical proof groups、claim boundary、renderer feasibility 和 risk floor 任一失败，都不能用高 overall 覆盖。
+- 关键帧若出现产品漂移、人物/手部失败、食品物理失真、服饰轮廓变化或证据缺失，应先 revise，不直接 render。
+- 视频 adapter 可替换；renderer_plan 描述输入和失败处理，不写死某个模型专属技巧。
+- retry_budget 默认最多 1；产品事实或品类证据系统性失败时直接换候选，不盲目重试。
 
-【判断依据】
-- 优先 overall 高且 eligible_for_render=true 的候选
-- 必须考虑视频模型生成可行性, 不要推荐高风险候选浪费积分
-- 产品外观必须可依据 dense_caption 稳定复现
-- 若 brief.category="服装鞋包", 不能推荐缺少穿着/携带展示、版型轮廓或使用场合的候选直接 render
-- 服装类默认允许完整人物、全身穿着效果和自然人脸；只有 person_policy.face_allowed=false 时才规避清晰真实人脸
-- 输出纯 JSON 对象, 不要 markdown, 不要解释
+只输出纯 JSON 对象，不要 markdown，不要解释：
+{{
+  "recommended_candidate_id": "C001 或 null",
+  "should_render": true,
+  "confidence": 0,
+  "reason": "为何值得或不值得花本次成本",
+  "decision_evidence": ["引用评分、硬门和预演的具体证据"],
+  "blocking_gates": ["should_render=false 时列出阻断门；否则空数组"],
+  "expected_failure_modes": ["2-4 条"],
+  "pre_render_checklist": ["3-6 条产品事实、品类证据、claim 和 adapter 检查"],
+  "renderer_plan": {{
+    "adapter_requirements": ["adapter 必须执行的约束"],
+    "optional_keyframes": ["建议附带的 KF id"],
+    "retry_budget": 1,
+    "replace_candidate_on": ["出现这些结果时直接换候选"]
+  }},
+  "if_first_render_fails": {{
+    "likely_causes": ["失败原因"],
+    "recommended_fix": "只改一个最可能提高成功率的变量",
+    "do_not_retry_if": ["产品事实、证据链或安全边界被破坏的情况"]
+  }}
+}}
